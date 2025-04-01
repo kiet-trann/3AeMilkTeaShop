@@ -1,126 +1,167 @@
-﻿using MilkTeaRepository.Models;
+﻿using AutoMapper;
+using MilkTea.Repository.Model;
 using MilkTeaRepository.UnitOfWork;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using MilkTeaWeb.ViewModels;
+using System.Linq.Expressions;
 
-namespace MilkteaServices.UserServices
+namespace MilkTea.Services.UserServices
 {
 	public class UserService : IUserService
 	{
 		private readonly IUnitOfWork _unitOfWork;
+		private readonly IMapper _mapper;
 
-		public UserService(IUnitOfWork unitOfWork)
+		public UserService(IUnitOfWork unitOfWork, IMapper mapper)
 		{
 			_unitOfWork = unitOfWork;
+			_mapper = mapper;
 		}
 
-		public async Task<IEnumerable<User>> GetAllUsersAsync()
+		public async Task<IEnumerable<User>> GetPaginateUsersAsync(int pageIndex, int pageSize, string? filter = null)
 		{
-			return await _unitOfWork.GetRepository<User>().GetPaginateAsync();
+			if(pageIndex <= 1) pageIndex = 1;
+			if(pageSize <= 1) pageSize = 10;
+
+			Expression<Func<User, bool>>? userFilter = null;
+
+			if (!string.IsNullOrWhiteSpace(filter))
+			{
+				userFilter = u => u.FullName.Contains(filter);
+			}
+
+			return await _unitOfWork.GetRepository<User>().GetPaginateAsync(
+				pageNumber: pageIndex,
+				pageSize: pageSize,
+				filter: userFilter
+			);
 		}
 
-		public async Task<User> GetUserByIdAsync(int id)
+		public async Task<User?> GetUserByIdAsync(int id)
 		{
 			return await _unitOfWork.GetRepository<User>().GetByIdAsync(id);
 		}
 
-		public async Task<User> GetUserByUsernameAsync(string username)
+		public async Task<User?> GetUserByUsernameAsync(string username)
 		{
+			if (string.IsNullOrWhiteSpace(username))
+				return null;
+
 			return await _unitOfWork.GetRepository<User>().GetFirstOrDefaultAsync(u => u.Username == username);
 		}
 
-		public async Task<User> AuthenticateAsync(string username, string password)
+		public async Task<User?> AuthenticateAsync(string usernameOrEmail, string password)
 		{
-			var user = await _unitOfWork.GetRepository<User>().GetFirstOrDefaultAsync(u => u.Username == username);
-			if (user == null || user.IsActive == false || user.PasswordHash != password)
+			if (string.IsNullOrWhiteSpace(usernameOrEmail) || string.IsNullOrWhiteSpace(password))
 				return null;
 
-			return user;
+			// Tìm kiếm người dùng theo username hoặc email
+			var user = await _unitOfWork.GetRepository<User>().GetFirstOrDefaultAsync(u => u.Username == usernameOrEmail || u.Email == usernameOrEmail);
+
+			if (user == null || !user.IsActive)
+				return null;
+
+			// Kiểm tra mật khẩu
+			return user.Password == password ? user : null;
 		}
 
-		public async Task<User> RegisterUserAsync(User user, string password)
+		public async Task<string> RegisterUserAsync(RegisterViewModel userViewModel)
 		{
-			var existingUser = await _unitOfWork.GetRepository<User>().GetFirstOrDefaultAsync(u => u.Username == user.Username);
-			if (existingUser != null)
-				throw new InvalidOperationException("Username is already taken");
+			if (userViewModel == null)
+			{
+				return "Thông tin người dùng không hợp lệ";
+			}
 
-			user.PasswordHash = password;
+			var existingUser = await _unitOfWork.GetRepository<User>().GetFirstOrDefaultAsync(u => u.Username == userViewModel.Username);
+			if (existingUser != null)
+			{
+				return "Tên người dùng đã tồn tại";
+			}
+
+			User user = _mapper.Map<User>(userViewModel);
+
+			// Đặt Role mặc định là "customer"
+			user.Role = "Customer";
 			user.IsActive = true;
 
 			await _unitOfWork.GetRepository<User>().AddAsync(user);
 			await _unitOfWork.SaveChangesAsync();
 
-			return user;
+			return "Đăng ký thành công";
 		}
 
-		public async Task UpdateUserAsync(User user)
+		public async Task<string> ChangePasswordAsync(int id, string currentPassword, string newPassword)
 		{
-			var existingUser = await _unitOfWork.GetRepository<User>().GetByIdAsync(user.UserId);
-			if (existingUser == null)
-				throw new KeyNotFoundException($"User with ID {user.UserId} not found");
+			if (string.IsNullOrWhiteSpace(newPassword))
+				return "Mật khẩu mới không được để trống";
 
-			existingUser.FullName = user.FullName;
-			existingUser.PhoneNumber = user.PhoneNumber;
-			existingUser.Role = user.Role;
-
-			await _unitOfWork.GetRepository<User>().UpdateAsync(existingUser);
-			await _unitOfWork.SaveChangesAsync();
-		}
-
-		public async Task UpdateUserProfileAsync(int id, string fullName, string email, string phone)
-		{
-			var existingUser = await _unitOfWork.GetRepository<User>().GetByIdAsync(id);
-			if (existingUser == null)
-				throw new KeyNotFoundException($"User with ID {id} not found");
-
-			existingUser.FullName = fullName;
-			existingUser.PhoneNumber = phone;
-
-			await _unitOfWork.GetRepository<User>().UpdateAsync(existingUser);
-			await _unitOfWork.SaveChangesAsync();
-		}
-
-		public async Task ChangePasswordAsync(int id, string currentPassword, string newPassword)
-		{
 			var user = await _unitOfWork.GetRepository<User>().GetByIdAsync(id);
 			if (user == null)
-				throw new KeyNotFoundException($"User with ID {id} not found");
+				return "Người dùng không tồn tại";
 
-			if (user.PasswordHash != currentPassword)
-				throw new InvalidOperationException("Current password is incorrect");
+			if (user.Password != currentPassword)
+				return "Mật khẩu hiện tại không đúng";
 
-			user.PasswordHash = newPassword;
+			user.Password = newPassword;
 
 			await _unitOfWork.GetRepository<User>().UpdateAsync(user);
 			await _unitOfWork.SaveChangesAsync();
+			return "Đổi mật khẩu thành công";
 		}
 
-		public async Task ToggleUserStatusAsync(int id)
+		public async Task<string> ToggleUserStatusAsync(int id)
 		{
 			var user = await _unitOfWork.GetRepository<User>().GetByIdAsync(id);
 			if (user == null)
-				throw new KeyNotFoundException($"User with ID {id} not found");
+				return "Người dùng không tồn tại";
 
 			user.IsActive = !user.IsActive;
 
 			await _unitOfWork.GetRepository<User>().UpdateAsync(user);
 			await _unitOfWork.SaveChangesAsync();
+			return "Cập nhật trạng thái thành công";
 		}
 
-		public async Task DeleteUserAsync(int id)
+		public async Task<string> UpdateUserProfileAsync(int id, string fullName, string email, string phone)
+		{
+			if (string.IsNullOrWhiteSpace(fullName) || string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(phone))
+				return "Thông tin người dùng không hợp lệ";
+
+			var user = await _unitOfWork.GetRepository<User>().GetByIdAsync(id);
+			if (user == null)
+				return "Người dùng không tồn tại";
+
+			// Kiểm tra xem email đã tồn tại hay chưa
+			var existingEmailUser = await _unitOfWork.GetRepository<User>().GetFirstOrDefaultAsync(u => u.Email == email && u.UserId != id);
+			if (existingEmailUser != null)
+				return "Email đã được sử dụng bởi người dùng khác";
+
+			// Cập nhật thông tin người dùng
+			user.FullName = fullName;
+			user.Email = email;
+			user.PhoneNumber = phone;
+
+			await _unitOfWork.GetRepository<User>().UpdateAsync(user);
+			await _unitOfWork.SaveChangesAsync();
+
+			return "Cập nhật thông tin người dùng thành công";
+		}
+
+		public async Task<string> DeleteUserAsync(int id)
 		{
 			var user = await _unitOfWork.GetRepository<User>().GetByIdAsync(id);
 			if (user == null)
-				throw new KeyNotFoundException($"User with ID {id} not found");
+				return "Người dùng không tồn tại";
 
 			await _unitOfWork.GetRepository<User>().RemoveAsync(user);
 			await _unitOfWork.SaveChangesAsync();
+			return "Xóa người dùng thành công";
 		}
 
 		public async Task<bool> IsUsernameUniqueAsync(string username)
 		{
+			if (string.IsNullOrWhiteSpace(username))
+				return false;
+
 			var user = await _unitOfWork.GetRepository<User>().GetFirstOrDefaultAsync(u => u.Username == username);
 			return user == null;
 		}

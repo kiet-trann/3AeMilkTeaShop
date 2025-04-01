@@ -16,7 +16,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MilkTeaRepository\MilkTeaRepository.csproj" />
+    <ProjectReference Include="..\MilkTea.Core\MilkTea.Core.csproj" />
+    <ProjectReference Include="..\MilkTeaRepository\MilkTea.Repository.csproj" />
   </ItemGroup>
 
 </Project>

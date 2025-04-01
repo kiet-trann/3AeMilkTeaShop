@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace MilkteaServices.OrderServices
+﻿namespace MilkTea.Services.OrderServices
 {
-    interface IOrderService
-    {
-    }
+	public interface IOrderService
+	{
+	}
 }

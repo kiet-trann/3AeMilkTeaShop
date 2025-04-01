@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 
-namespace MilkTeaRepository.Models;
+namespace MilkTea.Repository.Model;
 
 public partial class ThreeBrothersMilkTeaShopContext : DbContext
 {
@@ -37,7 +35,7 @@ public partial class ThreeBrothersMilkTeaShopContext : DbContext
     {
         modelBuilder.Entity<Category>(entity =>
         {
-            entity.HasKey(e => e.CategoryId).HasName("PK__Categori__19093A2B85760C67");
+            entity.HasKey(e => e.CategoryId).HasName("PK__Categori__19093A2B79132D3F");
 
             entity.Property(e => e.CategoryId).HasColumnName("CategoryID");
             entity.Property(e => e.CategoryName).HasMaxLength(100);
@@ -47,7 +45,7 @@ public partial class ThreeBrothersMilkTeaShopContext : DbContext
 
         modelBuilder.Entity<Order>(entity =>
         {
-            entity.HasKey(e => e.OrderId).HasName("PK__Orders__C3905BAF67FD6A81");
+            entity.HasKey(e => e.OrderId).HasName("PK__Orders__C3905BAF50595C15");
 
             entity.Property(e => e.OrderId).HasColumnName("OrderID");
             entity.Property(e => e.FinalAmount).HasColumnType("decimal(10, 2)");
@@ -65,12 +63,12 @@ public partial class ThreeBrothersMilkTeaShopContext : DbContext
             entity.HasOne(d => d.User).WithMany(p => p.Orders)
                 .HasForeignKey(d => d.UserId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Orders__UserID__3B75D760");
+                .HasConstraintName("FK__Orders__UserID__398D8EEE");
         });
 
         modelBuilder.Entity<OrderDetail>(entity =>
         {
-            entity.HasKey(e => e.OrderDetailId).HasName("PK__OrderDet__D3B9D30C3635C6A9");
+            entity.HasKey(e => e.OrderDetailId).HasName("PK__OrderDet__D3B9D30C23446AF6");
 
             entity.Property(e => e.OrderDetailId).HasColumnName("OrderDetailID");
             entity.Property(e => e.IceLevel).HasMaxLength(10);
@@ -84,17 +82,17 @@ public partial class ThreeBrothersMilkTeaShopContext : DbContext
             entity.HasOne(d => d.Order).WithMany(p => p.OrderDetails)
                 .HasForeignKey(d => d.OrderId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__OrderDeta__Order__4222D4EF");
+                .HasConstraintName("FK__OrderDeta__Order__403A8C7D");
 
             entity.HasOne(d => d.Product).WithMany(p => p.OrderDetails)
                 .HasForeignKey(d => d.ProductId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__OrderDeta__Produ__4316F928");
+                .HasConstraintName("FK__OrderDeta__Produ__412EB0B6");
         });
 
         modelBuilder.Entity<OrderDetailTopping>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__OrderDet__3214EC278AE3AD5D");
+            entity.HasKey(e => e.Id).HasName("PK__OrderDet__3214EC27527CDEA9");
 
             entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.OrderDetailId).HasColumnName("OrderDetailID");
@@ -105,23 +103,20 @@ public partial class ThreeBrothersMilkTeaShopContext : DbContext
             entity.HasOne(d => d.OrderDetail).WithMany(p => p.OrderDetailToppings)
                 .HasForeignKey(d => d.OrderDetailId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__OrderDeta__Order__47DBAE45");
+                .HasConstraintName("FK__OrderDeta__Order__45F365D3");
 
             entity.HasOne(d => d.Topping).WithMany(p => p.OrderDetailToppings)
                 .HasForeignKey(d => d.ToppingId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__OrderDeta__Toppi__48CFD27E");
+                .HasConstraintName("FK__OrderDeta__Toppi__46E78A0C");
         });
 
         modelBuilder.Entity<Product>(entity =>
         {
-            entity.HasKey(e => e.ProductId).HasName("PK__Products__B40CC6EDD31EB109");
+            entity.HasKey(e => e.ProductId).HasName("PK__Products__B40CC6EDFD083C68");
 
             entity.Property(e => e.ProductId).HasColumnName("ProductID");
             entity.Property(e => e.CategoryId).HasColumnName("CategoryID");
-            entity.Property(e => e.CreatedDate)
-                .HasDefaultValueSql("(getdate())")
-                .HasColumnType("datetime");
             entity.Property(e => e.IsAvailableL)
                 .HasDefaultValue(true)
                 .HasColumnName("IsAvailable_L");
@@ -145,12 +140,12 @@ public partial class ThreeBrothersMilkTeaShopContext : DbContext
             entity.HasOne(d => d.Category).WithMany(p => p.Products)
                 .HasForeignKey(d => d.CategoryId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Products__Catego__2B3F6F97");
+                .HasConstraintName("FK__Products__Catego__2A4B4B5E");
         });
 
         modelBuilder.Entity<Topping>(entity =>
         {
-            entity.HasKey(e => e.ToppingId).HasName("PK__Toppings__EE02CCE546030B9E");
+            entity.HasKey(e => e.ToppingId).HasName("PK__Toppings__EE02CCE5FFDC4428");
 
             entity.Property(e => e.ToppingId).HasColumnName("ToppingID");
             entity.Property(e => e.IsAvailable).HasDefaultValue(true);
@@ -160,20 +155,17 @@ public partial class ThreeBrothersMilkTeaShopContext : DbContext
 
         modelBuilder.Entity<User>(entity =>
         {
-            entity.HasKey(e => e.UserId).HasName("PK__Users__1788CCAC40F03545");
+            entity.HasKey(e => e.UserId).HasName("PK__Users__1788CCAC518DC611");
 
-            entity.HasIndex(e => e.Username, "UQ__Users__536C85E48ED5583D").IsUnique();
+            entity.HasIndex(e => e.Username, "UQ__Users__536C85E4A904D995").IsUnique();
 
-            entity.HasIndex(e => e.Email, "UQ__Users__A9D1053439E9D108").IsUnique();
+            entity.HasIndex(e => e.Email, "UQ__Users__A9D105342AC8BC64").IsUnique();
 
             entity.Property(e => e.UserId).HasColumnName("UserID");
-            entity.Property(e => e.CreatedDate)
-                .HasDefaultValueSql("(getdate())")
-                .HasColumnType("datetime");
             entity.Property(e => e.Email).HasMaxLength(255);
             entity.Property(e => e.FullName).HasMaxLength(100);
             entity.Property(e => e.IsActive).HasDefaultValue(true);
-            entity.Property(e => e.PasswordHash).HasMaxLength(255);
+            entity.Property(e => e.Password).HasMaxLength(255);
             entity.Property(e => e.PhoneNumber).HasMaxLength(15);
             entity.Property(e => e.Role).HasMaxLength(20);
             entity.Property(e => e.ShippingAddress).HasMaxLength(255);

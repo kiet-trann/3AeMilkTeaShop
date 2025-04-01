@@ -3,13 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.13.35806.99
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MilkTeaRepository", "MilkTeaRepository\MilkTeaRepository.csproj", "{34A95D09-6941-4BD3-84E1-477DA5EB5467}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MilkTea.Repository", "MilkTeaRepository\MilkTea.Repository.csproj", "{34A95D09-6941-4BD3-84E1-477DA5EB5467}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MilkteaServices", "MilkteaServices\MilkteaServices.csproj", "{051A8269-C84E-4AD1-B915-09D474B47E9A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MilkTea.Services", "MilkteaServices\MilkTea.Services.csproj", "{051A8269-C84E-4AD1-B915-09D474B47E9A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MilkTeaAdminWeb", "MilkTeaAdminWeb\MilkTeaAdminWeb.csproj", "{5B38895A-28EE-44E2-8A18-16E4424F2EB6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MilkTeaAdminWeb", "MilkTeaAdminWeb\MilkTeaAdminWeb.csproj", "{5B38895A-28EE-44E2-8A18-16E4424F2EB6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MilkTeaWeb", "MilkTeaWeb\MilkTeaWeb.csproj", "{3B0BD7A1-964B-476B-A9F4-6939A6CE627E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MilkTeaWeb", "MilkTeaWeb\MilkTeaWeb.csproj", "{3B0BD7A1-964B-476B-A9F4-6939A6CE627E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MilkTea.Core", "MilkTea.Core\MilkTea.Core.csproj", "{CDF61F9A-050F-4D69-AA34-D82670AA3E3C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{3B0BD7A1-964B-476B-A9F4-6939A6CE627E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3B0BD7A1-964B-476B-A9F4-6939A6CE627E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3B0BD7A1-964B-476B-A9F4-6939A6CE627E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CDF61F9A-050F-4D69-AA34-D82670AA3E3C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CDF61F9A-050F-4D69-AA34-D82670AA3E3C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CDF61F9A-050F-4D69-AA34-D82670AA3E3C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CDF61F9A-050F-4D69-AA34-D82670AA3E3C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

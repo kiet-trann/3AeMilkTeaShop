@@ -29,7 +29,6 @@ CREATE TABLE [dbo].[Products](
     [IsAvailable_S] BIT NOT NULL DEFAULT (1),
     [IsAvailable_M] BIT NOT NULL DEFAULT (1),
     [IsAvailable_L] BIT NOT NULL DEFAULT (1),
-    [CreatedDate] DATETIME NOT NULL DEFAULT (GETDATE()),
     PRIMARY KEY CLUSTERED ([ProductID] ASC),
     FOREIGN KEY ([CategoryID]) REFERENCES [dbo].[Categories]([CategoryID])
 );
@@ -53,14 +52,13 @@ GO
 CREATE TABLE [dbo].[Users](
     [UserID] INT IDENTITY(1,1) NOT NULL,
     [Username] NVARCHAR(50) NOT NULL UNIQUE,
-    [PasswordHash] NVARCHAR(255) NOT NULL,
+    [Password] NVARCHAR(255) NOT NULL,
     [FullName] NVARCHAR(100) NOT NULL,
     [PhoneNumber] NVARCHAR(15) NULL,
     [Email] NVARCHAR(255) NULL UNIQUE, -- Thêm trường Email
     [Role] NVARCHAR(20) NOT NULL CHECK ([Role] IN ('Customer', 'Staff', 'Admin')),
     [ShippingAddress] NVARCHAR(255) NULL, -- Thêm trường ShippingAddress
     [IsActive] BIT NOT NULL DEFAULT (1),
-    [CreatedDate] DATETIME NOT NULL DEFAULT (GETDATE()),
     PRIMARY KEY CLUSTERED ([UserID] ASC)
 );
 GO

@@ -1,12 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using MilkTea.Core.ViewModels;
 
-namespace MilkteaServices.ToppingServices
+namespace MilkTea.Services.ToppingServices
 {
-    interface IToppingService
-    {
-    }
+	public interface IToppingService
+	{
+		Task<IEnumerable<ToppingViewModel>> GetPaginatedToppingsAsync(int pageIndex, int pageSize);
+		Task<ToppingViewModel> GetToppingByIdAsync(int toppingId);
+		Task<string> AddToppingAsync(ToppingViewModel toppingViewModel);
+		Task<string> UpdateToppingAsync(int toppingId, ToppingViewModel toppingViewModel);
+		Task<string> DeleteToppingAsync(int toppingId);
+	}
 }

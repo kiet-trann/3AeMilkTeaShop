@@ -1,19 +1,19 @@
-﻿using MilkTeaRepository.Models;
+﻿using MilkTea.Repository.Model;
+using MilkTeaWeb.ViewModels;
 
-namespace MilkteaServices.UserServices
+namespace MilkTea.Services.UserServices
 {
     public interface IUserService
     {
-		Task<IEnumerable<User>> GetAllUsersAsync();
+		Task<IEnumerable<User>> GetPaginateUsersAsync(int pageIndex, int pageSize, string? filter = null);
 		Task<User> GetUserByIdAsync(int id);
 		Task<User> GetUserByUsernameAsync(string username);
 		Task<User> AuthenticateAsync(string username, string password);
-		Task<User> RegisterUserAsync(User user, string password);
-		Task UpdateUserAsync(User user);
-		Task UpdateUserProfileAsync(int id, string fullName, string email, string phone);
-		Task ChangePasswordAsync(int id, string currentPassword, string newPassword);
-		Task ToggleUserStatusAsync(int id);
-		Task DeleteUserAsync(int id);
+		Task<string> RegisterUserAsync(RegisterViewModel userViewModel);
+		Task<string> UpdateUserProfileAsync(int id, string fullName, string email, string phone);
+		Task<string> ChangePasswordAsync(int id, string currentPassword, string newPassword);
+		Task<string> ToggleUserStatusAsync(int id);
+		Task<string> DeleteUserAsync(int id);
 		Task<bool> IsUsernameUniqueAsync(string username);
 		Task<bool> IsEmailUniqueAsync(string email);
 	}
