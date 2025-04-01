@@ -48,7 +48,7 @@ CREATE TABLE [dbo].[Toppings](
 GO
 
 -- ==========================================
--- 4. Tạo bảng Users (cập nhật thêm ShippingAddress)
+-- 4. Tạo bảng Users (cập nhật thêm Email và ShippingAddress)
 -- ==========================================
 CREATE TABLE [dbo].[Users](
     [UserID] INT IDENTITY(1,1) NOT NULL,
@@ -56,6 +56,7 @@ CREATE TABLE [dbo].[Users](
     [PasswordHash] NVARCHAR(255) NOT NULL,
     [FullName] NVARCHAR(100) NOT NULL,
     [PhoneNumber] NVARCHAR(15) NULL,
+    [Email] NVARCHAR(255) NULL UNIQUE, -- Thêm trường Email
     [Role] NVARCHAR(20) NOT NULL CHECK ([Role] IN ('Customer', 'Staff', 'Admin')),
     [ShippingAddress] NVARCHAR(255) NULL, -- Thêm trường ShippingAddress
     [IsActive] BIT NOT NULL DEFAULT (1),

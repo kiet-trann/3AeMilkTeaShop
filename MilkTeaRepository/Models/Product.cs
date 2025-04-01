@@ -9,9 +9,7 @@ public partial class Product
 
     public string ProductName { get; set; } = null!;
 
-    public int? CategoryId { get; set; }
-
-    public string? Description { get; set; }
+    public int CategoryId { get; set; }
 
     public decimal PriceS { get; set; }
 
@@ -19,17 +17,15 @@ public partial class Product
 
     public decimal PriceL { get; set; }
 
-    public bool? IsAvailableS { get; set; }
+    public bool IsAvailableS { get; set; }
 
-    public bool? IsAvailableM { get; set; }
+    public bool IsAvailableM { get; set; }
 
-    public bool? IsAvailableL { get; set; }
+    public bool IsAvailableL { get; set; }
 
-    public string? ImageUrl { get; set; }
+    public DateTime CreatedDate { get; set; }
 
-    public DateTime? CreatedDate { get; set; }
-
-    public virtual Category? Category { get; set; }
+    public virtual Category Category { get; set; } = null!;
 
     public virtual ICollection<OrderDetail> OrderDetails { get; set; } = new List<OrderDetail>();
 }

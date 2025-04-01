@@ -9,21 +9,21 @@ public partial class User
 
     public string Username { get; set; } = null!;
 
-    public string Password { get; set; } = null!;
+    public string PasswordHash { get; set; } = null!;
 
     public string FullName { get; set; } = null!;
 
-    public string Role { get; set; } = null!;
-
-    public string? Phone { get; set; }
+    public string? PhoneNumber { get; set; }
 
     public string? Email { get; set; }
 
-    public bool? IsActive { get; set; }
+    public string Role { get; set; } = null!;
 
-    public DateTime? CreatedDate { get; set; }
+    public string? ShippingAddress { get; set; }
 
-    public virtual ICollection<Customer> Customers { get; set; } = new List<Customer>();
+    public bool IsActive { get; set; }
+
+    public DateTime CreatedDate { get; set; }
 
     public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
 }

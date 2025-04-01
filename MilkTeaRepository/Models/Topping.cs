@@ -11,7 +11,7 @@ public partial class Topping
 
     public decimal Price { get; set; }
 
-    public bool? IsAvailable { get; set; }
+    public bool IsAvailable { get; set; }
 
     public virtual ICollection<OrderDetailTopping> OrderDetailToppings { get; set; } = new List<OrderDetailTopping>();
 }

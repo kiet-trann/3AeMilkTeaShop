@@ -11,7 +11,7 @@ namespace MilkTeaAdminWeb
 
 			// Add services to the container.
 			builder.Services.AddRazorPages();
-			builder.Services.AddDbContext<_3anhEmMilkTeaShopContext>(options =>
+			builder.Services.AddDbContext<ThreeBrothersMilkTeaShopContext>(options =>
 	options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 			var app = builder.Build();
 

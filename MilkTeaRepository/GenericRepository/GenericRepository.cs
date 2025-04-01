@@ -1,59 +1,53 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MilkTeaRepository.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MilkTeaRepository.GenericRepository
 {
 	public class GenericRepository<T> : IGenericRepository<T> where T : class
 	{
-		protected readonly _3anhEmMilkTeaShopContext _context;
+		protected readonly ThreeBrothersMilkTeaShopContext _context;
 		protected readonly DbSet<T> _dbSet;
 
-		public GenericRepository(_3anhEmMilkTeaShopContext context)
+		public GenericRepository(ThreeBrothersMilkTeaShopContext context)
 		{
 			_context = context;
 			_dbSet = context.Set<T>();
 		}
 
-		public async Task<IEnumerable<T>> GetAllAsync()
-		{
-			return await _dbSet.ToListAsync();
-		}
-
-		public async Task<IEnumerable<T>> GetAllAsync(
-			Expression<Func<T, bool>> filter = null,
-			Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null,
-			string includeProperties = "")
+		public async Task<IEnumerable<T>> GetPaginateAsync(int pageNumber = 1,
+														 int pageSize = 10,
+														 Expression<Func<T, bool>>? filter = null,
+														 Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null,
+														 string includeProperties = "")
 		{
 			IQueryable<T> query = _dbSet;
 
+			// Áp dụng filter nếu có
 			if (filter != null)
 			{
 				query = query.Where(filter);
 			}
 
+			// Áp dụng các thuộc tính cần Include nếu có
 			if (!string.IsNullOrWhiteSpace(includeProperties))
 			{
-				foreach (var includeProperty in includeProperties.Split
-					(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+				foreach (var includeProperty in includeProperties.Split(
+					new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
 				{
 					query = query.Include(includeProperty);
 				}
 			}
 
+			// Áp dụng sắp xếp nếu có
 			if (orderBy != null)
 			{
-				return await orderBy(query).ToListAsync();
+				query = orderBy(query);
 			}
-			else
-			{
-				return await query.ToListAsync();
-			}
+
+			query = query.Skip((pageNumber - 1) * pageSize).Take(pageSize);
+
+			return await query.ToListAsync();
 		}
 
 		public async Task<T> GetByIdAsync(object id)
