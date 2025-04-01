@@ -1,0 +1,43 @@
+﻿@page "/login"
+@using Microsoft.AspNetCore.Components.Forms
+@inject NavigationManager Navigation
+@inject IJSRuntime JSRuntime
+<link rel="stylesheet" href="~/login.css" />
+
+<h3>Đăng nhập</h3>
+
+<EditForm Model="@loginModel" OnValidSubmit="HandleLogin">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="form-group">
+        <label for="email">Email:</label>
+        <InputText id="Username" class="form-control" @bind-Value="loginModel.Username" />
+    </div>
+    <div class="form-group">
+        <label for="password">Mật khẩu:</label>
+        <InputText id="password" class="form-control" type="password" @bind-Value="loginModel.Password" />
+    </div>
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary">Đăng nhập</button>
+    </div>
+
+    <div class="form-group">
+        <p>Chưa có tài khoản? <a href="/register">Đăng ký ngay</a></p>
+    </div>
+</EditForm>
+
+@code {
+    private LoginModel loginModel = new LoginModel();
+
+    private async Task HandleLogin()
+    {
+        Navigation.NavigateTo("/Home");
+    }
+
+    public class LoginModel
+    {
+        public string Username { get; set; } = string.Empty;
+        public string Password { get; set; } = string.Empty;
+    }
+}
