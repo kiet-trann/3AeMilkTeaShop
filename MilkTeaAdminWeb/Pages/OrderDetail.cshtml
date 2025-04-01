@@ -1,0 +1,62 @@
+﻿@page
+@model MilkTeaAdminWeb.Pages.OrderDetailModel
+@{
+    <h1>Chi tiết đơn hàng @Model.Order.OrderId</h1>
+
+    <p>Ngày đặt hàng: @Model.Order.OrderDate</p>
+    <p>User: @Model.Order.User.Username</p>
+    <p>Phương thức thanh toán: @Model.Order.PaymentMethod</p>
+    <p>Trạng thái: @Model.Order.Status</p>
+    <p>Ghi chú: @Model.Order.Note</p>
+
+    <h3>Chi tiết sản phẩm</h3>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Sản phẩm</th>
+                <th>Size</th>
+                <th>Đường</th>
+                <th>Đá</th>
+                <th>Số lượng</th>
+                <th>Đơn giá</th>
+                <th>Tổng tiền</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var orderDetail in Model.OrderDetails)
+            {
+                <tr>
+                    <td>@orderDetail.Product.ProductName</td>
+                    <td>@orderDetail.Size</td>
+                    <td>@orderDetail.SugarLevel</td>
+                    <td>@orderDetail.IceLevel</td>
+                    <td>@orderDetail.Quantity</td>
+                    <td>@orderDetail.UnitPrice</td>
+                    <td>@orderDetail.SubTotal</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <h3>Topping</h3>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Tên Topping</th>
+                <th>Số Lượng</th>
+                <th>Giá</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var orderDetailTopping in Model.OrderDetailToppings)
+            {
+                <tr>
+                    <td>@orderDetailTopping.Topping.ToppingName</td>
+                    <td>@orderDetailTopping.Quantity</td>
+                    <td>@orderDetailTopping.Price</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+}
