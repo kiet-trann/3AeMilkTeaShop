@@ -1,0 +1,83 @@
+﻿@page
+@model MilkTeaAdminWeb.ordersModel
+<h1>Quản lý đơn hàng</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>OrderID</th>
+            <th>OrderDate</th>
+            <th>User</th>
+            <th>TotalAmount</th>
+            <th>FinalAmount</th>
+            <th>PaymentMethod</th>
+            <th>Status</th>
+          
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var order in Model.OrderList)
+        {
+            <tr>
+                <td>@order.OrderId</td>
+                <td>@order.OrderDate</td>
+                <td>@order.User.Username</td>
+                <td>@order.TotalAmount</td>
+                <td>@order.FinalAmount</td>
+                <td>@order.PaymentMethod</td>
+                <td>@order.Status</td>
+                <td>
+                    <a asp-page="./Orders" asp-route-orderId="@order.OrderId">Chi tiết</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@if (Model.SelectedOrder != null)
+{
+    <h2>Chi tiết đơn hàng @Model.SelectedOrder.OrderId</h2>
+    <p>Ngày đặt hàng: @Model.SelectedOrder.OrderDate</p>
+    <p>User: @Model.SelectedOrder.User.Username</p>
+    <p>Phương thức thanh toán: @Model.SelectedOrder.PaymentMethod</p>
+    <p>Trạng thái: @Model.SelectedOrder.Status</p>
+    <p>Ghi chú: @Model.SelectedOrder.Note</p>
+
+    <h3>Chi tiết sản phẩm</h3>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Sản phẩm</th>
+                <th>Size</th>
+                <th>Đường</th>
+                <th>Đá</th>
+                <th>Số lượng</th>
+                <th>Đơn giá</th>
+                <th>Tổng tiền</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var orderDetail in Model.OrderDetails)
+            {
+                <tr>
+                    <td>@orderDetail.Product.ProductName</td>
+                    <td>@orderDetail.Size</td>
+                    <td>@orderDetail.SugarLevel</td>
+                    <td>@orderDetail.IceLevel</td>
+                    <td>@orderDetail.Quantity</td>
+                    <td>@orderDetail.UnitPrice</td>
+                    <td>@orderDetail.SubTotal</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <form method="post" asp-page-handler="UpdateStatus">
+        <input type="hidden" name="orderId" value="@Model.SelectedOrder.OrderId" />
+        <select name="newStatus">
+            <option value="Đang xử lý">Đang xử lý</option>
+            <option value="Đang giao">Đang giao</option>
+            <option value="Hoàn thành">Hoàn thành</option>
+        </select>
+        <button type="submit">Cập nhật trạng thái</button>
+    </form>
+}
