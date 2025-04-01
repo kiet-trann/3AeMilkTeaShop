@@ -1,12 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using MilkTea.Core.ViewModels;
+using MilkTea.Repository.Model;
 
 namespace MilkteaServices.CategoryServices
 {
-    interface ICategoryService
-    {
-    }
+	public interface ICategoryService
+	{
+		Task<string> AddCategoryAsync(CategoryViewModel categoryViewModel);
+		Task<string> UpdateCategoryAsync(string categoryId, CategoryViewModel categoryViewModel);
+		Task<string> DeleteCategoryAsync(int categoryId);
+		Task<IEnumerable<Category>> GetPaginatedCategoriesAsync(int pageIndex, int pageSize);
+	}
 }

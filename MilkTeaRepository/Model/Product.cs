@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace MilkTeaRepository.Models;
+﻿namespace MilkTea.Repository.Model;
 
 public partial class Product
 {
@@ -22,8 +19,6 @@ public partial class Product
     public bool IsAvailableM { get; set; }
 
     public bool IsAvailableL { get; set; }
-
-    public DateTime CreatedDate { get; set; }
 
     public virtual Category Category { get; set; } = null!;
 

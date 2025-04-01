@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using MilkTeaRepository.Models;
+using MilkTea.Repository.Model;
 using System.Linq.Expressions;
 
 namespace MilkTeaRepository.GenericRepository
@@ -15,8 +15,8 @@ namespace MilkTeaRepository.GenericRepository
 			_dbSet = context.Set<T>();
 		}
 
-		public async Task<IEnumerable<T>> GetPaginateAsync(int pageNumber = 1,
-														 int pageSize = 10,
+		public async Task<IEnumerable<T>> GetPaginateAsync(int pageNumber,
+														 int pageSize,
 														 Expression<Func<T, bool>>? filter = null,
 														 Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null,
 														 string includeProperties = "")

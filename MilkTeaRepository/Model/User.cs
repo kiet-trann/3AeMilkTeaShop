@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace MilkTeaRepository.Models;
+﻿namespace MilkTea.Repository.Model;
 
 public partial class User
 {
@@ -9,7 +6,7 @@ public partial class User
 
     public string Username { get; set; } = null!;
 
-    public string PasswordHash { get; set; } = null!;
+    public string Password { get; set; } = null!;
 
     public string FullName { get; set; } = null!;
 
@@ -22,8 +19,6 @@ public partial class User
     public string? ShippingAddress { get; set; }
 
     public bool IsActive { get; set; }
-
-    public DateTime CreatedDate { get; set; }
 
     public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
 }

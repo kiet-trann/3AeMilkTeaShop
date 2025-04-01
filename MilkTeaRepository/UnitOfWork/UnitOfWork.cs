@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.Storage;
+using MilkTea.Repository.Model;
 using MilkTeaRepository.GenericRepository;
-using MilkTeaRepository.Models;
 
 namespace MilkTeaRepository.UnitOfWork
 {

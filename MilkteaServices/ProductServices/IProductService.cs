@@ -1,12 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using MilkTea.Core.ViewModels;
 
-namespace MilkteaServices.ProductServices
+namespace MilkTea.Services.ProductServices
 {
-    interface IProductService
-    {
-    }
+	public interface IProductService
+	{
+		Task<IEnumerable<ProductViewModel>> GetPaginatedProductsAsync(int pageIndex, int pageSize);
+		Task<ProductViewModel> GetProductByIdAsync(int productId);
+		Task<string> AddProductAsync(ProductViewModel productViewModel);
+		Task<string> UpdateProductAsync(int productId, ProductViewModel productViewModel);
+		Task<string> DeleteProductAsync(int productId);
+	}
 }
