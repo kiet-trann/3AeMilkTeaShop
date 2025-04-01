@@ -9,6 +9,7 @@ namespace MilkTea.Repository.Mapping
 	{
 		public MappingProfile()
 		{
+			CreateMap<LoginViewModel, User>();
 			CreateMap<RegisterViewModel, User>();
 			CreateMap<ToppingViewModel, Topping>();
 			CreateMap<CategoryViewModel, Category>();

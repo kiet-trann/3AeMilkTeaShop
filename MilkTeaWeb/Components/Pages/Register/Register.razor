@@ -1,49 +1,86 @@
 ﻿@page "/register"
+@using MilkTea.Services.UserServices
+@using MilkTeaWeb.ViewModels
+
 @inject NavigationManager Navigation
+@inject IUserService UserService
 
-<h3>Đăng ký</h3>
+<h3>Đăng Ký</h3>
 
-<EditForm Model="@registerModel" OnValidSubmit="HandleRegister">
+<EditForm Model="registerModel" OnValidSubmit="HandleRegister" FormName="RegisterForm">
     <DataAnnotationsValidator />
-    <ValidationSummary />
 
-    <div class="form-group">
-        <label for="email">Email:</label>
-        <InputText id="Username" class="form-control" @bind-Value="registerModel.Username" />
-    </div>
-    <div class="form-group">
-        <label for="password">Mật khẩu:</label>
-        <InputText id="password" class="form-control" type="password" @bind-Value="registerModel.Password" />
-    </div>
-    <div class="form-group">
-        <label for="confirmPassword">Xác nhận mật khẩu:</label>
-        <InputPassword id="confirmPassword" class="form-control" @bind="registerModel.ConfirmPassword" />
-    </div>
-    <div class="form-group">
-        <button type="submit" class="btn btn-primary">Đăng ký</button>
+    <div>
+        <label>Tên đăng nhập</label>
+        <InputText @bind-Value="registerModel.Username" class="form-control" />
+        <ValidationMessage For="() => registerModel.Username" />
     </div>
 
-    <div class="form-group">
-        <p>Đã có tài khoản? <a href="/login">Đăng nhập ngay</a></p>
+    <div>
+        <label>Email</label>
+        <InputText @bind-Value="registerModel.Email" class="form-control" />
+        <ValidationMessage For="() => registerModel.Email" />
     </div>
+
+    <div>
+        <label>Mật khẩu</label>
+        <InputText @bind-Value="registerModel.Password" Type="password" class="form-control" />
+        <ValidationMessage For="() => registerModel.Password" />
+    </div>
+
+    <div>
+        <label>Xác nhận mật khẩu</label>
+        <InputText @bind-Value="registerModel.ConfirmPassword" Type="password" class="form-control" />
+        <ValidationMessage For="() => registerModel.ConfirmPassword" />
+    </div>
+
+    <div>
+        <label>Họ và tên</label>
+        <InputText @bind-Value="registerModel.FullName" class="form-control" />
+        <ValidationMessage For="() => registerModel.FullName" />
+    </div>
+
+    <div>
+        <label>Số điện thoại</label>
+        <InputText @bind-Value="registerModel.PhoneNumber" class="form-control" />
+        <ValidationMessage For="() => registerModel.PhoneNumber" />
+    </div>
+
+    <div>
+        <label>Địa chỉ giao hàng</label>
+        <InputText @bind-Value="registerModel.ShippingAddress" class="form-control" />
+        <ValidationMessage For="() => registerModel.ShippingAddress" />
+    </div>
+
+    <button type="submit" class="btn btn-success">Đăng ký</button>
+    <button type="button" class="btn btn-secondary" @onclick="NavigateToLogin">Hủy</button>
+
+    @if (!string.IsNullOrEmpty(registerMessage))
+    {
+        <p class="text-danger">@registerMessage</p>
+    }
 </EditForm>
 
 @code {
-    private RegisterModel registerModel = new RegisterModel();
+    private RegisterViewModel registerModel = new RegisterViewModel();
+    private string? registerMessage;
 
     private async Task HandleRegister()
     {
-        // Logic đăng ký
-        // Thực hiện lưu thông tin người dùng vào cơ sở dữ liệu hoặc gọi API
 
-        // Chuyển hướng đến trang đăng nhập sau khi đăng ký thành công
-        Navigation.NavigateTo("/login");
+        var result = await UserService.RegisterUserAsync(registerModel);
+        if (result == "Đăng ký thành công")
+        {
+            Navigation.NavigateTo("/login");
+        }
+        else
+        {
+            registerMessage = result;
+        }
     }
 
-    public class RegisterModel
+    private void NavigateToLogin()
     {
-        public string Username { get; set; }
-        public string Password { get; set; }
-        public string ConfirmPassword { get; set; }
+        Navigation.NavigateTo("/login");
     }
 }

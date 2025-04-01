@@ -1,3 +1,8 @@
+using Microsoft.AspNetCore.Components;
+using MilkTea.Repository.Mapping;
+using MilkTea.Repository.Model;
+using MilkTea.Services.UserServices;
+using MilkTeaRepository.UnitOfWork;
 using MilkTeaWeb.Components;
 
 namespace MilkTeaWeb;
@@ -9,10 +14,14 @@ public class Program
         var builder = WebApplication.CreateBuilder(args);
 
         // Add services to the container.
-        builder.Services.AddRazorComponents()
+        builder.Services.AddDbContext<ThreeBrothersMilkTeaShopContext>();
+		builder.Services.AddRazorComponents()
             .AddInteractiveServerComponents();
+		builder.Services.AddScoped<IUserService, UserService>();
+		builder.Services.AddScoped<IUnitOfWork, UnitOfWork> ();
+		builder.Services.AddAutoMapper(typeof(MappingProfile).Assembly);
 
-        var app = builder.Build();
+		var app = builder.Build();
 
         // Configure the HTTP request pipeline.
         if (!app.Environment.IsDevelopment())
