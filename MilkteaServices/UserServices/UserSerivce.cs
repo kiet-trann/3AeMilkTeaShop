@@ -28,7 +28,7 @@ namespace MilkTea.Services.UserServices
 			{
 				userFilter = u => u.FullName.Contains(filter);
 			}
-
+			
 			return await _unitOfWork.GetRepository<User>().GetPaginateAsync(
 				pageNumber: pageIndex,
 				pageSize: pageSize,
@@ -49,13 +49,13 @@ namespace MilkTea.Services.UserServices
 			return await _unitOfWork.GetRepository<User>().GetFirstOrDefaultAsync(u => u.Username == username);
 		}
 
-		public async Task<User?> AuthenticateAsync(string usernameOrEmail, string password)
+		public async Task<User?> AuthenticateAsync(string username, string password)
 		{
-			if (string.IsNullOrWhiteSpace(usernameOrEmail) || string.IsNullOrWhiteSpace(password))
+			if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))
 				return null;
 
 			// Tìm kiếm người dùng theo username hoặc email
-			var user = await _unitOfWork.GetRepository<User>().GetFirstOrDefaultAsync(u => u.Username == usernameOrEmail || u.Email == usernameOrEmail);
+			var user = await _unitOfWork.GetRepository<User>().GetFirstOrDefaultAsync(u => u.Username == username);
 
 			if (user == null || !user.IsActive)
 				return null;
