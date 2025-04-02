@@ -16,17 +16,12 @@ namespace MilkTeaWeb.ViewModels
 		[Required(ErrorMessage = "Xác nhận mật khẩu không được để trống")]
 		[Compare("Password", ErrorMessage = "Mật khẩu xác nhận không khớp")]
 		public string ConfirmPassword { get; set; } = null!;
-		
 		[Required(ErrorMessage = "Họ và tên không được để trống")]
 		[MaxLength(100, ErrorMessage = "Họ và tên không được quá 100 ký tự")]
 		public string FullName { get; set; } = null!;
 
 		[Phone(ErrorMessage = "Số điện thoại không hợp lệ")]
 		public string? PhoneNumber { get; set; }
-
-		[Required(ErrorMessage = "Email không được để trống")]
-		[EmailAddress(ErrorMessage = "Email không hợp lệ")]
-		public string Email { get; set; } = null!;
 
 		[MaxLength(100, ErrorMessage = "Địa chỉ không được quá 100 ký tự")]
 		public string? ShippingAddress { get; set; }

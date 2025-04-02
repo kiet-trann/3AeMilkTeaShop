@@ -4,7 +4,8 @@ namespace MilkTea.Core.ViewModels
 {
 	public class ProductViewModel
 	{
-		[Required(ErrorMessage = "Tên sản phẩm là bắt buộc.")]
+        public int ProductId { get; set; }
+        [Required(ErrorMessage = "Tên sản phẩm là bắt buộc.")]
 		[StringLength(100, ErrorMessage = "Tên sản phẩm không được vượt quá 100 ký tự.")]
 		public string ProductName { get; set; }
 

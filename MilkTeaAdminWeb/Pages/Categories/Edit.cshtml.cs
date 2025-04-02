@@ -1,71 +1,55 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
-using MilkTea.Repository.Model;
+using MilkTea.Core.ViewModels;
+using MilkteaServices.CategoryServices;
 
 namespace MilkTeaAdminWeb.Pages.Categories
 {
-    public class EditModel : PageModel
-    {
-        private readonly ThreeBrothersMilkTeaShopContext _context;
+	public class EditModel : PageModel
+	{
+		private readonly ICategoryService _categoryService;
 
-        public EditModel(ThreeBrothersMilkTeaShopContext context)
-        {
-            _context = context;
-        }
+		public EditModel(ICategoryService categoryService)
+		{
+			_categoryService = categoryService;
+		}
 
-        [BindProperty]
-        public Category Category { get; set; } = default!;
+		[BindProperty]
+		public CategoryViewModel CategoryViewModel { get; set; } = default!;
 
-        public async Task<IActionResult> OnGetAsync(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
+		public async Task<IActionResult> OnGetAsync(int? id)
+		{
+			if (id == null)
+			{
+				return RedirectToPage("./Index");
+			}
 
-            var category =  await _context.Categories.FirstOrDefaultAsync(m => m.CategoryId == id);
-            if (category == null)
-            {
-                return NotFound();
-            }
-            Category = category;
-            return Page();
-        }
+			var category = await _categoryService.GetCategoryByIdAsync((int)id);
+			if (category == null)
+			{
+				return RedirectToPage("./Index");
+			}
 
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more information, see https://aka.ms/RazorPagesCRUD.
-        public async Task<IActionResult> OnPostAsync()
-        {
-            if (!ModelState.IsValid)
-            {
-                return Page();
-            }
+			CategoryViewModel = category;
+			return Page();
+		}
 
-            _context.Attach(Category).State = EntityState.Modified;
+		public async Task<IActionResult> OnPostAsync()
+		{
+			if (!ModelState.IsValid)
+			{
+				return Page();
+			}
 
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!CategoryExists(Category.CategoryId))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+			var result = await _categoryService.UpdateCategoryAsync(CategoryViewModel);
 
-            return RedirectToPage("./Index");
-        }
+			if (result != "Cập nhật danh mục thành công")
+			{
+				ModelState.AddModelError(string.Empty, result);
+				return Page();
+			}
 
-        private bool CategoryExists(int id)
-        {
-            return _context.Categories.Any(e => e.CategoryId == id);
-        }
-    }
+			return RedirectToPage("./Index");
+		}
+	}
 }

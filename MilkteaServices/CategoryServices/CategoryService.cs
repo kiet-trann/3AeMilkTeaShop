@@ -1,82 +1,107 @@
 ﻿using AutoMapper;
+using MilkTea.Core.Pagination;
 using MilkTea.Core.ViewModels;
 using MilkTea.Repository.Model;
 using MilkTeaRepository.UnitOfWork;
 
 namespace MilkteaServices.CategoryServices
 {
-	public class CategoryService : ICategoryService
-	{
-		private readonly IUnitOfWork _unitOfWork;
-		private readonly IMapper _mapper;
+    public class CategoryService : ICategoryService
+    {
+        private IUnitOfWork _unitOfWork;
+        private IMapper _mapper;
 
-		public CategoryService(IUnitOfWork unitOfWork, IMapper mapper)
-		{
-			_unitOfWork = unitOfWork;
-			_mapper = mapper;
-		}
+        public CategoryService(IUnitOfWork unitOfWork, IMapper mapper)
+        {
+            _unitOfWork = unitOfWork;
+            _mapper = mapper;
+        }
 
-		public async Task<IEnumerable<Category>> GetPaginatedCategoriesAsync(int pageIndex, int pageSize)
-		{
-			if (pageIndex < 1) pageIndex = 1;
-			if (pageSize < 1) pageSize = 10;
+        public async Task<PaginatingResult<Category>> GetPaginatedCategoriesAsync(int pageIndex, int pageSize)
+        {
+            if (pageIndex < 1) pageIndex = 1;
+            if (pageSize < 1) pageSize = 10;
 
-			return await _unitOfWork.GetRepository<Category>().GetPaginateAsync(pageIndex, pageSize);
-		}
+            // Đếm record
+            var totalCount = await _unitOfWork.GetRepository<Category>().CountAsync();
 
-		public async Task<string> AddCategoryAsync(CategoryViewModel categoryViewModel)
-		{
-			if (categoryViewModel == null)
-			{
-				return "Dữ liệu danh mục không hợp lệ";
-			}
+            // Lấy danh sách phân trang
+            var categories = await _unitOfWork.GetRepository<Category>()
+                .GetPaginateAsync(pageIndex, pageSize);
 
-			// Kiểm tra nếu danh mục đã tồn tại
-			var existingCategory = await _unitOfWork.GetRepository<Category>()
-													.GetFirstOrDefaultAsync(c => c.CategoryName == categoryViewModel.CategoryName);
-			if (existingCategory != null)
-			{
-				return "Danh mục đã tồn tại";
-			}
+            // Trả về kết quả phân trang
+            var pagedResult = new PaginatingResult<Category>(categories, pageIndex, totalCount, pageSize);
 
-			var category = _mapper.Map<Category>(categoryViewModel);
+            return pagedResult;
+        }
 
-			await _unitOfWork.GetRepository<Category>().AddAsync(category);
-			await _unitOfWork.SaveChangesAsync();
-			return "Thêm danh mục thành công";
-		}
+        public async Task<IEnumerable<CategoryViewModel>> GetAvailableCategoriesAsync()
+        {
+            var categories = await _unitOfWork.GetRepository<Category>()
+                .GetAllAsync(c => c.IsActive == true); 
 
-		public async Task<string> UpdateCategoryAsync(string categoryId, CategoryViewModel categoryViewModel)
-		{
-			if (categoryViewModel == null)
-			{
-				return "Dữ liệu danh mục không hợp lệ";
-			}
+            return _mapper.Map<IEnumerable<CategoryViewModel>>(categories);
+        }
 
-			var existingCategory = await _unitOfWork.GetRepository<Category>().GetByIdAsync(categoryId);
-			if (existingCategory == null)
-			{
-				return "Danh mục không tồn tại";
-			}
+        public async Task<CategoryViewModel?> GetCategoryByIdAsync(int categoryId)
+        {
+            var category = await _unitOfWork.GetRepository<Category>().GetByIdAsync(categoryId);
+            return category == null ? null : _mapper.Map<CategoryViewModel>(category);
+        }
 
-			_mapper.Map(categoryViewModel, existingCategory);
+        public async Task<string> AddCategoryAsync(CategoryViewModel categoryViewModel)
+        {
+            if (categoryViewModel == null)
+            {
+                return "Dữ liệu danh mục không hợp lệ";
+            }
 
-			await _unitOfWork.GetRepository<Category>().UpdateAsync(existingCategory);
-			await _unitOfWork.SaveChangesAsync();
-			return "Cập nhật danh mục thành công";
-		}
+            // Kiểm tra nếu danh mục đã tồn tại
+            var existingCategory = await _unitOfWork.GetRepository<Category>()
+                                                    .GetFirstOrDefaultAsync(c => c.CategoryName == categoryViewModel.CategoryName);
+            if (existingCategory != null)
+            {
+                return "Danh mục đã tồn tại";
+            }
 
-		public async Task<string> DeleteCategoryAsync(int categoryId)
-		{
-			var category = await _unitOfWork.GetRepository<Category>().GetByIdAsync(categoryId);
-			if (category == null)
-			{
-				return "Danh mục không tồn tại";
-			}
+            var category = _mapper.Map<Category>(categoryViewModel);
 
-			await _unitOfWork.GetRepository<Category>().RemoveAsync(category);
-			await _unitOfWork.SaveChangesAsync();
-			return "Xóa danh mục thành công";
-		}
-	}
+            await _unitOfWork.GetRepository<Category>().AddAsync(category);
+            await _unitOfWork.SaveChangesAsync();
+            return "Thêm danh mục thành công";
+        }
+
+        public async Task<string> UpdateCategoryAsync(CategoryViewModel categoryViewModel)
+        {
+            if (categoryViewModel == null)
+            {
+                return "Dữ liệu danh mục không hợp lệ";
+            }
+
+            var existingCategory = await _unitOfWork.GetRepository<Category>().GetByIdAsync(categoryViewModel.CategoryId);
+            if (existingCategory == null)
+            {
+                return "Danh mục không tồn tại";
+            }
+
+            _mapper.Map(categoryViewModel, existingCategory);
+
+            await _unitOfWork.GetRepository<Category>().UpdateAsync(existingCategory);
+            await _unitOfWork.SaveChangesAsync();
+            return "Cập nhật danh mục thành công";
+        }
+
+        public async Task<string> DeleteCategoryAsync(int categoryId)
+        {
+            var category = await _unitOfWork.GetRepository<Category>().GetByIdAsync(categoryId);
+            if (category == null)
+            {
+                return "Danh mục không tồn tại";
+            }
+
+            await _unitOfWork.GetRepository<Category>().RemoveAsync(category);
+            await _unitOfWork.SaveChangesAsync();
+            return "Xóa danh mục thành công";
+        }
+    }
 }

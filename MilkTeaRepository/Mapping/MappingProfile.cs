@@ -5,18 +5,27 @@ using MilkTeaWeb.ViewModels;
 
 namespace MilkTea.Repository.Mapping
 {
-	public class MappingProfile : Profile
-	{
-		public MappingProfile()
-		{
-			CreateMap<RegisterViewModel, User>();
-			CreateMap<ToppingViewModel, Topping>();
-			CreateMap<CategoryViewModel, Category>();
-			CreateMap<ProductViewModel, Product>();
-			CreateMap<Order, OrderViewModel>();
-            CreateMap<OrderDetail, OrderDetailViewModel>()
-            .ForMember(dest => dest.ProductName, opt => opt.MapFrom(src => src.Product.ProductName));
-            CreateMap<User, UserBasicViewModel>();
+    public class MappingProfile : Profile
+    {
+        public MappingProfile()
+        {
+            // User
+            CreateMap<RegisterViewModel, User>();
+            CreateMap<UserViewModel, User>();
+            CreateMap<User, UserViewModel>();
+            CreateMap<LoginViewModel, User>();
+
+            // Topping
+            CreateMap<ToppingViewModel, Topping>();
+            CreateMap<Topping, ToppingViewModel>();
+
+            // Category
+            CreateMap<CategoryViewModel, Category>();
+            CreateMap<Category, CategoryViewModel>();
+
+            //Product
+            CreateMap<ProductViewModel, Product>();
+            CreateMap<Product, ProductViewModel>();
         }
     }
 }

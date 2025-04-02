@@ -1,4 +1,7 @@
-﻿namespace MilkTea.Repository.Model;
+﻿using System;
+using System.Collections.Generic;
+
+namespace MilkTea.Repository.Model;
 
 public partial class Product
 {

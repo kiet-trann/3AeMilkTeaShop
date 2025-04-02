@@ -55,8 +55,7 @@ CREATE TABLE [dbo].[Users](
     [Password] NVARCHAR(255) NOT NULL,
     [FullName] NVARCHAR(100) NOT NULL,
     [PhoneNumber] NVARCHAR(15) NULL,
-    [Email] NVARCHAR(255) NULL UNIQUE, -- Thêm trường Email
-    [Role] NVARCHAR(20) NOT NULL CHECK ([Role] IN ('Customer', 'Staff', 'Admin')),
+    [Role] NVARCHAR(20) NOT NULL, -- CHECK ([Role] IN ('Customer', 'Staff', 'Admin')),
     [ShippingAddress] NVARCHAR(255) NULL, -- Thêm trường ShippingAddress
     [IsActive] BIT NOT NULL DEFAULT (1),
     PRIMARY KEY CLUSTERED ([UserID] ASC)

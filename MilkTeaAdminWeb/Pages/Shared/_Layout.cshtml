@@ -8,47 +8,66 @@
 	<link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 	<link rel="stylesheet" href="~/MilkTeaAdminWeb.styles.css" asp-append-version="true" />
 	<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+
+	<style>
+		html, body {
+			height: 100%;
+			margin: 0;
+		}
+
+		.wrapper {
+			min-height: 100vh;
+			display: flex;
+			flex-direction: column;
+		}
+
+		.content {
+			flex: 1;
+			display: flex;
+		}
+	</style>
 </head>
 <body class="bg-gray-100">
-	<div class="d-flex" style="height: 100vh;">
-		<!-- Sidebar -->
-		<nav class="text-white w-64 p-4" style="background-color: rgba(244, 232, 218, 1);">
-			<div class="text-center mb-6">
-				<img src="~/img/MilkTeaLogo.jpg" alt="Milk Tea Logo" class="w-20 h-20 mx-auto">
-			</div>
-			<ul class="list-unstyled">
-				<li><a href="/dashboard" class="block py-2 px-4 hover:bg-blue-600">Dashboard</a></li>
-				<li><a href="@Url.Page("/Products/Index")" class="block py-2 px-4 hover:bg-blue-600">Quản lý sản phẩm</a></li>
-				<li><a href="/orders" class="block py-2 px-4 hover:bg-blue-600">Quản lý đơn hàng</a></li>
-				<li><a href="/users" class="block py-2 px-4 hover:bg-blue-600">Quản lý người dùng</a></li>
-				<li><a href="/category" class="block py-2 px-4 hover:bg-blue-600">Quản lý danh mục</a></li> <!-- Thêm mục danh mục -->
-				<li><a href="/toppings" class="block py-2 px-4 hover:bg-blue-600">Quản lý topping</a></li> <!-- Thêm mục topping -->
-				<li><a href="/reports" class="block py-2 px-4 hover:bg-blue-600">Báo cáo</a></li>
-				<li><a href="/settings" class="block py-2 px-4 hover:bg-blue-600">Cài đặt</a></li>
-			</ul>
-		</nav>
-
-		<!-- Main Content Area -->
-		<div class="flex-1">
-			<!-- Navbar -->
-			<header class="bg-white shadow-md p-4 flex justify-between items-center border-b">
-				<div class="text-lg font-semibold">MilkTeaAdminWeb</div>
-				<div class="flex items-center">
-					<span class="mr-4">Chào, Admin</span>
-					<button class="bg-red-500 text-white px-4 py-2 rounded" onclick="window.location.href='/logout'">Đăng xuất</button>
+	<div class="wrapper">
+		<!-- Sidebar và Nội dung chính -->
+		<div class="d-flex content">
+			<!-- Sidebar -->
+			<nav class="text-white w-64 p-4" style="background-color: rgba(244, 232, 218, 1);">
+				<div class="text-center mb-6">
+					<img src="~/img/MilkTeaLogo.jpg" alt="Milk Tea Logo" class="w-20 h-20 mx-auto">
 				</div>
-			</header>
+				<ul class="list-unstyled">
+					<li><a href="@Url.Page("/Dashboard")" class="block py-2 px-4 hover:bg-blue-600">Dashboard</a></li>
+					<li><a href="@Url.Page("/Products/Index")" class="block py-2 px-4 hover:bg-blue-600">Quản lý sản phẩm</a></li>
+					<li><a href="@Url.Page("/Orders/Index")" class="block py-2 px-4 hover:bg-blue-600">Quản lý đơn hàng</a></li>
+					<li><a href="@Url.Page("/Users/Index")" class="block py-2 px-4 hover:bg-blue-600">Quản lý người dùng</a></li>
+					<li><a href="@Url.Page("/Categories/Index")" class="block py-2 px-4 hover:bg-blue-600">Quản lý danh mục</a></li>
+					<li><a href="@Url.Page("/Toppings/Index")" class="block py-2 px-4 hover:bg-blue-600">Quản lý topping</a></li>
+				</ul>
+			</nav>
 
-			<!-- Main Content -->
-			<main role="main" class="p-6">
-				@RenderBody()
-			</main>
+			<!-- Main Content Area -->
+			<div class="flex-1">
+				<!-- Navbar -->
+				<header class="bg-white shadow-md p-4 flex justify-between items-center border-b">
+					<div class="text-lg font-semibold">MilkTeaAdminWeb</div>
+					<div class="flex items-center">
+						<span class="mr-4">Chào, Admin</span>
+						<button class="bg-red-500 text-white px-4 py-2 rounded" asp-page="/Authentication/Logout">Đăng xuất</button>
+					</div>
+				</header>
 
-			<!-- Footer -->
-			<footer class="bg-gray-800 text-white text-center p-4">
-				<p>&copy; 2025 MilkTeaAdminWeb - All rights reserved.</p>
-			</footer>
+				<!-- Main Content -->
+				<main role="main" class="p-6">
+					@RenderBody()
+				</main>
+			</div>
 		</div>
+
+		<!-- Footer luôn ở dưới cùng -->
+		<footer class="bg-gray-800 text-white text-center p-4">
+			<p>&copy; 2025 MilkTeaAdminWeb - All rights reserved.</p>
+		</footer>
 	</div>
 
 	<!-- Scripts -->

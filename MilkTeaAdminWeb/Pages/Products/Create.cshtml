@@ -7,22 +7,73 @@
 
 <h1>Create</h1>
 
-<h4>Category</h4>
+<h4>Product</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
         <form method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <!-- Product Name -->
             <div class="form-group">
-                <label asp-for="Category.CategoryName" class="control-label"></label>
-                <input asp-for="Category.CategoryName" class="form-control" />
-                <span asp-validation-for="Category.CategoryName" class="text-danger"></span>
+                <label asp-for="ProductRequestModel.ProductName" class="control-label"></label>
+                <input asp-for="ProductRequestModel.ProductName" class="form-control" />
+                <span asp-validation-for="ProductRequestModel.ProductName" class="text-danger"></span>
             </div>
+
+            <!-- Category -->
             <div class="form-group">
-                <label asp-for="Category.Description" class="control-label"></label>
-                <input asp-for="Category.Description" class="form-control" />
-                <span asp-validation-for="Category.Description" class="text-danger"></span>
+                <label asp-for="ProductRequestModel.CategoryId" class="control-label"></label>
+                <select asp-for="ProductRequestModel.CategoryId" class="form-control">
+                    <option value="">-- Select Category --</option>
+                    @foreach (var category in Model.Categories)
+                    {
+                        <option value="@category.CategoryId">@category.CategoryName</option>
+                    }
+                </select>
+                <span asp-validation-for="ProductRequestModel.CategoryId" class="text-danger"></span>
             </div>
+
+            <!-- Price for Size S -->
+            <div class="form-group">
+                <label asp-for="ProductRequestModel.PriceS" class="control-label"></label>
+                <input asp-for="ProductRequestModel.PriceS" class="form-control" />
+                <span asp-validation-for="ProductRequestModel.PriceS" class="text-danger"></span>
+            </div>
+
+            <!-- Price for Size M -->
+            <div class="form-group">
+                <label asp-for="ProductRequestModel.PriceM" class="control-label"></label>
+                <input asp-for="ProductRequestModel.PriceM" class="form-control" />
+                <span asp-validation-for="ProductRequestModel.PriceM" class="text-danger"></span>
+            </div>
+
+            <!-- Price for Size L -->
+            <div class="form-group">
+                <label asp-for="ProductRequestModel.PriceL" class="control-label"></label>
+                <input asp-for="ProductRequestModel.PriceL" class="form-control" />
+                <span asp-validation-for="ProductRequestModel.PriceL" class="text-danger"></span>
+            </div>
+
+            <!-- Availability for Size S -->
+            <div class="form-group form-check">
+                <input asp-for="ProductRequestModel.IsAvailableS" class="form-check-input" />
+                <label asp-for="ProductRequestModel.IsAvailableS" class="form-check-label">Size S Available</label>
+            </div>
+
+            <!-- Availability for Size M -->
+            <div class="form-group form-check">
+                <input asp-for="ProductRequestModel.IsAvailableM" class="form-check-input" />
+                <label asp-for="ProductRequestModel.IsAvailableM" class="form-check-label">Size M Available</label>
+            </div>
+
+            <!-- Availability for Size L -->
+            <div class="form-group form-check">
+                <input asp-for="ProductRequestModel.IsAvailableL" class="form-check-input" />
+                <label asp-for="ProductRequestModel.IsAvailableL" class="form-check-label">Size L Available</label>
+            </div>
+
+            <!-- Submit Button -->
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
@@ -35,5 +86,7 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

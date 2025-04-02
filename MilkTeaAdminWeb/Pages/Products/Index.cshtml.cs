@@ -1,23 +1,26 @@
 ﻿using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
+using MilkTea.Core.Pagination;
 using MilkTea.Repository.Model;
+using MilkTea.Services.ProductServices;
 
 namespace MilkTeaAdminWeb.Pages.Products
 {
-    public class IndexModel : PageModel
-    {
-        private readonly ThreeBrothersMilkTeaShopContext _context;
+	public class IndexModel : PageModel
+	{
+		private readonly IProductService _productService;
 
-        public IndexModel(ThreeBrothersMilkTeaShopContext context)
-        {
-            _context = context;
-        }
+		public IndexModel(IProductService productService)
+		{
+			_productService = productService;
+		}
 
-        public IList<Category> Category { get;set; } = default!;
+		public PaginatingResult<Product> PaginatedProducts { get; set; } = default!;
 
-        public async Task OnGetAsync()
-        {
-            Category = await _context.Categories.ToListAsync();
-        }
-    }
+		public int PageSize { get; set; } = 5;
+
+		public async Task OnGetAsync(int pageIndex = 1)
+		{
+			PaginatedProducts = await _productService.GetPaginatedProductsAsync(pageIndex, PageSize);
+		}
+	}
 }

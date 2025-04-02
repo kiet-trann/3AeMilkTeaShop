@@ -13,16 +13,29 @@
     <div class="col-md-4">
         <form method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <!-- Category Name Field -->
             <div class="form-group">
-                <label asp-for="Category.CategoryName" class="control-label"></label>
-                <input asp-for="Category.CategoryName" class="form-control" />
-                <span asp-validation-for="Category.CategoryName" class="text-danger"></span>
+                <label asp-for="CategoryRequestModel.CategoryName" class="control-label"></label>
+                <input asp-for="CategoryRequestModel.CategoryName" class="form-control" />
+                <span asp-validation-for="CategoryRequestModel.CategoryName" class="text-danger"></span>
             </div>
+
+            <!-- Description Field -->
             <div class="form-group">
-                <label asp-for="Category.Description" class="control-label"></label>
-                <input asp-for="Category.Description" class="form-control" />
-                <span asp-validation-for="Category.Description" class="text-danger"></span>
+                <label asp-for="CategoryRequestModel.Description" class="control-label"></label>
+                <input asp-for="CategoryRequestModel.Description" class="form-control" />
+                <span asp-validation-for="CategoryRequestModel.Description" class="text-danger"></span>
             </div>
+
+            <!-- IsActive Field (Optional) -->
+            <div class="form-group form-check">
+                <input asp-for="CategoryRequestModel.IsActive" class="form-check-input" />
+                <label asp-for="CategoryRequestModel.IsActive" class="form-check-label"></label>
+                <span asp-validation-for="CategoryRequestModel.IsActive" class="text-danger"></span>
+            </div>
+
+            <!-- Submit Button -->
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
@@ -35,5 +48,7 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

@@ -1,75 +1,57 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
-using MilkTea.Repository.Model;
+using MilkTea.Core.ViewModels;
+using MilkTea.Services.ProductServices;
+using MilkteaServices.CategoryServices;
 
 namespace MilkTeaAdminWeb.Pages.Products
 {
     public class EditModel : PageModel
     {
-        private readonly ThreeBrothersMilkTeaShopContext _context;
+        private readonly IProductService _productService;
+        private readonly ICategoryService _categoryService;
 
-        public EditModel(ThreeBrothersMilkTeaShopContext context)
+        public EditModel(IProductService productService, ICategoryService categoryService)
         {
-            _context = context;
+            _productService = productService;
+            _categoryService = categoryService;
         }
 
         [BindProperty]
-        public Category Category { get; set; } = default!;
+        public ProductViewModel ProductViewModel { get; set; } = default!;
+        public IEnumerable<CategoryViewModel> Categories { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
             if (id == null)
             {
-                return NotFound();
+                return RedirectToPage("./Index");
             }
 
-            var category =  await _context.Categories.FirstOrDefaultAsync(m => m.CategoryId == id);
-            if (category == null)
+            var product = await _productService.GetProductByIdAsync((int)id);
+            if (product == null)
             {
-                return NotFound();
+                return RedirectToPage("./Index");
             }
-            Category = category;
+
+            Categories = await _categoryService.GetAvailableCategoriesAsync();
+            ProductViewModel = product;
             return Page();
         }
 
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more information, see https://aka.ms/RazorPagesCRUD.
         public async Task<IActionResult> OnPostAsync()
         {
-            if (!ModelState.IsValid)
-            {
-                return Page();
-            }
+			var result = await _productService.UpdateProductAsync(ProductViewModel);
 
-            _context.Attach(Category).State = EntityState.Modified;
-
-            try
+            if (result != "Cập nhật sản phẩm thành công")
             {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!CategoryExists(Category.CategoryId))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+                ModelState.AddModelError(string.Empty, result);
+                return RedirectToPage("./Index");
+			}
 
             return RedirectToPage("./Index");
-        }
-
-        private bool CategoryExists(int id)
-        {
-            return _context.Categories.Any(e => e.CategoryId == id);
         }
     }
 }

@@ -2,7 +2,7 @@
 @model MilkTeaAdminWeb.Pages.Categories.EditModel
 
 @{
-    ViewData["Title"] = "Edit";
+	ViewData["Title"] = "Edit";
 }
 
 <h1>Edit</h1>
@@ -10,36 +10,38 @@
 <h4>Category</h4>
 <hr />
 <div class="row">
-    <div class="col-md-4">
-        <form method="post">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Category.CategoryId" />
-            <div class="form-group">
-                <label asp-for="Category.CategoryName" class="control-label"></label>
-                <input asp-for="Category.CategoryName" class="form-control" />
-                <span asp-validation-for="Category.CategoryName" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Category.Description" class="control-label"></label>
-                <input asp-for="Category.Description" class="form-control" />
-                <span asp-validation-for="Category.Description" class="text-danger"></span>
-            </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="Category.IsActive" /> @Html.DisplayNameFor(model => model.Category.IsActive)
-                </label>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
-    </div>
+	<div class="col-md-4">
+		<form method="post">
+			<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+			<input type="hidden" asp-for="CategoryViewModel.CategoryId" />
+			<div class="form-group">
+				<label asp-for="CategoryViewModel.CategoryName" class="control-label"></label>
+				<input asp-for="CategoryViewModel.CategoryName" class="form-control" />
+				<span asp-validation-for="CategoryViewModel.CategoryName" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<label asp-for="CategoryViewModel.Description" class="control-label"></label>
+				<input asp-for="CategoryViewModel.Description" class="form-control" />
+				<span asp-validation-for="CategoryViewModel.Description" class="text-danger"></span>
+			</div>
+			<div class="form-group form-check">
+				<label class="form-check-label">
+					<input class="form-check-input" type="checkbox" asp-for="CategoryViewModel.IsActive" /> @Html.DisplayNameFor(model => model.CategoryViewModel.IsActive)
+				</label>
+			</div>
+			<div class="form-group">
+				<input type="submit" value="Save" class="btn btn-primary" />
+			</div>
+		</form>
+	</div>
 </div>
 
 <div>
-    <a asp-page="./Index">Back to List</a>
+	<a asp-page="./Index">Back to List</a>
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+	@{
+		await Html.RenderPartialAsync("_ValidationScriptsPartial");
+	}
 }

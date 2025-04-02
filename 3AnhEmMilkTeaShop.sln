@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MilkTeaAdminWeb", "MilkTeaA
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MilkTeaWeb", "MilkTeaWeb\MilkTeaWeb.csproj", "{3B0BD7A1-964B-476B-A9F4-6939A6CE627E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MilkTea.Core", "MilkTea.Core\MilkTea.Core.csproj", "{CDF61F9A-050F-4D69-AA34-D82670AA3E3C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MilkTea.Core", "MilkTea.Core\MilkTea.Core.csproj", "{CDF61F9A-050F-4D69-AA34-D82670AA3E3C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

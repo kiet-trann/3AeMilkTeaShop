@@ -1,17 +1,18 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
+using MilkTea.Core.ViewModels;
+using MilkteaServices.CategoryServices;
 using MilkTea.Repository.Model;
 
 namespace MilkTeaAdminWeb.Pages.Categories
 {
     public class DeleteModel : PageModel
     {
-        private readonly ThreeBrothersMilkTeaShopContext _context;
+        private readonly ICategoryService _categoryService;
 
-        public DeleteModel(ThreeBrothersMilkTeaShopContext context)
+        public DeleteModel(ICategoryService categoryService)
         {
-            _context = context;
+            _categoryService = categoryService;
         }
 
         [BindProperty]
@@ -24,7 +25,8 @@ namespace MilkTeaAdminWeb.Pages.Categories
                 return NotFound();
             }
 
-            var category = await _context.Categories.FirstOrDefaultAsync(m => m.CategoryId == id);
+            // Lấy thông tin danh mục
+            var category = await _categoryService.GetCategoryByIdAsync(id.Value);
 
             if (category == null)
             {
@@ -32,7 +34,13 @@ namespace MilkTeaAdminWeb.Pages.Categories
             }
             else
             {
-                Category = category;
+                Category = new Category
+                {
+                    CategoryId = category.CategoryId,
+                    CategoryName = category.CategoryName,
+                    Description = category.Description,
+                    IsActive = category.IsActive
+                };
             }
             return Page();
         }
@@ -41,15 +49,18 @@ namespace MilkTeaAdminWeb.Pages.Categories
         {
             if (id == null)
             {
-                return NotFound();
+                return RedirectToPage("./Index");
             }
 
-            var category = await _context.Categories.FindAsync(id);
-            if (category != null)
+            var result = await _categoryService.DeleteCategoryAsync(id.Value);
+
+            if (result == "Xóa danh mục thành công")
             {
-                Category = category;
-                _context.Categories.Remove(Category);
-                await _context.SaveChangesAsync();
+                ViewData["Message"] = result;
+            }
+            else
+            {
+                ViewData["Message"] = result;
             }
 
             return RedirectToPage("./Index");

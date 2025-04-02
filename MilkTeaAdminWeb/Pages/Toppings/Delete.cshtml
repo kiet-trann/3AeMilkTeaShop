@@ -1,0 +1,50 @@
+﻿@page
+@model MilkTeaAdminWeb.Pages.Toppings.DeleteModel
+
+@{
+    ViewData["Title"] = "Delete";
+}
+
+<h1>Delete</h1>
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <!-- Topping Name Field (Read-Only) -->
+            <div class="form-group">
+                <label asp-for="Topping.ToppingName" class="control-label"></label>
+                <input asp-for="Topping.ToppingName" class="form-control" readonly />
+            </div>
+
+            <!-- Price Field (Read-Only) -->
+            <div class="form-group">
+                <label asp-for="Topping.Price" class="control-label"></label>
+                <input asp-for="Topping.Price" class="form-control" readonly />
+            </div>
+
+            <!-- Is Available Field (Read-Only) -->
+            <div class="form-group form-check">
+                <input asp-for="Topping.IsAvailable" class="form-check-input" disabled />
+                <label asp-for="Topping.IsAvailable" class="form-check-label"></label>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="form-group">
+                <input type="submit" value="Delete" class="btn btn-danger" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-page="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
