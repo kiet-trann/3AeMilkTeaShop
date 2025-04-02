@@ -13,6 +13,10 @@ namespace MilkTea.Repository.Mapping
 			CreateMap<ToppingViewModel, Topping>();
 			CreateMap<CategoryViewModel, Category>();
 			CreateMap<ProductViewModel, Product>();
-		}
-	}
+			CreateMap<Order, OrderViewModel>();
+            CreateMap<OrderDetail, OrderDetailViewModel>()
+            .ForMember(dest => dest.ProductName, opt => opt.MapFrom(src => src.Product.ProductName));
+            CreateMap<User, UserBasicViewModel>();
+        }
+    }
 }

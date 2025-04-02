@@ -1,42 +1,40 @@
-
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
+using MilkTea.Core.ViewModels;
 using MilkTea.Repository.Model;
+using MilkTea.Services.OrderServices; 
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace MilkTeaAdminWeb
 {
     public class ordersModel : PageModel
     {
-        private readonly ThreeBrothersMilkTeaShopContext _context;
-        public ordersModel(ThreeBrothersMilkTeaShopContext context)
+        private readonly IOrderService _orderService; 
+
+        public ordersModel(IOrderService orderService) 
         {
-            _context = context;
+            _orderService = orderService;
         }
 
-        public void OnGet(int? orderId)
+        public async Task OnGet(int? orderId)
         {
-            OrderList = _context.Orders.Include(o => o.User).ToList();
+            OrderList = (List<OrderViewModel>)await _orderService.GetPaginatedOrdersAsync(1, int.MaxValue); 
 
             if (orderId.HasValue)
             {
-                SelectedOrder = _context.Orders.Include(o => o.User).FirstOrDefault(o => o.OrderId == orderId);
-                OrderDetails = _context.OrderDetails.Include(od => od.Product).Where(od => od.OrderId == orderId).ToList();
+                SelectedOrder = await _orderService.GetOrderByIdAsync(orderId.Value);
+                OrderDetails = await _orderService.GetOrderDetailsForOrder(orderId.Value);
             }
         }
-        public List<Order> OrderList { get; set; }
-        public Order SelectedOrder { get; set; }
-        public List<OrderDetail> OrderDetails { get; set; }
-        public IActionResult OnPostUpdateStatus(int orderId, string newStatus)
-        {
-            var order = _context.Orders.Find(orderId);
-            if (order == null)
-            {
-                return NotFound();
-            }
-            order.Status = newStatus;
-            _context.SaveChanges();
 
+        public List<OrderViewModel> OrderList { get; set; } 
+        public OrderViewModel SelectedOrder { get; set; } 
+        public List<OrderDetailViewModel> OrderDetails { get; set; }
+
+        public async Task<IActionResult> OnPostUpdateStatus(int orderId, string newStatus)
+        {
+            await _orderService.UpdateOrderStatusAsync(orderId, newStatus); 
             return RedirectToPage("./Orders", new { orderId = orderId });
         }
     }
