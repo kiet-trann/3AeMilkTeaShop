@@ -71,7 +71,6 @@ CREATE TABLE [dbo].[Orders](
     [OrderDate] DATETIME NOT NULL DEFAULT (GETDATE()),
     [TotalAmount] DECIMAL(10, 2) NOT NULL,
     [FinalAmount] DECIMAL(10, 2) NOT NULL,
-    [PaymentMethod] NVARCHAR(20) NOT NULL CHECK ([PaymentMethod] IN ('ZaloPay', 'Momo', 'CreditCard', 'Cash')),
     [Status] NVARCHAR(20) NOT NULL CHECK ([Status] IN ('Cancelled', 'Completed', 'Processing', 'Pending')) DEFAULT ('Pending'),
     [Note] NVARCHAR(255) NULL, -- Added Note field here
     PRIMARY KEY CLUSTERED ([OrderID] ASC),
@@ -139,4 +138,19 @@ INSERT [dbo].[Toppings] ([ToppingID], [ToppingName], [Price]) VALUES
 (8, N'Trân Châu Đen', 5000),
 (9, N'Trân Châu Trắng', 5000);
 SET IDENTITY_INSERT [dbo].[Toppings] OFF
+GO
+
+SET IDENTITY_INSERT [dbo].[Products] ON
+INSERT [dbo].[Products] ([ProductID], [ProductName], [CategoryID], [Price_S], [Price_M], [Price_L], [IsAvailable_S], [IsAvailable_M], [IsAvailable_L]) VALUES 
+(1, N'Trà Sữa Trân Châu Đường Đen', 2, 25000, 30000, 35000, 1, 1, 1),
+(2, N'Trà Sữa Matcha', 2, 27000, 32000, 37000, 1, 1, 1),
+(3, N'Trà Sữa Thái Xanh', 2, 25000, 30000, 35000, 1, 1, 0), -- Size L tạm hết hàng
+(4, N'Trà Ô Long Kem Macchiato', 4, 30000, 35000, 40000, 1, 1, 1),
+(5, N'Trà Đào Cam Sả', 6, 28000, 33000, 38000, 1, 0, 1), -- Size M tạm hết hàng
+(6, N'Trà Sữa Khoai Môn', 2, 27000, 32000, 37000, 1, 1, 1),
+(7, N'Trà Latte', 3, 29000, 34000, 39000, 1, 1, 1),
+(8, N'Trà Sữa Pudding', 2, 30000, 35000, 40000, 1, 1, 1),
+(9, N'Trà Sữa Hồng Trà', 2, 25000, 30000, 35000, 1, 0, 1), -- Size M tạm hết hàng
+(10, N'Trà Sữa Trân Châu Hoàng Kim', 2, 27000, 32000, 37000, 1, 1, 1);
+SET IDENTITY_INSERT [dbo].[Products] OFF
 GO
