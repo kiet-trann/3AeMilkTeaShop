@@ -1,21 +1,21 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using MilkTea.Core.ViewModels;
-using MilkteaServices.CategoryServices;
+using MilkTea.Services.ToppingServices;
 
-namespace MilkTeaAdminWeb.Pages.Categories
+namespace MilkTeaAdminWeb.Pages.Toppings
 {
 	public class EditModel : PageModel
 	{
-		private readonly ICategoryService _categoryService;
+		private readonly IToppingService _toppingService;
 
-		public EditModel(ICategoryService categoryService)
+		public EditModel(IToppingService toppingService)
 		{
-			_categoryService = categoryService;
+			_toppingService = toppingService;
 		}
 
 		[BindProperty]
-		public CategoryViewModel CategoryViewModel { get; set; } = default!;
+		public ToppingViewModel ToppingViewModel { get; set; } = default!;
 
 		public async Task<IActionResult> OnGetAsync(int? id)
 		{
@@ -24,13 +24,13 @@ namespace MilkTeaAdminWeb.Pages.Categories
 				return RedirectToPage("./Index");
 			}
 
-			var category = await _categoryService.GetCategoryByIdAsync((int)id);
-			if (category == null)
+			var topping = await _toppingService.GetToppingByIdAsync((int)id);
+			if (topping == null)
 			{
 				return RedirectToPage("./Index");
 			}
 
-			CategoryViewModel = category;
+			ToppingViewModel = topping;
 			return Page();
 		}
 
@@ -41,12 +41,12 @@ namespace MilkTeaAdminWeb.Pages.Categories
 				return Page();
 			}
 
-			var result = await _categoryService.UpdateCategoryAsync(CategoryViewModel);
+			var result = await _toppingService.UpdateToppingAsync(ToppingViewModel);
 
-			if (result != "Cập nhật danh mục thành công")
+			if (result != "Cập nhật topping thành công")
 			{
 				ModelState.AddModelError(string.Empty, result);
-				return Page();
+				return RedirectToPage("./Index");
 			}
 
 			return RedirectToPage("./Index");

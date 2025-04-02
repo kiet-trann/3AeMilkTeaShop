@@ -35,6 +35,14 @@ namespace MilkteaServices.CategoryServices
             return pagedResult;
         }
 
+        public async Task<IEnumerable<CategoryViewModel>> GetAvailableCategoriesAsync()
+        {
+            var categories = await _unitOfWork.GetRepository<Category>()
+                .GetAllAsync(c => c.IsActive == true); 
+
+            return _mapper.Map<IEnumerable<CategoryViewModel>>(categories);
+        }
+
         public async Task<CategoryViewModel?> GetCategoryByIdAsync(int categoryId)
         {
             var category = await _unitOfWork.GetRepository<Category>().GetByIdAsync(categoryId);

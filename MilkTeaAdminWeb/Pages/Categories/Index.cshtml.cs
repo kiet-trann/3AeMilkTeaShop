@@ -15,10 +15,9 @@ namespace MilkTeaAdminWeb.Pages.Categories
 			_categoryService = categoryService;
 		}
 
-		// Lưu trữ kết quả phân trang
+	
 		public PaginatingResult<Category> PaginatedCategories { get; set; } = default!;
-
-		// Các thuộc tính để quản lý phân trang
+		 
 		public int PageSize { get; set; } = 5;
 
 		public async Task OnGetAsync(int pageIndex = 1)

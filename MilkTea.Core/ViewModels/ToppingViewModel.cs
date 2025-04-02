@@ -4,7 +4,8 @@ namespace MilkTea.Core.ViewModels
 {
 	public class ToppingViewModel
 	{
-		[Required(ErrorMessage = "Tên topping là bắt buộc.")]
+        public int ToppingId { get; set; }
+        [Required(ErrorMessage = "Tên topping là bắt buộc.")]
 		[StringLength(100, ErrorMessage = "Tên topping không được vượt quá 100 ký tự.")]
 		public string ToppingName { get; set; } = null!;
 

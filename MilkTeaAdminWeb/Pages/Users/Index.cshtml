@@ -11,6 +11,13 @@
     <a asp-page="Create" class="btn btn-primary mb-3">Tạo người dùng mới</a>
 </p>
 
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["SuccessMessage"]
+    </div>
+}
+
 <table class="table table-bordered">
     <thead class="thead-dark">
         <tr>

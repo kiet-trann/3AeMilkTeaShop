@@ -9,7 +9,8 @@ namespace MilkTeaRepository.GenericRepository
 													 Expression<Func<T, bool>>? filter = null,
 													 Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null,
 													 string includeProperties = "");
-		Task<T> GetByIdAsync(object id);
+		Task<IEnumerable<T>> GetAllAsync(Expression<Func<T, bool>>? filter = null);
+        Task<T> GetByIdAsync(object id);
 		Task<T> GetFirstOrDefaultAsync(Expression<Func<T, bool>> filter = null,
 			string includeProperties = "");
 		Task AddAsync(T entity);

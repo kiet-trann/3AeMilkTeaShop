@@ -6,24 +6,26 @@ using MilkTeaWeb.ViewModels;
 namespace MilkTea.Repository.Mapping
 {
     public class MappingProfile : Profile
-	{
-		public MappingProfile()
-		{
-			// User
-			CreateMap<RegisterViewModel, User>();
-			CreateMap<UserViewModel, User>();
-			CreateMap<User, UserViewModel>();
+    {
+        public MappingProfile()
+        {
+            // User
+            CreateMap<RegisterViewModel, User>();
+            CreateMap<UserViewModel, User>();
+            CreateMap<User, UserViewModel>();
             CreateMap<LoginViewModel, User>();
 
             // Topping
             CreateMap<ToppingViewModel, Topping>();
+            CreateMap<Topping, ToppingViewModel>();
 
-			// Category
-			CreateMap<CategoryViewModel, Category>();
-			CreateMap<Category, CategoryViewModel>();
+            // Category
+            CreateMap<CategoryViewModel, Category>();
+            CreateMap<Category, CategoryViewModel>();
 
-			//Product
-			CreateMap<ProductViewModel, Product>();
-		}
-	}
+            //Product
+            CreateMap<ProductViewModel, Product>();
+            CreateMap<Product, ProductViewModel>();
+        }
+    }
 }

@@ -2,38 +2,68 @@
 @model MilkTeaAdminWeb.Pages.Products.DeleteModel
 
 @{
-    ViewData["Title"] = "Delete";
+    ViewData["Title"] = "Delete Product";
 }
 
-<h1>Delete</h1>
+<h1>Delete Product</h1>
 
-<h3>Are you sure you want to delete this?</h3>
+<h3>Are you sure you want to delete this product?</h3>
 <div>
-    <h4>Category</h4>
+    <h4>Product</h4>
     <hr />
     <dl class="row">
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Category.CategoryName)
+            @Html.DisplayNameFor(model => model.Product.ProductName)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Category.CategoryName)
+            @Html.DisplayFor(model => model.Product.ProductName)
         </dd>
+
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Category.Description)
+            @Html.DisplayNameFor(model => model.Product.PriceS)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Category.Description)
+            @Html.DisplayFor(model => model.Product.PriceS)
         </dd>
+
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Category.IsActive)
+            @Html.DisplayNameFor(model => model.Product.PriceM)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Category.IsActive)
+            @Html.DisplayFor(model => model.Product.PriceM)
+        </dd>
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Product.PriceL)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Product.PriceL)
+        </dd>
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Product.IsAvailableS)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Product.IsAvailableS)
+        </dd>
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Product.IsAvailableM)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Product.IsAvailableM)
+        </dd>
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Product.IsAvailableL)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Product.IsAvailableL)
         </dd>
     </dl>
-    
+
     <form method="post">
-        <input type="hidden" asp-for="Category.CategoryId" />
+        <input type="hidden" asp-for="Product.ProductId" />
         <input type="submit" value="Delete" class="btn btn-danger" /> |
         <a asp-page="./Index">Back to List</a>
     </form>

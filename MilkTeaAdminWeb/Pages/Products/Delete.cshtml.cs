@@ -1,39 +1,41 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
-using MilkTea.Repository.Model;
+using MilkTea.Core.ViewModels;
+using MilkTea.Services.ProductServices;
 
 namespace MilkTeaAdminWeb.Pages.Products
 {
     public class DeleteModel : PageModel
     {
-        private readonly ThreeBrothersMilkTeaShopContext _context;
+        private readonly IProductService _productService;
 
-        public DeleteModel(ThreeBrothersMilkTeaShopContext context)
+        public DeleteModel(IProductService productService)
         {
-            _context = context;
+            _productService = productService;
         }
 
         [BindProperty]
-        public Category Category { get; set; } = default!;
+        public ProductViewModel Product { get; set; } = default!;
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
             if (id == null)
             {
-                return NotFound();
+                return RedirectToPage("./Index");
             }
 
-            var category = await _context.Categories.FirstOrDefaultAsync(m => m.CategoryId == id);
+            // Get product information
+            var product = await _productService.GetProductByIdAsync(id.Value);
 
-            if (category == null)
+            if (product == null)
             {
-                return NotFound();
+                return RedirectToPage("./Index");
             }
             else
             {
-                Category = category;
+                Product = product;
             }
+
             return Page();
         }
 
@@ -41,15 +43,19 @@ namespace MilkTeaAdminWeb.Pages.Products
         {
             if (id == null)
             {
-                return NotFound();
+                return RedirectToPage("./Index");
             }
 
-            var category = await _context.Categories.FindAsync(id);
-            if (category != null)
+            var result = await _productService.DeleteProductAsync(id.Value);
+
+            // Pass message back to the view
+            if (result == "Xóa sản phẩm thành công.")
             {
-                Category = category;
-                _context.Categories.Remove(Category);
-                await _context.SaveChangesAsync();
+                ViewData["Message"] = result;
+            }
+            else
+            {
+                ViewData["Message"] = result;
             }
 
             return RedirectToPage("./Index");

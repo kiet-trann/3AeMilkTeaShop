@@ -14,7 +14,7 @@ namespace MilkTea.Services.UserServices
 		Task<string> RegisterUserAsync(RegisterViewModel userViewModel);
         Task<string> AddUserAsync(UserViewModel userViewModel);
         Task<string> UpdateUserProfileAsync(int id, string fullName, string phone);
-		Task<string> ChangePasswordAsync(int id, string currentPassword, string newPassword);
+		Task<string> ChangePasswordAsync(PasswordViewModel passwordViewModel);
 		Task<string> ToggleUserStatusAsync(int id);
 		Task<string> DeleteUserAsync(int id);
 		Task<bool> IsUsernameUniqueAsync(string username);

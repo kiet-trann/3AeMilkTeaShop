@@ -10,10 +10,6 @@ namespace MilkTea.Core.ViewModels
 		[StringLength(50, ErrorMessage = "Tên đăng nhập tối đa 50 ký tự")]
 		public string Username { get; set; } = null!;
 
-		[Required(ErrorMessage = "Mật khẩu không được để trống")]
-		[StringLength(100, ErrorMessage = "Mật khẩu tối đa 100 ký tự")]
-		public string Password { get; set; } = null!;
-
 		[Required(ErrorMessage = "Họ và tên không được để trống")]
 		[StringLength(100, ErrorMessage = "Họ và tên tối đa 100 ký tự")]
 		public string FullName { get; set; } = null!;

@@ -115,19 +115,15 @@ namespace MilkTea.Services.UserServices
             return "Đăng ký thành công";
         }
 
-        public async Task<string> ChangePasswordAsync(int id, string currentPassword, string newPassword)
+        public async Task<string> ChangePasswordAsync(PasswordViewModel passwordViewModel)
         {
-            if (string.IsNullOrWhiteSpace(newPassword))
-                return "Mật khẩu mới không được để trống";
+            if (passwordViewModel == null) return "Mật khẩu không được để trống";
 
-            var user = await _unitOfWork.GetRepository<User>().GetByIdAsync(id);
+            var user = await _unitOfWork.GetRepository<User>().GetByIdAsync(passwordViewModel.UserId);
             if (user == null)
                 return "Người dùng không tồn tại";
 
-            if (user.Password != currentPassword)
-                return "Mật khẩu hiện tại không đúng";
-
-            user.Password = newPassword;
+            user.Password = passwordViewModel.Password;
 
             await _unitOfWork.GetRepository<User>().UpdateAsync(user);
             await _unitOfWork.SaveChangesAsync();

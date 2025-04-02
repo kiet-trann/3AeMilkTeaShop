@@ -50,7 +50,20 @@ namespace MilkTeaRepository.GenericRepository
 			return await query.ToListAsync();
 		}
 
-		public async Task<T> GetByIdAsync(object id)
+		// Lấy tất cả theo filter
+        public async Task<IEnumerable<T>> GetAllAsync(Expression<Func<T, bool>>? filter = null)
+        {
+            IQueryable<T> query = _dbSet;
+
+            if (filter != null)
+            {
+                query = query.Where(filter);
+            }
+
+            return await query.ToListAsync();
+        }
+
+        public async Task<T> GetByIdAsync(object id)
 		{
 			return await _dbSet.FindAsync(id);
 		}
