@@ -14,51 +14,52 @@
 		<form method="post">
 			<div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
+			<input asp-for="UserViewModel.UserId" type="hidden" class="form-control" />
+
 			<!-- Tên đăng nhập -->
 			<div class="form-group">
-				<label asp-for="User.Username" class="control-label"></label>
-				<input asp-for="User.Username" class="form-control" disabled />
-				<span asp-validation-for="User.Username" class="text-danger"></span>
+				<label asp-for="UserViewModel.Username" class="control-label"></label>
+				<input asp-for="UserViewModel.Username" class="form-control" disabled />
 			</div>
 
 			<!-- Họ và tên -->
 			<div class="form-group">
-				<label asp-for="User.FullName" class="control-label"></label>
-				<input asp-for="User.FullName" class="form-control" />
-				<span asp-validation-for="User.FullName" class="text-danger"></span>
+				<label asp-for="UserViewModel.FullName" class="control-label"></label>
+				<input asp-for="UserViewModel.FullName" class="form-control" />
+				<span asp-validation-for="UserViewModel.FullName" class="text-danger"></span>
 			</div>
 
 			<!-- Số điện thoại -->
 			<div class="form-group">
-				<label asp-for="User.PhoneNumber" class="control-label"></label>
-				<input asp-for="User.PhoneNumber" class="form-control" />
-				<span asp-validation-for="User.PhoneNumber" class="text-danger"></span>
+				<label asp-for="UserViewModel.PhoneNumber" class="control-label"></label>
+				<input asp-for="UserViewModel.PhoneNumber" class="form-control" />
+				<span asp-validation-for="UserViewModel.PhoneNumber" class="text-danger"></span>
 			</div>
 
 			<!-- Vai trò -->
 			<div class="form-group">
-				<label asp-for="User.Role" class="control-label"></label>
-				<select asp-for="User.Role" class="form-control">
+				<label asp-for="UserViewModel.Role" class="control-label"></label>
+				<select asp-for="UserViewModel.Role" class="form-control">
 					<option value="">Chọn vai trò</option>
 					@foreach (var role in Model.Roles)
 					{
 						<option value="@role">@role</option>
 					}
 				</select>
-				<span asp-validation-for="User.Role" class="text-danger"></span>
+				<span asp-validation-for="UserViewModel.Role" class="text-danger"></span>
 			</div>
 
 			<!-- Địa chỉ giao hàng -->
 			<div class="form-group">
-				<label asp-for="User.ShippingAddress" class="control-label"></label>
-				<input asp-for="User.ShippingAddress" class="form-control" />
-				<span asp-validation-for="User.ShippingAddress" class="text-danger"></span>
+				<label asp-for="UserViewModel.ShippingAddress" class="control-label"></label>
+				<input asp-for="UserViewModel.ShippingAddress" class="form-control" />
+				<span asp-validation-for="UserViewModel.ShippingAddress" class="text-danger"></span>
 			</div>
 
 			<!-- Trạng thái hoạt động -->
 			<div class="form-group form-check">
 				<label class="form-check-label">
-					<input class="form-check-input" asp-for="User.IsActive" /> @Html.DisplayNameFor(model => model.User.IsActive)
+					<input class="form-check-input" asp-for="UserViewModel.IsActive" /> @Html.DisplayNameFor(model => model.UserViewModel.IsActive)
 				</label>
 			</div>
 
@@ -72,7 +73,7 @@
 
 <br />
 <div>
-	<a asp-page="./ChangePassword" asp-route-id="@Model.User.UserId" class="btn btn-warning">Change Password</a>
+	<a asp-page="./ChangePassword" asp-route-id="@Model.UserViewModel.UserId" class="btn btn-warning">Change Password</a>
 </div>
 <br />
 

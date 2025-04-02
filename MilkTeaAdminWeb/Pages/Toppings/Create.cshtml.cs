@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.SignalR;
 using MilkTea.Core.ViewModels;
+using MilkTea.Services.SignalR;
 using MilkTea.Services.ToppingServices;
 
 namespace MilkTeaAdminWeb.Pages.Toppings
@@ -8,10 +10,12 @@ namespace MilkTeaAdminWeb.Pages.Toppings
     public class CreateModel : PageModel
     {
         private readonly IToppingService _toppingService;
+        private readonly IHubContext<SignalHub> _hubContext;
 
-        public CreateModel(IToppingService toppingService)
+        public CreateModel(IToppingService toppingService, IHubContext<SignalHub> hubContext)
         {
             _toppingService = toppingService;
+            _hubContext = hubContext;
         }
 
         [BindProperty]
@@ -24,19 +28,16 @@ namespace MilkTeaAdminWeb.Pages.Toppings
 
         public async Task<IActionResult> OnPostAsync()
         {
-            if (!ModelState.IsValid)
-            {
-                return Page();
-            }
-
             var result = await _toppingService.AddToppingAsync(ToppingRequestModel);
 
-            if (result != "Thêm topping thành công")
+            if (result == "Thêm topping thành công")
             {
-                ModelState.AddModelError(string.Empty, result);
+                TempData["SuccessMessage"] = result;
+                await _hubContext.Clients.All.SendAsync("LoadPage", "Toppings");
                 return Page();
             }
 
+            TempData["FailedMessage"] = result;
             return RedirectToPage("./Index");
         }
     }

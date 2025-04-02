@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.SignalR;
 using MilkTea.Core.ViewModels;
 using MilkTea.Services.ProductServices;
+using MilkTea.Services.SignalR;
 using MilkteaServices.CategoryServices;
 
 namespace MilkTeaAdminWeb.Pages.Products
@@ -10,11 +12,13 @@ namespace MilkTeaAdminWeb.Pages.Products
     {
         private readonly IProductService _productService;
         private readonly ICategoryService _categoryService;
+        private readonly IHubContext<SignalHub> _hubContext;
 
-        public CreateModel(IProductService productService, ICategoryService categoryService)
+        public CreateModel(IProductService productService, ICategoryService categoryService, IHubContext<SignalHub> hubContext)
         {
             _productService = productService;
             _categoryService = categoryService;
+            _hubContext = hubContext;
         }
 
         [BindProperty]
@@ -39,7 +43,8 @@ namespace MilkTeaAdminWeb.Pages.Products
 
             if (result != "Thêm sản phẩm thành công.")
             {
-                ModelState.AddModelError(string.Empty, result);
+                TempData["SuccessMessage"] = result;
+                await _hubContext.Clients.All.SendAsync("LoadPage", "Products");
                 return RedirectToPage("./Index");
             }
 

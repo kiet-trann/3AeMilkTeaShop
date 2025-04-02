@@ -1,69 +1,64 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using MilkTea.Core.ViewModels;
 using MilkteaServices.CategoryServices;
 using MilkTea.Repository.Model;
+using Microsoft.AspNetCore.SignalR;
+using MilkTea.Services.SignalR;
+using MilkTea.Core.ViewModels;
 
 namespace MilkTeaAdminWeb.Pages.Categories
 {
-    public class DeleteModel : PageModel
-    {
-        private readonly ICategoryService _categoryService;
+	public class DeleteModel : PageModel
+	{
+		private readonly ICategoryService _categoryService;
+		private readonly IHubContext<SignalHub> _hubContext;
 
-        public DeleteModel(ICategoryService categoryService)
-        {
-            _categoryService = categoryService;
-        }
+		public DeleteModel(ICategoryService categoryService, IHubContext<SignalHub> hubContext)
+		{
+			_categoryService = categoryService;
+			_hubContext = hubContext;
+		}
 
-        [BindProperty]
-        public Category Category { get; set; } = default!;
+		[BindProperty]
+		public CategoryViewModel CategoryViewModel { get; set; } = default!;
 
-        public async Task<IActionResult> OnGetAsync(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
+		public async Task<IActionResult> OnGetAsync(int? id)
+		{
+			if (id == null)
+			{
+				return RedirectToPage("./Index");
+			}
 
-            // Lấy thông tin danh mục
-            var category = await _categoryService.GetCategoryByIdAsync(id.Value);
+			var category = await _categoryService.GetCategoryByIdAsync((int)id);
 
-            if (category == null)
-            {
-                return NotFound();
-            }
-            else
-            {
-                Category = new Category
-                {
-                    CategoryId = category.CategoryId,
-                    CategoryName = category.CategoryName,
-                    Description = category.Description,
-                    IsActive = category.IsActive
-                };
-            }
-            return Page();
-        }
+			if (category == null)
+			{
+				return RedirectToPage("./Index");
+			}
 
-        public async Task<IActionResult> OnPostAsync(int? id)
-        {
-            if (id == null)
-            {
-                return RedirectToPage("./Index");
-            }
+			CategoryViewModel = category;
 
-            var result = await _categoryService.DeleteCategoryAsync(id.Value);
+			return Page();
+		}
 
-            if (result == "Xóa danh mục thành công")
-            {
-                ViewData["Message"] = result;
-            }
-            else
-            {
-                ViewData["Message"] = result;
-            }
+		public async Task<IActionResult> OnPostAsync(int? id)
+		{
+			if (id == null)
+			{
+				return RedirectToPage("./Index");
+			}
 
-            return RedirectToPage("./Index");
-        }
-    }
+			var result = await _categoryService.DeleteCategoryAsync(id.Value);
+
+			if (result == "Xóa danh mục thành công")
+			{
+				TempData["SuccessMessage"] = result;
+				await _hubContext.Clients.All.SendAsync("LoadPage", "Categories");
+				return RedirectToPage("./Index");
+			}
+
+			TempData["FailedMessage"] = result;
+			return RedirectToPage("./Index");
+		}
+	}
 }

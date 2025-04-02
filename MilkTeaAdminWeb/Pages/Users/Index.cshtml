@@ -17,6 +17,12 @@
         @TempData["SuccessMessage"]
     </div>
 }
+else if (TempData["FailedMessage"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["FailedMessage"]
+    </div>
+}
 
 <table class="table table-bordered">
     <thead class="thead-dark">
@@ -84,3 +90,5 @@
         }
     </ul>
 </div>
+<script src="~/js/microsoft/signalr/dist/browser/signalr.js"></script>
+<script src="~/js/site.js"></script>

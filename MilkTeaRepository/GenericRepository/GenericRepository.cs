@@ -98,8 +98,7 @@ namespace MilkTeaRepository.GenericRepository
 
 		public async Task UpdateAsync(T entity)
 		{
-			_dbSet.Attach(entity);
-			_context.Entry(entity).State = EntityState.Modified;
+			_dbSet.Update(entity);
 			await Task.CompletedTask;
 		}
 

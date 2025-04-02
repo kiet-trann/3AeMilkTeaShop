@@ -16,32 +16,25 @@
             Tên Danh Mục
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Category.CategoryName)
+            @Html.DisplayFor(model => model.CategoryViewModel.CategoryName)
         </dd>
         <dt class="col-sm-2">
             Mô Tả
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Category.Description)
+            @Html.DisplayFor(model => model.CategoryViewModel.Description)
         </dd>
         <dt class="col-sm-2">
             Trạng Thái
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Category.IsActive)
+            @Html.DisplayFor(model => model.CategoryViewModel.IsActive)
         </dd>
     </dl>
 
     <form method="post">
-        <input type="hidden" asp-for="Category.CategoryId" />
+        <input type="hidden" asp-for="CategoryViewModel.CategoryId" />
         <input type="submit" value="Xóa" class="btn btn-danger" /> |
         <a asp-page="./Index" class="btn btn-secondary">Trở Lại Danh Sách</a>
     </form>
 </div>
-
-@if (ViewData["Message"] != null)
-{
-    <div class="alert alert-info mt-4">
-        @ViewData["Message"]
-    </div>
-}

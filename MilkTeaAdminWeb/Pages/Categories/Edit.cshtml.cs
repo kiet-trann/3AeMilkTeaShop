@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.SignalR;
 using MilkTea.Core.ViewModels;
+using MilkTea.Services.SignalR;
 using MilkteaServices.CategoryServices;
 
 namespace MilkTeaAdminWeb.Pages.Categories
@@ -8,10 +10,12 @@ namespace MilkTeaAdminWeb.Pages.Categories
 	public class EditModel : PageModel
 	{
 		private readonly ICategoryService _categoryService;
+		private readonly IHubContext<SignalHub> _hubContext;
 
-		public EditModel(ICategoryService categoryService)
+		public EditModel(ICategoryService categoryService, IHubContext<SignalHub> hubContext)
 		{
 			_categoryService = categoryService;
+			_hubContext = hubContext;
 		}
 
 		[BindProperty]
@@ -21,12 +25,14 @@ namespace MilkTeaAdminWeb.Pages.Categories
 		{
 			if (id == null)
 			{
+				TempData["FailedMessage"] = "ID Không Được Trống!";
 				return RedirectToPage("./Index");
 			}
 
 			var category = await _categoryService.GetCategoryByIdAsync((int)id);
 			if (category == null)
 			{
+				TempData["FailedMessage"] = "Danh mục không có sẵn!";
 				return RedirectToPage("./Index");
 			}
 
@@ -43,12 +49,14 @@ namespace MilkTeaAdminWeb.Pages.Categories
 
 			var result = await _categoryService.UpdateCategoryAsync(CategoryViewModel);
 
-			if (result != "Cập nhật danh mục thành công")
+			if (result == "Cập nhật danh mục thành công")
 			{
-				ModelState.AddModelError(string.Empty, result);
-				return Page();
+				TempData["SuccessMessage"] = result;
+				await _hubContext.Clients.All.SendAsync("LoadPage", "Categories");
+				return RedirectToPage("./Index");
 			}
 
+			TempData["FailedMessage"] = result;
 			return RedirectToPage("./Index");
 		}
 	}
