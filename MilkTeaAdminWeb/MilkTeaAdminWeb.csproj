@@ -22,8 +22,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Pages\Toppings\" />
     <Folder Include="Pages\Orders\" />
-    <Folder Include="Pages\Users\" />
   </ItemGroup>
 
 </Project>

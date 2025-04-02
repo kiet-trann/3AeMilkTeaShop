@@ -17,5 +17,6 @@ namespace MilkTeaRepository.GenericRepository
 		Task RemoveAsync(object id);
 		Task RemoveAsync(T entity);
 		Task RemoveRangeAsync(IEnumerable<T> entities);
+		Task<int> CountAsync();
 	}
 }

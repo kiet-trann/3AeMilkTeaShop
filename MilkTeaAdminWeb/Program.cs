@@ -1,5 +1,10 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
+using MilkTea.Repository.Mapping;
 using MilkTea.Repository.Model;
+using MilkTea.Services.UserServices;
+using MilkTeaRepository.GenericRepository;
+using MilkTeaRepository.UnitOfWork;
+using MilkteaServices.CategoryServices;
 
 namespace MilkTeaAdminWeb
 {
@@ -9,17 +14,21 @@ namespace MilkTeaAdminWeb
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
+            // Đăng ký dịch vụ trước khi gọi builder.Build()
             builder.Services.AddRazorPages();
-            builder.Services.AddDbContext<ThreeBrothersMilkTeaShopContext>(options =>
-                    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-            var app = builder.Build();
+            builder.Services.AddDbContext<ThreeBrothersMilkTeaShopContext>();
+
+            builder.Services.AddScoped<IUserService, UserService>();
+            builder.Services.AddScoped<ICategoryService, CategoryService>();
+            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+            builder.Services.AddAutoMapper(typeof(MappingProfile)); 
+
+            var app = builder.Build(); 
 
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
             {
                 app.UseExceptionHandler("/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
 

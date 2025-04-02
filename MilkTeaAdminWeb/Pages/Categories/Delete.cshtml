@@ -2,39 +2,46 @@
 @model MilkTeaAdminWeb.Pages.Categories.DeleteModel
 
 @{
-    ViewData["Title"] = "Delete";
+    ViewData["Title"] = "Delete Category";
 }
 
-<h1>Delete</h1>
+<h1 class="font-weight-bold text-center mb-4">Xóa Danh Mục</h1>
 
-<h3>Are you sure you want to delete this?</h3>
+<h3>Bạn có muốn xóa Danh Mục này không?</h3>
 <div>
-    <h4>Category</h4>
+    <h4>Danh Mục</h4>
     <hr />
     <dl class="row">
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Category.CategoryName)
+            Tên Danh Mục
         </dt>
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Category.CategoryName)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Category.Description)
+            Mô Tả
         </dt>
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Category.Description)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Category.IsActive)
+            Trạng Thái
         </dt>
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Category.IsActive)
         </dd>
     </dl>
-    
+
     <form method="post">
         <input type="hidden" asp-for="Category.CategoryId" />
-        <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-page="./Index">Back to List</a>
+        <input type="submit" value="Xóa" class="btn btn-danger" /> |
+        <a asp-page="./Index" class="btn btn-secondary">Trở Lại Danh Sách</a>
     </form>
 </div>
+
+@if (ViewData["Message"] != null)
+{
+    <div class="alert alert-info mt-4">
+        @ViewData["Message"]
+    </div>
+}

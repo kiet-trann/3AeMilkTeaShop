@@ -111,5 +111,10 @@ namespace MilkTeaRepository.GenericRepository
 			_dbSet.RemoveRange(entities);
 			await Task.CompletedTask;
 		}
+
+		public async Task<int> CountAsync()
+		{
+			return await _dbSet.CountAsync();
+		}
 	}
 }

@@ -1,4 +1,7 @@
-﻿namespace MilkTea.Repository.Model;
+﻿using System;
+using System.Collections.Generic;
+
+namespace MilkTea.Repository.Model;
 
 public partial class User
 {
@@ -11,8 +14,6 @@ public partial class User
     public string FullName { get; set; } = null!;
 
     public string? PhoneNumber { get; set; }
-
-    public string? Email { get; set; }
 
     public string Role { get; set; } = null!;
 

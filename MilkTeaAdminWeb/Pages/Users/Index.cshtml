@@ -1,0 +1,79 @@
+﻿@page
+@model MilkTeaAdminWeb.Pages.Users.IndexModel
+
+@{
+    ViewData["Title"] = "Danh sách người dùng";
+}
+
+<h1 class="font-weight-bold text-center mb-4">Danh sách người dùng</h1>
+
+<p>
+    <a asp-page="Create" class="btn btn-primary mb-3">Tạo người dùng mới</a>
+</p>
+
+<table class="table table-bordered">
+    <thead class="thead-dark">
+        <tr>
+            <th>Tên Tài Khoản</th>
+            <th>Họ Và Tên</th>
+            <th>Số Điện Thoại</th>
+            <th>Role</th>
+            <th>Địa Chỉ Giao Hàng</th>
+            <th>Trạng Thái</th>
+            <th>Hành động</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.PaginatedUsers.Items)
+        {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => item.Username)</td>
+                <td>@Html.DisplayFor(modelItem => item.FullName)</td>
+                <td>@Html.DisplayFor(modelItem => item.PhoneNumber)</td>
+                <td>@Html.DisplayFor(modelItem => item.Role)</td>
+                <td>@Html.DisplayFor(modelItem => item.ShippingAddress)</td>
+                <td>
+                    @if (item.IsActive)
+                    {
+                        <span class="badge bg-success">Hoạt động</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-danger">Ngưng hoạt động</span>
+                    }
+                </td>
+                <td>
+                    <a asp-page="./Edit" asp-route-id="@item.UserId" class="btn btn-warning btn-sm">Sửa</a>
+                    <a asp-page="./Details" asp-route-id="@item.UserId" class="btn btn-info btn-sm">Chi tiết</a>
+                    <a asp-page="./Delete" asp-route-id="@item.UserId" class="btn btn-danger btn-sm">Xóa</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<!-- Phân trang -->
+<div class="pagination">
+    <ul class="pagination">
+        @if (Model.PaginatedUsers.CurrentPage > 1)
+        {
+            <li class="page-item">
+                <a class="page-link" asp-page="./Index" asp-route-pageIndex="@(Model.PaginatedUsers.CurrentPage - 1)">Trước</a>
+            </li>
+        }
+
+        @for (int i = 1; i <= Model.PaginatedUsers.TotalPages; i++)
+        {
+            <li class="page-item @(i == Model.PaginatedUsers.CurrentPage ? "active" : "")">
+                <a class="page-link" asp-page="./Index" asp-route-pageIndex="@i">@i</a>
+            </li>
+        }
+
+        @if (Model.PaginatedUsers.CurrentPage < Model.PaginatedUsers.TotalPages)
+        {
+            <li class="page-item">
+                <a class="page-link" asp-page="./Index" asp-route-pageIndex="@(Model.PaginatedUsers.CurrentPage + 1)">Tiếp</a>
+            </li>
+        }
+    </ul>
+</div>

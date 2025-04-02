@@ -1,0 +1,57 @@
+﻿@page
+@model MilkTeaAdminWeb.Pages.Users.DetailsModel
+
+@{
+	ViewData["Title"] = "User Details";
+}
+
+<h1 class="font-weight-bold text-center mb-4">Chi Tiết Người Dùng</h1>
+
+<div>
+	<dl class="row">
+		<dt class="col-sm-2">
+			Tên Tài Khoản
+		</dt>
+		<dd class="col-sm-10">
+			@Html.DisplayFor(model => model.User.Username)
+		</dd>
+		<dt class="col-sm-2">
+			Mật Khẩu
+		</dt>
+		<dd class="col-sm-10">
+			@Html.DisplayFor(model => model.User.Password)
+		</dd>
+		<dt class="col-sm-2">
+			Họ Và Tên
+		</dt>
+		<dd class="col-sm-10">
+			@Html.DisplayFor(model => model.User.FullName)
+		</dd>
+		<dt class="col-sm-2">
+			Số Điện Thoại
+		</dt>
+		<dd class="col-sm-10">
+			@Html.DisplayFor(model => model.User.PhoneNumber)
+		</dd>
+		<dt class="col-sm-2">
+			Role
+		</dt>
+		<dd class="col-sm-10">
+			@Html.DisplayFor(model => model.User.Role)
+		</dd>
+		<dt class="col-sm-2">
+			Địa Chỉ Giao Hàng
+		</dt>
+		<dd class="col-sm-10">
+			@Html.DisplayFor(model => model.User.ShippingAddress)
+		</dd>
+		<dt class="col-sm-2">
+			Trạng Thái
+		</dt>
+		<dd class="col-sm-10">
+			@Html.DisplayFor(model => model.User.IsActive)
+		</dd>
+	</dl>
+
+	<a asp-page="./Index" class="btn btn-primary">Trở Lại</a>
+</div>

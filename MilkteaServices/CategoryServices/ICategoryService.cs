@@ -1,13 +1,16 @@
-﻿using MilkTea.Core.ViewModels;
+﻿using MilkTea.Core.Pagination;
+using MilkTea.Core.ViewModels;
 using MilkTea.Repository.Model;
 
 namespace MilkteaServices.CategoryServices
 {
-	public interface ICategoryService
+    public interface ICategoryService
 	{
 		Task<string> AddCategoryAsync(CategoryViewModel categoryViewModel);
-		Task<string> UpdateCategoryAsync(string categoryId, CategoryViewModel categoryViewModel);
+		Task<string> UpdateCategoryAsync(CategoryViewModel categoryViewModel);
 		Task<string> DeleteCategoryAsync(int categoryId);
-		Task<IEnumerable<Category>> GetPaginatedCategoriesAsync(int pageIndex, int pageSize);
-	}
+		Task<PaginatingResult<Category>> GetPaginatedCategoriesAsync(int pageIndex, int pageSize);
+        Task<CategoryViewModel?> GetCategoryByIdAsync(int categoryId);
+
+    }
 }

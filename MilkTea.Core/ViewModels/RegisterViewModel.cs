@@ -24,10 +24,6 @@ namespace MilkTeaWeb.ViewModels
 		[Phone(ErrorMessage = "Số điện thoại không hợp lệ")]
 		public string? PhoneNumber { get; set; }
 
-		[Required(ErrorMessage = "Email không được để trống")]
-		[EmailAddress(ErrorMessage = "Email không hợp lệ")]
-		public string Email { get; set; } = null!;
-
 		[MaxLength(100, ErrorMessage = "Địa chỉ không được quá 100 ký tự")]
 		public string? ShippingAddress { get; set; }
 	}

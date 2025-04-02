@@ -16,7 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MilkteaServices\MilkteaServices.csproj" />
+    <ProjectReference Include="..\MilkteaServices\MilkTea.Services.csproj" />
   </ItemGroup>
 
 </Project>

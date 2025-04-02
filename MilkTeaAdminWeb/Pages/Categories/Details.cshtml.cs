@@ -1,37 +1,32 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using MilkTea.Core.ViewModels;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
-using MilkTea.Repository.Model;
+using MilkteaServices.CategoryServices;
 
 namespace MilkTeaAdminWeb.Pages.Categories
 {
     public class DetailsModel : PageModel
     {
-        private readonly ThreeBrothersMilkTeaShopContext _context;
+        private readonly ICategoryService _categoryService;
 
-        public DetailsModel(ThreeBrothersMilkTeaShopContext context)
+        public DetailsModel(ICategoryService categoryService)
         {
-            _context = context;
+            _categoryService = categoryService;
         }
 
-        public Category Category { get; set; } = default!;
+        public CategoryViewModel Category { get; set; } = default!;
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
             if (id == null)
             {
-                return NotFound();
+                return RedirectToPage("./Index");
             }
 
-            var category = await _context.Categories.FirstOrDefaultAsync(m => m.CategoryId == id);
-            if (category == null)
-            {
-                return NotFound();
-            }
-            else
-            {
-                Category = category;
-            }
+            // Gọi service để lấy thông tin danh mục
+            var categoryViewModel = await _categoryService.GetCategoryByIdAsync(id.Value);
+
+            Category = categoryViewModel;
             return Page();
         }
     }
