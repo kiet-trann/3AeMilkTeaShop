@@ -36,8 +36,13 @@ namespace MilkTea.Services.ToppingServices
 
             return new PaginatingResult<ToppingViewModel>(mappedToppings, pageIndex, totalCount, pageSize);
         }
-
-        public async Task<ToppingViewModel> GetToppingByIdAsync(int toppingId)
+		
+		public async Task<IEnumerable<ToppingViewModel>> GetAllToppingsAsync()
+		{
+			var toppings = await _unitOfWork.GetRepository<Topping>().GetAllAsync();
+			return _mapper.Map<IEnumerable<ToppingViewModel>>(toppings);
+		}
+		public async Task<ToppingViewModel> GetToppingByIdAsync(int toppingId)
         {
             if (toppingId <= 0)
                 return null;
