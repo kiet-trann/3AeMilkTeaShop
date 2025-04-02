@@ -13,9 +13,10 @@ namespace MilkTea.Repository.Mapping
 			CreateMap<RegisterViewModel, User>();
 			CreateMap<UserViewModel, User>();
 			CreateMap<User, UserViewModel>();
+            CreateMap<LoginViewModel, User>();
 
-			// Topping
-			CreateMap<ToppingViewModel, Topping>();
+            // Topping
+            CreateMap<ToppingViewModel, Topping>();
 
 			// Category
 			CreateMap<CategoryViewModel, Category>();
