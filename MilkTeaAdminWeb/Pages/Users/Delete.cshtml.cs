@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.SignalR;
 using MilkTea.Services.SignalR;
+using MilkTea.Core.ViewModels;
 
 namespace MilkTeaAdminWeb.Pages.Users
 {
@@ -18,7 +19,7 @@ namespace MilkTeaAdminWeb.Pages.Users
         }
 
         [BindProperty]
-        public User User { get; set; } = default!;
+        public UserViewModel UserViewModel { get; set; } = default!;
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
@@ -28,7 +29,7 @@ namespace MilkTeaAdminWeb.Pages.Users
                 return RedirectToPage("./Index");
             }
 
-            await _userService.GetUserByIdAsync(id.Value);
+            UserViewModel = await _userService.GetUserByIdAsync(id.Value);
 
             return Page();
         }

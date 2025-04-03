@@ -36,11 +36,13 @@ namespace MilkTea.Services.ProductServices
 					return productVM;
 				}).ToList();
 
+				_unitOfWork.CommitTransaction();
 				return new PaginatingResult<ProductViewModel>(productViewModels, pageIndex, totalCount, pageSize);
 			}
-			finally
+			catch
 			{
-				_unitOfWork.CommitTransaction();
+				_unitOfWork.RollbackTransaction();
+				throw;
 			}
 		}
 
@@ -61,9 +63,7 @@ namespace MilkTea.Services.ProductServices
 				return productVM;
 			}).ToList();
 
-			var pagedResult = new PaginatingResult<ProductViewModel>(productViewModels, pageNumber, totalCount, pageSize);
-
-			return pagedResult;
+			return new PaginatingResult<ProductViewModel>(productViewModels, pageNumber, totalCount, pageSize);
 		}
 
 		public async Task<ProductViewModel> GetProductByIdAsync(int productId)
@@ -91,15 +91,13 @@ namespace MilkTea.Services.ProductServices
 
 				await _unitOfWork.GetRepository<Product>().AddAsync(product);
 				await _unitOfWork.SaveChangesAsync();
+
+				_unitOfWork.CommitTransaction();
 			}
 			catch (Exception)
 			{
 				_unitOfWork.RollbackTransaction();
 				return "Đã có lỗi xảy ra khi thêm sản phẩm.";
-			}
-			finally
-			{
-				_unitOfWork.CommitTransaction();
 			}
 
 			return "Thêm sản phẩm thành công.";
@@ -121,18 +119,16 @@ namespace MilkTea.Services.ProductServices
 				_mapper.Map(productViewModel, existingProduct);
 				_unitOfWork.GetRepository<Product>().Update(existingProduct);
 				await _unitOfWork.SaveChangesAsync();
+
+				_unitOfWork.CommitTransaction();
 			}
 			catch (Exception)
 			{
 				_unitOfWork.RollbackTransaction();
 				return "Đã có lỗi xảy ra khi cập nhật sản phẩm.";
 			}
-			finally
-			{
-				_unitOfWork.CommitTransaction();
-			}
 
-			return "Cập nhật sản phẩm thành công.";
+			return "Cập nhật sản phẩm thành công!";
 		}
 
 		public async Task<string> DeleteProductAsync(int productId)
@@ -148,17 +144,15 @@ namespace MilkTea.Services.ProductServices
 				if (product == null)
 					return "Sản phẩm không tồn tại.";
 
-				_unitOfWork.GetRepository<Product>().Remove(product);
+				_unitOfWork.GetRepository<Product>().Remove(productId);
 				await _unitOfWork.SaveChangesAsync();
+
+				_unitOfWork.CommitTransaction();
 			}
 			catch (Exception)
 			{
 				_unitOfWork.RollbackTransaction();
 				return "Đã có lỗi xảy ra khi xóa sản phẩm.";
-			}
-			finally
-			{
-				_unitOfWork.CommitTransaction();
 			}
 
 			return "Xóa sản phẩm thành công.";

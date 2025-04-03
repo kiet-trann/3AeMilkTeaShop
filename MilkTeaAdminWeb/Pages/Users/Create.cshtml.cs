@@ -30,17 +30,20 @@ namespace MilkTeaAdminWeb.Pages.Users
 
         [BindProperty]
         public UserViewModel UserRequestModel { get; set; } = default!;
+		[BindProperty]
+		public string Password { get; set; } = default!;
 
         public async Task<IActionResult> OnPostAsync()
         {
-            var result = await _userService.AddUserAsync(UserRequestModel);
+            var result = await _userService.AddUserAsync(Password, UserRequestModel);
 
             if (result == "Thêm người dùng thành công")
             {
                 TempData["SuccessMessage"] = result;
                 await _hubContext.Clients.All.SendAsync("LoadPage", "Toppings");
-                return Page();
-            }
+				return RedirectToPage("./Index");
+			}
+
             TempData["FailedMessage"] = result;
             return RedirectToPage("./Index");
         }

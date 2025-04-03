@@ -15,44 +15,89 @@ namespace MilkTea.Services.OrderServices
 			_unitOfWork = unitOfWork;
 			_mapper = mapper;
 		}
+
 		public async Task<OrderViewModel> GetOrderByIdAsync(int orderId)
 		{
-			var order = await _unitOfWork.GetRepository<Order>()
-				.GetFirstOrDefaultAsync(o => o.OrderId == orderId, includeProperties: "User");
-
-			if (order == null)
+			_unitOfWork.BeginTransaction();
+			try
 			{
-				return null;
+				var order = await _unitOfWork.GetRepository<Order>()
+					.GetFirstOrDefaultAsync(o => o.OrderId == orderId, includeProperties: "User");
+
+				if (order == null)
+				{
+					_unitOfWork.CommitTransaction();
+					return null;
+				}
+
+				_unitOfWork.CommitTransaction();
+				return _mapper.Map<OrderViewModel>(order);
 			}
-
-			return _mapper.Map<OrderViewModel>(order);
+			catch
+			{
+				_unitOfWork.RollbackTransaction();
+				throw;
+			}
 		}
-
 
 		public async Task<List<OrderDetailViewModel>> GetOrderDetailsForOrder(int orderId)
 		{
-			var orderDetails = await _unitOfWork.GetRepository<OrderDetail>()
-				.GetPaginateAsync(1, int.MaxValue, od => od.OrderId == orderId, includeProperties: "Product");
+			_unitOfWork.BeginTransaction();
+			try
+			{
+				var orderDetails = await _unitOfWork.GetRepository<OrderDetail>()
+					.GetPaginateAsync(1, int.MaxValue, od => od.OrderId == orderId, includeProperties: "Product");
 
-			return _mapper.Map<List<OrderDetailViewModel>>(orderDetails);
+				_unitOfWork.CommitTransaction();
+				return _mapper.Map<List<OrderDetailViewModel>>(orderDetails);
+			}
+			catch
+			{
+				_unitOfWork.RollbackTransaction();
+				throw;
+			}
 		}
 
 		public async Task<IEnumerable<OrderViewModel>> GetPaginatedOrdersAsync(int pageIndex, int pageSize)
 		{
-			var orders = await _unitOfWork.GetRepository<Order>().GetPaginateAsync(pageIndex, pageSize, includeProperties: "User");
-			return _mapper.Map<IEnumerable<OrderViewModel>>(orders);
+			_unitOfWork.BeginTransaction();
+			try
+			{
+				var orders = await _unitOfWork.GetRepository<Order>().GetPaginateAsync(pageIndex, pageSize, includeProperties: "User");
+				_unitOfWork.CommitTransaction();
+				return _mapper.Map<IEnumerable<OrderViewModel>>(orders);
+			}
+			catch
+			{
+				_unitOfWork.RollbackTransaction();
+				throw;
+			}
 		}
+
 		public async Task<string> UpdateOrderStatusAsync(int orderId, string newStatus)
 		{
-			var order = await _unitOfWork.GetRepository<Order>().GetByIdAsync(orderId);
-			if (order == null)
-				return "Đơn hàng không tồn tại.";
+			_unitOfWork.BeginTransaction();
+			try
+			{
+				var order = await _unitOfWork.GetRepository<Order>().GetByIdAsync(orderId);
+				if (order == null)
+				{
+					_unitOfWork.CommitTransaction();
+					return "Đơn hàng không tồn tại.";
+				}
 
-			order.Status = newStatus;
-			_unitOfWork.GetRepository<Order>().Update(order);
-			await _unitOfWork.SaveChangesAsync();
+				order.Status = newStatus;
+				_unitOfWork.GetRepository<Order>().Update(order);
+				await _unitOfWork.SaveChangesAsync();
 
-			return "Cập nhật trạng thái thành công.";
+				_unitOfWork.CommitTransaction();
+				return "Cập nhật trạng thái thành công.";
+			}
+			catch
+			{
+				_unitOfWork.RollbackTransaction();
+				return "Lỗi khi cập nhật trạng thái.";
+			}
 		}
 	}
 }

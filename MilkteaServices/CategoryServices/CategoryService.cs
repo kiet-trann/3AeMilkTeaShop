@@ -20,51 +20,36 @@ namespace MilkteaServices.CategoryServices
 		public async Task<PaginatingResult<Category>> GetPaginatedCategoriesAsync(int pageIndex, int pageSize)
 		{
 			_unitOfWork.BeginTransaction();
-			try
-			{
-				if (pageIndex < 1) pageIndex = 1;
-				if (pageSize < 1) pageSize = 10;
+			if (pageIndex < 1) pageIndex = 1;
+			if (pageSize < 1) pageSize = 10;
 
-				var totalCount = _unitOfWork.GetRepository<Category>().Count();
-				var categories = await _unitOfWork.GetRepository<Category>().GetPaginateAsync(pageIndex, pageSize);
-				var pagedResult = new PaginatingResult<Category>(categories, pageIndex, totalCount, pageSize);
+			var totalCount = _unitOfWork.GetRepository<Category>().Count();
+			var categories = await _unitOfWork.GetRepository<Category>().GetPaginateAsync(pageIndex, pageSize);
+			var pagedResult = new PaginatingResult<Category>(categories, pageIndex, totalCount, pageSize);
 
-				return pagedResult;
-			}
-			finally
-			{
-				_unitOfWork.CommitTransaction();
-			}
+			_unitOfWork.CommitTransaction();
+			return pagedResult;
 		}
 
 		public IEnumerable<CategoryViewModel> GetAvailableCategories()
 		{
 			_unitOfWork.BeginTransaction();
-			try
-			{
-				var categories = _unitOfWork.GetRepository<Category>()
-					.GetAll(c => c.IsActive == true);
 
-				return _mapper.Map<IEnumerable<CategoryViewModel>>(categories);
-			}
-			finally
-			{
-				_unitOfWork.CommitTransaction();
-			}
+			var categories = _unitOfWork.GetRepository<Category>()
+				.GetAll(c => c.IsActive == true);
+
+			_unitOfWork.CommitTransaction();
+			return _mapper.Map<IEnumerable<CategoryViewModel>>(categories);
+
 		}
 
 		public async Task<CategoryViewModel?> GetCategoryByIdAsync(int categoryId)
 		{
 			_unitOfWork.BeginTransaction();
-			try
-			{
-				var category = await _unitOfWork.GetRepository<Category>().GetByIdAsync(categoryId);
-				return category == null ? null : _mapper.Map<CategoryViewModel>(category);
-			}
-			finally
-			{
-				_unitOfWork.CommitTransaction();
-			}
+
+			var category = await _unitOfWork.GetRepository<Category>().GetByIdAsync(categoryId);
+			_unitOfWork.CommitTransaction();
+			return category == null ? null : _mapper.Map<CategoryViewModel>(category);
 		}
 
 		public async Task<string> AddCategoryAsync(CategoryViewModel categoryViewModel)
@@ -85,16 +70,13 @@ namespace MilkteaServices.CategoryServices
 				await _unitOfWork.GetRepository<Category>().AddAsync(category);
 				await _unitOfWork.SaveChangesAsync();
 
+				_unitOfWork.CommitTransaction();
 				return "Thêm danh mục thành công";
 			}
 			catch (Exception)
 			{
 				_unitOfWork.RollbackTransaction();
 				return "Đã xảy ra lỗi khi thêm danh mục";
-			}
-			finally
-			{
-				_unitOfWork.CommitTransaction();
 			}
 		}
 
@@ -116,16 +98,13 @@ namespace MilkteaServices.CategoryServices
 				_unitOfWork.GetRepository<Category>().Update(existingCategory);
 				await _unitOfWork.SaveChangesAsync();
 
+				_unitOfWork.CommitTransaction();
 				return "Cập nhật danh mục thành công";
 			}
 			catch (Exception)
 			{
 				_unitOfWork.RollbackTransaction();
 				return "Đã xảy ra lỗi khi cập nhật danh mục";
-			}
-			finally
-			{
-				_unitOfWork.CommitTransaction();
 			}
 		}
 
@@ -142,16 +121,13 @@ namespace MilkteaServices.CategoryServices
 				_unitOfWork.GetRepository<Category>().Remove(category);
 				await _unitOfWork.SaveChangesAsync();
 
+				_unitOfWork.CommitTransaction();
 				return "Xóa danh mục thành công";
 			}
 			catch (Exception)
 			{
 				_unitOfWork.RollbackTransaction();
 				return "Đã xảy ra lỗi khi xóa danh mục";
-			}
-			finally
-			{
-				_unitOfWork.CommitTransaction();
 			}
 		}
 	}

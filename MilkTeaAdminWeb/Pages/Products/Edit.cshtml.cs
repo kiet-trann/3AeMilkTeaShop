@@ -49,7 +49,7 @@ namespace MilkTeaAdminWeb.Pages.Products
         {
 			var result = await _productService.UpdateProductAsync(ProductViewModel);
 
-            if (result == "Cập nhật sản phẩm thành công")
+            if (result == "Cập nhật sản phẩm thành công!")
             {
                 TempData["SuccessMessage"] = result;
                 await _hubContext.Clients.All.SendAsync("LoadPage", "Products");

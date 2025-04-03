@@ -59,7 +59,7 @@ namespace MilkTea.Services.UserServices
 			catch
 			{
 				_unitOfWork.RollbackTransaction();
-				throw;
+				return null;
 			}
 		}
 
@@ -78,7 +78,7 @@ namespace MilkTea.Services.UserServices
 			catch
 			{
 				_unitOfWork.RollbackTransaction();
-				throw;
+				return null;	
 			}
 		}
 
@@ -104,11 +104,11 @@ namespace MilkTea.Services.UserServices
 			catch
 			{
 				_unitOfWork.RollbackTransaction();
-				throw;
+				return null;
 			}
 		}
 
-		public async Task<string> AddUserAsync(UserViewModel userViewModel)
+		public async Task<string> AddUserAsync(string password, UserViewModel userViewModel)
 		{
 			_unitOfWork.BeginTransaction();
 			try
@@ -127,6 +127,7 @@ namespace MilkTea.Services.UserServices
 				}
 
 				var user = _mapper.Map<User>(userViewModel);
+				user.Password = password;
 
 				await _unitOfWork.GetRepository<User>().AddAsync(user);
 				await _unitOfWork.SaveChangesAsync();
@@ -136,7 +137,7 @@ namespace MilkTea.Services.UserServices
 			catch
 			{
 				_unitOfWork.RollbackTransaction();
-				throw;
+				return "Đã có lỗi xảy ra";
 			}
 		}
 
@@ -164,13 +165,14 @@ namespace MilkTea.Services.UserServices
 
 				await _unitOfWork.GetRepository<User>().AddAsync(user);
 				await _unitOfWork.SaveChangesAsync();
+
 				_unitOfWork.CommitTransaction();
 				return "Đăng ký thành công";
 			}
 			catch
 			{
 				_unitOfWork.RollbackTransaction();
-				throw;
+				return "";
 			}
 		}
 
@@ -190,13 +192,14 @@ namespace MilkTea.Services.UserServices
 
 				_unitOfWork.GetRepository<User>().Update(user);
 				await _unitOfWork.SaveChangesAsync();
+
 				_unitOfWork.CommitTransaction();
 				return "Đổi mật khẩu thành công";
 			}
 			catch
 			{
 				_unitOfWork.RollbackTransaction();
-				throw;
+				return "";
 			}
 		}
 
@@ -216,13 +219,14 @@ namespace MilkTea.Services.UserServices
 
 				_unitOfWork.GetRepository<User>().Update(user);
 				await _unitOfWork.SaveChangesAsync();
+
 				_unitOfWork.CommitTransaction();
 				return "Cập nhật trạng thái thành công";
 			}
 			catch
 			{
 				_unitOfWork.RollbackTransaction();
-				throw;
+				return "";
 			}
 		}
 		public async Task<string> UpdateUserProfileAsync(UserViewModel userViewModel)
@@ -256,7 +260,7 @@ namespace MilkTea.Services.UserServices
 			catch
 			{
 				_unitOfWork.RollbackTransaction();
-				throw;
+				return "";
 			}
 		}
 
@@ -280,7 +284,7 @@ namespace MilkTea.Services.UserServices
 			catch
 			{
 				_unitOfWork.RollbackTransaction();
-				throw;
+				return "";
 			}
 		}
 
@@ -296,7 +300,7 @@ namespace MilkTea.Services.UserServices
 			catch
 			{
 				_unitOfWork.RollbackTransaction();
-				throw;
+				return false;
 			}
 		}
 	}

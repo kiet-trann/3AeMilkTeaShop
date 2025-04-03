@@ -22,8 +22,4 @@
     <ProjectReference Include="..\MilkTeaRepository\MilkTea.Repository.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="OrderDetailService\" />
-  </ItemGroup>
-
 </Project>

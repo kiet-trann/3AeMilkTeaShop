@@ -12,7 +12,7 @@ namespace MilkTea.Services.UserServices
 		Task<User> GetUserByUsernameAsync(string username);
 		Task<User> AuthenticateAsync(string username, string password);
 		Task<string> RegisterUserAsync(RegisterViewModel userViewModel);
-        Task<string> AddUserAsync(UserViewModel userViewModel);
+        Task<string> AddUserAsync(string password, UserViewModel userViewModel);
         Task<string> UpdateUserProfileAsync(UserViewModel userViewModel);
 		Task<string> ChangePasswordAsync(PasswordViewModel passwordViewModel);
 		Task<string> ToggleUserStatusAsync(int id);

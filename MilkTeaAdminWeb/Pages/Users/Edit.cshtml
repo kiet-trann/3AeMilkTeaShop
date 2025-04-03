@@ -2,87 +2,86 @@
 @model MilkTeaAdminWeb.Pages.Users.EditModel
 
 @{
-	ViewData["Title"] = "Edit User";
+    ViewData["Title"] = "Chỉnh sửa người dùng";
 }
 
-<h1>Edit User</h1>
+<h1>Chỉnh sửa người dùng</h1>
 
-<h4>User</h4>
 <hr />
 <div class="row">
-	<div class="col-md-4">
-		<form method="post">
-			<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-			<input asp-for="UserViewModel.UserId" type="hidden" class="form-control" />
+            <input asp-for="UserViewModel.UserId" type="hidden" class="form-control" />
 
-			<!-- Tên đăng nhập -->
-			<div class="form-group">
-				<label asp-for="UserViewModel.Username" class="control-label"></label>
-				<input asp-for="UserViewModel.Username" class="form-control" disabled />
-			</div>
+            <!-- Tên đăng nhập -->
+            <div class="form-group">
+                <label asp-for="UserViewModel.Username" class="control-label">Tên đăng nhập</label>
+                <input asp-for="UserViewModel.Username" class="form-control" disabled />
+            </div>
 
-			<!-- Họ và tên -->
-			<div class="form-group">
-				<label asp-for="UserViewModel.FullName" class="control-label"></label>
-				<input asp-for="UserViewModel.FullName" class="form-control" />
-				<span asp-validation-for="UserViewModel.FullName" class="text-danger"></span>
-			</div>
+            <!-- Họ và tên -->
+            <div class="form-group">
+                <label asp-for="UserViewModel.FullName" class="control-label">Họ và tên</label>
+                <input asp-for="UserViewModel.FullName" class="form-control" />
+                <span asp-validation-for="UserViewModel.FullName" class="text-danger"></span>
+            </div>
 
-			<!-- Số điện thoại -->
-			<div class="form-group">
-				<label asp-for="UserViewModel.PhoneNumber" class="control-label"></label>
-				<input asp-for="UserViewModel.PhoneNumber" class="form-control" />
-				<span asp-validation-for="UserViewModel.PhoneNumber" class="text-danger"></span>
-			</div>
+            <!-- Số điện thoại -->
+            <div class="form-group">
+                <label asp-for="UserViewModel.PhoneNumber" class="control-label">Số điện thoại</label>
+                <input asp-for="UserViewModel.PhoneNumber" class="form-control" />
+                <span asp-validation-for="UserViewModel.PhoneNumber" class="text-danger"></span>
+            </div>
 
-			<!-- Vai trò -->
-			<div class="form-group">
-				<label asp-for="UserViewModel.Role" class="control-label"></label>
-				<select asp-for="UserViewModel.Role" class="form-control">
-					<option value="">Chọn vai trò</option>
-					@foreach (var role in Model.Roles)
-					{
-						<option value="@role">@role</option>
-					}
-				</select>
-				<span asp-validation-for="UserViewModel.Role" class="text-danger"></span>
-			</div>
+            <!-- Vai trò -->
+            <div class="form-group">
+                <label asp-for="UserViewModel.Role" class="control-label">Vai trò</label>
+                <select asp-for="UserViewModel.Role" class="form-control">
+                    <option value="">Chọn vai trò</option>
+                    @foreach (var role in Model.Roles)
+                    {
+                        <option value="@role">@role</option>
+                    }
+                </select>
+                <span asp-validation-for="UserViewModel.Role" class="text-danger"></span>
+            </div>
 
-			<!-- Địa chỉ giao hàng -->
-			<div class="form-group">
-				<label asp-for="UserViewModel.ShippingAddress" class="control-label"></label>
-				<input asp-for="UserViewModel.ShippingAddress" class="form-control" />
-				<span asp-validation-for="UserViewModel.ShippingAddress" class="text-danger"></span>
-			</div>
+            <!-- Địa chỉ giao hàng -->
+            <div class="form-group">
+                <label asp-for="UserViewModel.ShippingAddress" class="control-label">Địa chỉ giao hàng</label>
+                <input asp-for="UserViewModel.ShippingAddress" class="form-control" />
+                <span asp-validation-for="UserViewModel.ShippingAddress" class="text-danger"></span>
+            </div>
 
-			<!-- Trạng thái hoạt động -->
-			<div class="form-group form-check">
-				<label class="form-check-label">
-					<input class="form-check-input" asp-for="UserViewModel.IsActive" /> @Html.DisplayNameFor(model => model.UserViewModel.IsActive)
-				</label>
-			</div>
+            <!-- Trạng thái hoạt động -->
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="UserViewModel.IsActive" /> @Html.DisplayNameFor(model => model.UserViewModel.IsActive)
+                </label>
+            </div>
 
-			<!-- Nút Lưu -->
-			<div class="form-group">
-				<input type="submit" value="Save" class="btn btn-primary" />
-			</div>
-		</form>
-	</div>
+            <!-- Nút Lưu -->
+            <div class="form-group">
+                <input type="submit" value="Lưu" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
 </div>
 
 <br />
 <div>
-	<a asp-page="./ChangePassword" asp-route-id="@Model.UserViewModel.UserId" class="btn btn-warning">Change Password</a>
+    <a asp-page="./ChangePassword" asp-route-id="@Model.UserViewModel.UserId" class="btn btn-warning">Đổi mật khẩu</a>
 </div>
 <br />
 
 <div>
-	<a asp-page="./Index" class="btn btn-secondary">Trở lại</a>
+    <a asp-page="./Index" class="btn btn-secondary">Trở lại</a>
 </div>
 
 @section Scripts {
-	@{
-		await Html.RenderPartialAsync("_ValidationScriptsPartial");
-	}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

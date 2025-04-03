@@ -104,7 +104,7 @@ namespace MilkTeaRepository.GenericRepository
         public void Remove(object id)
         {
             T entity = _dbSet.Find(id);
-            Remove(entity);
+            _dbSet.Remove(entity);
         }
 
         public int Count()
