@@ -9,7 +9,7 @@ public partial class Product
 
     public string ProductName { get; set; } = null!;
 
-    public string Description { get; set; } = null!;
+    public string? Description { get; set; }
 
     public int CategoryId { get; set; }
 
@@ -25,7 +25,7 @@ public partial class Product
 
     public bool IsAvailableL { get; set; }
 
-    public string ImageUrl { get; set; } = null!;
+    public string? ImageUrl { get; set; }
 
     public virtual Category Category { get; set; } = null!;
 

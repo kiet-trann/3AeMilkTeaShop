@@ -34,6 +34,6 @@ namespace MilkTea.Core.ViewModels
 		[Required(ErrorMessage = "Trạng thái khả dụng của size L là bắt buộc.")]
 		public bool IsAvailableL { get; set; }
 		public string? ImageUrl { get; set; }
-        public CategoryViewModel Category { get; set; } = null!;
+        public CategoryViewModel? Category { get; set; } = null!;
     }
 }

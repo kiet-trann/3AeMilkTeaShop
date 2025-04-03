@@ -1,23 +1,20 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using MilkTea.Core.ViewModels;
-using MilkTea.Repository.Model;
 using MilkTea.Services.OrderServices;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace MilkTeaAdminWeb.Pages.Orders
 {
-    public class OrdersModel : PageModel
+    public class IndexModel : PageModel
     {
         private readonly IOrderService _orderService;
 
-        public OrdersModel(IOrderService orderService)
+        public IndexModel(IOrderService orderService)
         {
             _orderService = orderService;
         }
 
-        public async Task OnGet(int? orderId)
+        public async Task OnGetAsync(int? orderId)
         {
             OrderList = (List<OrderViewModel>)await _orderService.GetPaginatedOrdersAsync(1, int.MaxValue);
 

@@ -37,12 +37,12 @@ namespace MilkTea.Services.UserServices
 				var users = await _unitOfWork.GetRepository<User>().GetPaginateAsync(pageIndex, pageSize, userFilter);
 
 				var pagedResult = new PaginatingResult<User>(users, pageIndex, totalCount, pageSize);
-				_unitOfWork.BeginTransaction();
+				_unitOfWork.CommitTransaction();
 				return pagedResult;
 			}
 			catch
 			{
-				_unitOfWork.BeginTransaction();
+				_unitOfWork.RollbackTransaction();
 				throw;
 			}
 		}
@@ -53,12 +53,12 @@ namespace MilkTea.Services.UserServices
 			try
 			{
 				var user = await _unitOfWork.GetRepository<User>().GetByIdAsync(id);
-				_unitOfWork.BeginTransaction();
+				_unitOfWork.CommitTransaction();
 				return user == null ? null : _mapper.Map<UserViewModel>(user);
 			}
 			catch
 			{
-				_unitOfWork.BeginTransaction();
+				_unitOfWork.RollbackTransaction();
 				throw;
 			}
 		}
@@ -72,12 +72,12 @@ namespace MilkTea.Services.UserServices
 					return null;
 
 				var user = await _unitOfWork.GetRepository<User>().GetFirstOrDefaultAsync(u => u.Username == username);
-				_unitOfWork.BeginTransaction();
+				_unitOfWork.CommitTransaction();
 				return user;
 			}
 			catch
 			{
-				_unitOfWork.BeginTransaction();
+				_unitOfWork.RollbackTransaction();
 				throw;
 			}
 		}
@@ -94,16 +94,16 @@ namespace MilkTea.Services.UserServices
 
 				if (user == null || !user.IsActive)
 				{
-					_unitOfWork.BeginTransaction();
+					_unitOfWork.CommitTransaction();
 					return null;
 				}
 
-				_unitOfWork.BeginTransaction();
+				_unitOfWork.CommitTransaction();
 				return user.Password == password ? user : null;
 			}
 			catch
 			{
-				_unitOfWork.BeginTransaction();
+				_unitOfWork.RollbackTransaction();
 				throw;
 			}
 		}
@@ -115,14 +115,14 @@ namespace MilkTea.Services.UserServices
 			{
 				if (userViewModel == null)
 				{
-					_unitOfWork.BeginTransaction();
+					_unitOfWork.CommitTransaction();
 					return "Thông tin người dùng không hợp lệ";
 				}
 
 				var existingUser = await _unitOfWork.GetRepository<User>().GetFirstOrDefaultAsync(u => u.Username == userViewModel.Username);
 				if (existingUser != null)
 				{
-					_unitOfWork.BeginTransaction();
+					_unitOfWork.CommitTransaction();
 					return "Tên người dùng đã tồn tại";
 				}
 
@@ -130,12 +130,12 @@ namespace MilkTea.Services.UserServices
 
 				await _unitOfWork.GetRepository<User>().AddAsync(user);
 				await _unitOfWork.SaveChangesAsync();
-				_unitOfWork.BeginTransaction();
+				_unitOfWork.CommitTransaction();
 				return "Thêm người dùng thành công";
 			}
 			catch
 			{
-				_unitOfWork.BeginTransaction();
+				_unitOfWork.RollbackTransaction();
 				throw;
 			}
 		}
@@ -147,14 +147,14 @@ namespace MilkTea.Services.UserServices
 			{
 				if (userViewModel == null)
 				{
-					_unitOfWork.BeginTransaction();
+					_unitOfWork.CommitTransaction();
 					return "Thông tin người dùng không hợp lệ";
 				}
 
 				var existingUser = await _unitOfWork.GetRepository<User>().GetFirstOrDefaultAsync(u => u.Username == userViewModel.Username);
 				if (existingUser != null)
 				{
-					_unitOfWork.BeginTransaction();
+					_unitOfWork.CommitTransaction();
 					return "Tên người dùng đã tồn tại";
 				}
 
@@ -164,12 +164,12 @@ namespace MilkTea.Services.UserServices
 
 				await _unitOfWork.GetRepository<User>().AddAsync(user);
 				await _unitOfWork.SaveChangesAsync();
-				_unitOfWork.BeginTransaction();
+				_unitOfWork.CommitTransaction();
 				return "Đăng ký thành công";
 			}
 			catch
 			{
-				_unitOfWork.BeginTransaction();
+				_unitOfWork.RollbackTransaction();
 				throw;
 			}
 		}
@@ -182,7 +182,7 @@ namespace MilkTea.Services.UserServices
 				var user = await _unitOfWork.GetRepository<User>().GetByIdAsync(passwordViewModel.UserId);
 				if (user == null)
 				{
-					_unitOfWork.BeginTransaction();
+					_unitOfWork.CommitTransaction();
 					return "Người dùng không tồn tại";
 				}
 
@@ -190,12 +190,12 @@ namespace MilkTea.Services.UserServices
 
 				_unitOfWork.GetRepository<User>().Update(user);
 				await _unitOfWork.SaveChangesAsync();
-				_unitOfWork.BeginTransaction();
+				_unitOfWork.CommitTransaction();
 				return "Đổi mật khẩu thành công";
 			}
 			catch
 			{
-				_unitOfWork.BeginTransaction();
+				_unitOfWork.RollbackTransaction();
 				throw;
 			}
 		}
@@ -208,7 +208,7 @@ namespace MilkTea.Services.UserServices
 				var user = await _unitOfWork.GetRepository<User>().GetByIdAsync(id);
 				if (user == null)
 				{
-					_unitOfWork.BeginTransaction();
+					_unitOfWork.CommitTransaction();
 					return "Người dùng không tồn tại";
 				}
 
@@ -216,12 +216,12 @@ namespace MilkTea.Services.UserServices
 
 				_unitOfWork.GetRepository<User>().Update(user);
 				await _unitOfWork.SaveChangesAsync();
-				_unitOfWork.BeginTransaction();
+				_unitOfWork.CommitTransaction();
 				return "Cập nhật trạng thái thành công";
 			}
 			catch
 			{
-				_unitOfWork.BeginTransaction();
+				_unitOfWork.RollbackTransaction();
 				throw;
 			}
 		}
@@ -232,14 +232,14 @@ namespace MilkTea.Services.UserServices
 			{
 				if (userViewModel == null)
 				{
-					_unitOfWork.BeginTransaction();
+					_unitOfWork.CommitTransaction();
 					return "Thông tin người dùng không hợp lệ";
 				}
 
 				var user = await _unitOfWork.GetRepository<User>().GetByIdAsync(userViewModel.UserId);
 				if (user == null)
 				{
-					_unitOfWork.BeginTransaction();
+					_unitOfWork.CommitTransaction();
 					return "Người dùng không tồn tại";
 				}
 
@@ -249,13 +249,13 @@ namespace MilkTea.Services.UserServices
 
 				_unitOfWork.GetRepository<User>().Update(user);
 				await _unitOfWork.SaveChangesAsync();
-				_unitOfWork.BeginTransaction();
+				_unitOfWork.CommitTransaction();
 
 				return "Cập nhật thông tin người dùng thành công";
 			}
 			catch
 			{
-				_unitOfWork.BeginTransaction();
+				_unitOfWork.RollbackTransaction();
 				throw;
 			}
 		}
@@ -268,18 +268,18 @@ namespace MilkTea.Services.UserServices
 				var user = await _unitOfWork.GetRepository<User>().GetByIdAsync(id);
 				if (user == null)
 				{
-					_unitOfWork.BeginTransaction();
+					_unitOfWork.CommitTransaction();
 					return "Người dùng không tồn tại";
 				}
 
 				_unitOfWork.GetRepository<User>().Remove(user);
 				await _unitOfWork.SaveChangesAsync();
-				_unitOfWork.BeginTransaction();
+				_unitOfWork.CommitTransaction();
 				return "Xóa người dùng thành công";
 			}
 			catch
 			{
-				_unitOfWork.BeginTransaction();
+				_unitOfWork.RollbackTransaction();
 				throw;
 			}
 		}
@@ -290,12 +290,12 @@ namespace MilkTea.Services.UserServices
 			try
 			{
 				var user = await _unitOfWork.GetRepository<User>().GetFirstOrDefaultAsync(u => u.Username == username);
-				_unitOfWork.BeginTransaction();
+				_unitOfWork.CommitTransaction();
 				return user == null;
 			}
 			catch
 			{
-				_unitOfWork.BeginTransaction();
+				_unitOfWork.RollbackTransaction();
 				throw;
 			}
 		}
