@@ -21,4 +21,8 @@
     <ProjectReference Include="..\MilkteaServices\MilkTea.Services.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Pages\Orders\" />
+  </ItemGroup>
+
 </Project>

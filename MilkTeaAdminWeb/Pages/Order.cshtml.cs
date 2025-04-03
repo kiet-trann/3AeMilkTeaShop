@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using MilkTea.Repository.Model;
 
-namespace MilkTeaAdminWeb.Pages.Orders
+namespace MilkTeaAdminWeb.Pages
 {
     public class OrdersModel : PageModel
     {
