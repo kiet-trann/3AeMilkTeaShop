@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="14.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.Core" Version="1.2.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.2">
       <PrivateAssets>all</PrivateAssets>
@@ -19,10 +20,6 @@
   <ItemGroup>
     <ProjectReference Include="..\MilkTea.Core\MilkTea.Core.csproj" />
     <ProjectReference Include="..\MilkTeaRepository\MilkTea.Repository.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="OrderDetailService\" />
   </ItemGroup>
 
 </Project>

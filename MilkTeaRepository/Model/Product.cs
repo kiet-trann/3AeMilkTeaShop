@@ -9,6 +9,8 @@ public partial class Product
 
     public string ProductName { get; set; } = null!;
 
+    public string? Description { get; set; }
+
     public int CategoryId { get; set; }
 
     public decimal PriceS { get; set; }
@@ -22,6 +24,8 @@ public partial class Product
     public bool IsAvailableM { get; set; }
 
     public bool IsAvailableL { get; set; }
+
+    public string? ImageUrl { get; set; }
 
     public virtual Category Category { get; set; } = null!;
 

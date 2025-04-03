@@ -11,6 +11,19 @@
     <a asp-page="Create" class="btn btn-primary mb-3">Thêm sản phẩm mới</a>
 </p>
 
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["SuccessMessage"]
+    </div>
+}
+else if (TempData["FailedMessage"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["FailedMessage"]
+    </div>
+}
+
 <table class="table table-striped table-bordered">
     <thead class="thead-dark">
         <tr>
@@ -92,3 +105,5 @@
         }
     </ul>
 </div>
+<script src="~/js/microsoft/signalr/dist/browser/signalr.js"></script>
+<script src="~/js/site.js"></script>

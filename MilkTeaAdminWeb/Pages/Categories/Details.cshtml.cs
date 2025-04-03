@@ -20,7 +20,8 @@ namespace MilkTeaAdminWeb.Pages.Categories
         {
             if (id == null)
             {
-                return RedirectToPage("./Index");
+				TempData["FailedMessage"] = "ID Không Được Trống";
+				return RedirectToPage("./Index");
             }
 
             // Gọi service để lấy thông tin danh mục

@@ -6,92 +6,178 @@ using MilkTeaRepository.UnitOfWork;
 
 namespace MilkTea.Services.ToppingServices
 {
-    public class ToppingService : IToppingService
-    {
-        private readonly IUnitOfWork _unitOfWork;
-        private readonly IMapper _mapper;
+	public class ToppingService : IToppingService
+	{
+		private readonly IUnitOfWork _unitOfWork;
+		private readonly IMapper _mapper;
 
-        public ToppingService(IUnitOfWork unitOfWork, IMapper mapper)
-        {
-            _unitOfWork = unitOfWork;
-            _mapper = mapper;
-        }
+		public ToppingService(IUnitOfWork unitOfWork, IMapper mapper)
+		{
+			_unitOfWork = unitOfWork;
+			_mapper = mapper;
+		}
 
-        public async Task<PaginatingResult<ToppingViewModel>> GetPaginatedToppingsAsync(int pageIndex, int pageSize)
-        {
-            if (pageIndex < 1) pageIndex = 1;
-            if (pageSize < 1) pageSize = 10;
+		public async Task<PaginatingResult<ToppingViewModel>> GetPaginatedToppingsAsync(int pageIndex, int pageSize)
+		{
+			_unitOfWork.BeginTransaction();
+			try
+			{
+				if (pageIndex < 1) pageIndex = 1;
+				if (pageSize < 1) pageSize = 10;
 
-            var totalCount = await _unitOfWork.GetRepository<Topping>().CountAsync();
+				var totalCount = _unitOfWork.GetRepository<Topping>().Count();
 
-            var toppings = await _unitOfWork.GetRepository<Topping>()
-                .GetPaginateAsync(pageIndex, pageSize);
+				var toppings = await _unitOfWork.GetRepository<Topping>()
+					.GetPaginateAsync(pageIndex, pageSize);
 
-            if (toppings == null || !toppings.Any())
-            {
-                return new PaginatingResult<ToppingViewModel>(Enumerable.Empty<ToppingViewModel>(), pageIndex, totalCount, pageSize);
-            }
+				if (toppings == null || !toppings.Any())
+				{
+					_unitOfWork.CommitTransaction();
+					return new PaginatingResult<ToppingViewModel>(Enumerable.Empty<ToppingViewModel>(), pageIndex, totalCount, pageSize);
+				}
 
-            var mappedToppings = _mapper.Map<IEnumerable<ToppingViewModel>>(toppings);
+				var mappedToppings = _mapper.Map<IEnumerable<ToppingViewModel>>(toppings);
 
-            return new PaginatingResult<ToppingViewModel>(mappedToppings, pageIndex, totalCount, pageSize);
-        }
+				_unitOfWork.CommitTransaction();
+				return new PaginatingResult<ToppingViewModel>(mappedToppings, pageIndex, totalCount, pageSize);
+			}
+			catch
+			{
+				_unitOfWork.RollbackTransaction();
+				throw;
+			}
+		}
 
-        public async Task<ToppingViewModel> GetToppingByIdAsync(int toppingId)
-        {
-            if (toppingId <= 0)
-                return null;
+		public IEnumerable<ToppingViewModel> GetAllToppings()
+		{
+			_unitOfWork.BeginTransaction();
+			try
+			{
+				var toppings = _unitOfWork.GetRepository<Topping>().GetAll();
+				var mappedToppings = _mapper.Map<IEnumerable<ToppingViewModel>>(toppings);
+				_unitOfWork.CommitTransaction();
+				return mappedToppings;
+			}
+			catch
+			{
+				_unitOfWork.RollbackTransaction();
+				throw;
+			}
+		}
 
-            var topping = await _unitOfWork.GetRepository<Topping>().GetByIdAsync(toppingId);
-            if (topping == null)
-                return null;
+		public async Task<ToppingViewModel> GetToppingByIdAsync(int toppingId)
+		{
+			_unitOfWork.BeginTransaction();
+			try
+			{
+				if (toppingId <= 0)
+					return null;
 
-            return _mapper.Map<ToppingViewModel>(topping);
-        }
+				var topping = await _unitOfWork.GetRepository<Topping>().GetByIdAsync(toppingId);
+				if (topping == null)
+				{
+					_unitOfWork.CommitTransaction();
+					return null;
+				}
 
-        public async Task<string> AddToppingAsync(ToppingViewModel toppingViewModel)
-        {
-            if (toppingViewModel == null)
-                return "Thông tin topping không hợp lệ.";
+				_unitOfWork.CommitTransaction();
+				return _mapper.Map<ToppingViewModel>(topping);
+			}
+			catch
+			{
+				_unitOfWork.RollbackTransaction();
+				throw;
+			}
+		}
 
-            var topping = _mapper.Map<Topping>(toppingViewModel);
+		public async Task<string> AddToppingAsync(ToppingViewModel toppingViewModel)
+		{
+			_unitOfWork.BeginTransaction();
+			try
+			{
+				if (toppingViewModel == null)
+				{
+					_unitOfWork.CommitTransaction();
+					return "Thông tin topping không hợp lệ.";
+				}
 
-            await _unitOfWork.GetRepository<Topping>().AddAsync(topping);
-            await _unitOfWork.SaveChangesAsync();
+				var topping = _mapper.Map<Topping>(toppingViewModel);
 
-            return "Thêm topping thành công.";
-        }
+				await _unitOfWork.GetRepository<Topping>().AddAsync(topping);
+				await _unitOfWork.SaveChangesAsync();
 
-        public async Task<string> UpdateToppingAsync(ToppingViewModel toppingViewModel)
-        {
-            if (toppingViewModel == null)
-                return "Thông tin topping không hợp lệ.";
+				_unitOfWork.CommitTransaction();
+				return "Thêm topping thành công.";
+			}
+			catch
+			{
+				_unitOfWork.RollbackTransaction();
+				return "Lỗi khi thêm topping.";
+			}
+		}
 
-            var existingTopping = await _unitOfWork.GetRepository<Topping>().GetByIdAsync(toppingViewModel.ToppingId);
-            if (existingTopping == null)
-                return "Topping không tồn tại.";
+		public async Task<string> UpdateToppingAsync(ToppingViewModel toppingViewModel)
+		{
+			_unitOfWork.BeginTransaction();
+			try
+			{
+				if (toppingViewModel == null)
+				{
+					_unitOfWork.CommitTransaction();
+					return "Thông tin topping không hợp lệ.";
+				}
 
-            _mapper.Map(toppingViewModel, existingTopping);
+				var existingTopping = await _unitOfWork.GetRepository<Topping>().GetByIdAsync(toppingViewModel.ToppingId);
+				if (existingTopping == null)
+				{
+					_unitOfWork.CommitTransaction();
+					return "Topping không tồn tại.";
+				}
 
-            await _unitOfWork.GetRepository<Topping>().UpdateAsync(existingTopping);
-            await _unitOfWork.SaveChangesAsync();
+				_mapper.Map(toppingViewModel, existingTopping);
 
-            return "Cập nhật topping thành công.";
-        }
+				_unitOfWork.GetRepository<Topping>().Update(existingTopping);
+				await _unitOfWork.SaveChangesAsync();
 
-        public async Task<string> DeleteToppingAsync(int toppingId)
-        {
-            if (toppingId <= 0)
-                return "ID topping không hợp lệ.";
+				_unitOfWork.CommitTransaction();
+				return "Cập nhật topping thành công.";
+			}
+			catch
+			{
+				_unitOfWork.RollbackTransaction();
+				return "Lỗi khi cập nhật topping.";
+			}
+		}
 
-            var topping = await _unitOfWork.GetRepository<Topping>().GetByIdAsync(toppingId);
-            if (topping == null)
-                return "Topping không tồn tại.";
+		public async Task<string> DeleteToppingAsync(int toppingId)
+		{
+			_unitOfWork.BeginTransaction();
+			try
+			{
+				if (toppingId <= 0)
+				{
+					_unitOfWork.CommitTransaction();
+					return "ID topping không hợp lệ.";
+				}
 
-            await _unitOfWork.GetRepository<Topping>().RemoveAsync(topping);
-            await _unitOfWork.SaveChangesAsync();
+				var topping = await _unitOfWork.GetRepository<Topping>().GetByIdAsync(toppingId);
+				if (topping == null)
+				{
+					_unitOfWork.CommitTransaction();
+					return "Topping không tồn tại.";
+				}
 
-            return "Xóa topping thành công.";
-        }
-    }
+				_unitOfWork.GetRepository<Topping>().Remove(topping);
+				await _unitOfWork.SaveChangesAsync();
+
+				_unitOfWork.CommitTransaction();
+				return "Xóa topping thành công.";
+			}
+			catch
+			{
+				_unitOfWork.RollbackTransaction();
+				return "Lỗi khi xóa topping.";
+			}
+		}
+	}
 }

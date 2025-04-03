@@ -2,98 +2,113 @@
 @model MilkTeaAdminWeb.Pages.Products.EditModel
 
 @{
-	ViewData["Title"] = "Edit Product";
+    ViewData["Title"] = "Chỉnh sửa sản phẩm";
 }
 
-<h1>Edit Product</h1>
+<h1>Chỉnh sửa sản phẩm</h1>
 
 <hr />
 <div class="row">
-	<div class="col-md-6">
-		<form method="post">
-			<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="col-md-6">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-			<!-- Hidden Field for ProductId -->
-			<input type="hidden" asp-for="ProductViewModel.ProductId" />
+            <!-- Hidden Field for ProductId -->
+            <input type="hidden" asp-for="ProductViewModel.ProductId" />
 
-			<!-- Product Name -->
-			<div class="form-group">
-				<label asp-for="ProductViewModel.ProductName" class="control-label"></label>
-				<input asp-for="ProductViewModel.ProductName" class="form-control" />
-				<span asp-validation-for="ProductViewModel.ProductName" class="text-danger"></span>
-			</div>
+            <!-- Tên Sản Phẩm -->
+            <div class="form-group">
+                <label asp-for="ProductViewModel.ProductName" class="control-label">Tên Sản Phẩm</label>
+                <input asp-for="ProductViewModel.ProductName" class="form-control" />
+                <span asp-validation-for="ProductViewModel.ProductName" class="text-danger"></span>
+            </div>
 
-			<!-- Category Selection -->
-			<div class="form-group">
-				<label asp-for="ProductViewModel.CategoryId" class="control-label"></label>
-				<select asp-for="ProductViewModel.CategoryId" class="form-control">
-					<option value="">Select Category</option>
-					@foreach (var category in Model.Categories)
-					{
-						<option value="@category.CategoryId">
-							@category.CategoryName
-						</option>
-					}
-				</select>
-				<span asp-validation-for="ProductViewModel.CategoryId" class="text-danger"></span>
-			</div>
+            <!-- Chọn Danh Mục -->
+            <div class="form-group">
+                <label asp-for="ProductViewModel.CategoryId" class="control-label">Danh Mục</label>
+                <select asp-for="ProductViewModel.CategoryId" class="form-control">
+                    <option value="">Chọn danh mục</option>
+                    @foreach (var category in Model.Categories)
+                    {
+                        <option value="@category.CategoryId"
+                                selected="@(category.CategoryId == Model.ProductViewModel.CategoryId ? "selected" : "")">
+                            @category.CategoryName
+                        </option>
+                    }
+                </select>
+                <span asp-validation-for="ProductViewModel.CategoryId" class="text-danger"></span>
+            </div>
 
-			<!-- Price for Size S -->
-			<div class="form-group">
-				<label asp-for="ProductViewModel.PriceS" class="control-label"></label>
-				<input asp-for="ProductViewModel.PriceS" class="form-control" />
-				<span asp-validation-for="ProductViewModel.PriceS" class="text-danger"></span>
-			</div>
+            <!-- Giá Size S -->
+            <div class="form-group">
+                <label asp-for="ProductViewModel.PriceS" class="control-label">Giá Size S</label>
+                <input asp-for="ProductViewModel.PriceS" class="form-control" />
+                <span asp-validation-for="ProductViewModel.PriceS" class="text-danger"></span>
+            </div>
 
-			<!-- Price for Size M -->
-			<div class="form-group">
-				<label asp-for="ProductViewModel.PriceM" class="control-label"></label>
-				<input asp-for="ProductViewModel.PriceM" class="form-control" />
-				<span asp-validation-for="ProductViewModel.PriceM" class="text-danger"></span>
-			</div>
+            <!-- Giá Size M -->
+            <div class="form-group">
+                <label asp-for="ProductViewModel.PriceM" class="control-label">Giá Size M</label>
+                <input asp-for="ProductViewModel.PriceM" class="form-control" />
+                <span asp-validation-for="ProductViewModel.PriceM" class="text-danger"></span>
+            </div>
 
-			<!-- Price for Size L -->
-			<div class="form-group">
-				<label asp-for="ProductViewModel.PriceL" class="control-label"></label>
-				<input asp-for="ProductViewModel.PriceL" class="form-control" />
-				<span asp-validation-for="ProductViewModel.PriceL" class="text-danger"></span>
-			</div>
+            <!-- Giá Size L -->
+            <div class="form-group">
+                <label asp-for="ProductViewModel.PriceL" class="control-label">Giá Size L</label>
+                <input asp-for="ProductViewModel.PriceL" class="form-control" />
+                <span asp-validation-for="ProductViewModel.PriceL" class="text-danger"></span>
+            </div>
 
-			<!-- Availability for Size S -->
-			<div class="form-group form-check">
-				<label class="form-check-label">
-					<input class="form-check-input" asp-for="ProductViewModel.IsAvailableS" /> Available for Size S
-				</label>
-			</div>
+            <!-- Sẵn Có Size S -->
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="ProductViewModel.IsAvailableS" /> Sẵn có Size S
+                </label>
+            </div>
 
-			<!-- Availability for Size M -->
-			<div class="form-group form-check">
-				<label class="form-check-label">
-					<input class="form-check-input" asp-for="ProductViewModel.IsAvailableM" /> Available for Size M
-				</label>
-			</div>
+            <!-- Sẵn Có Size M -->
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="ProductViewModel.IsAvailableM" /> Sẵn có Size M
+                </label>
+            </div>
 
-			<!-- Availability for Size L -->
-			<div class="form-group form-check">
-				<label class="form-check-label">
-					<input class="form-check-input" asp-for="ProductViewModel.IsAvailableL" /> Available for Size L
-				</label>
-			</div>
+            <!-- Sẵn Có Size L -->
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="ProductViewModel.IsAvailableL" /> Sẵn có Size L
+                </label>
+            </div>
 
-			<!-- Submit Button -->
-			<div class="form-group">
-				<input type="submit" value="Save" class="btn btn-primary" />
-			</div>
-		</form>
-	</div>
+            <!-- Mô Tả -->
+            <div class="form-group">
+                <label asp-for="ProductViewModel.Description" class="control-label">Mô Tả</label>
+                <textarea asp-for="ProductViewModel.Description" class="form-control"></textarea>
+                <span asp-validation-for="ProductViewModel.Description" class="text-danger"></span>
+            </div>
+
+            <!-- Hình Ảnh -->
+            <div class="form-group">
+                <label asp-for="ProductViewModel.ImageUrl" class="control-label">Hình Ảnh</label>
+                <input asp-for="ProductViewModel.ImageUrl" class="form-control" />
+                <span asp-validation-for="ProductViewModel.ImageUrl" class="text-danger"></span>
+            </div>
+
+            <!-- Nút Lưu -->
+            <div class="form-group">
+                <input type="submit" value="Lưu" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
 </div>
 
 <div>
-	<a asp-page="./Index">Back to List</a>
+    <a asp-page="./Index">Quay lại danh sách</a>
 </div>
 
 @section Scripts {
-	@{
-		await Html.RenderPartialAsync("_ValidationScriptsPartial");
-	}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

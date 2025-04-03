@@ -2,30 +2,34 @@
 using MilkTea.Repository.Model;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.SignalR;
+using MilkTea.Services.SignalR;
+using MilkTea.Core.ViewModels;
 
 namespace MilkTeaAdminWeb.Pages.Users
 {
     public class DeleteModel : PageModel
     {
         private readonly IUserService _userService;
-
-        public DeleteModel(IUserService userService)
+        private readonly IHubContext<SignalHub> _hubContext;
+        public DeleteModel(IUserService userService, IHubContext<SignalHub> hubContext)
         {
             _userService = userService;
+            _hubContext = hubContext;
         }
 
         [BindProperty]
-        public User User { get; set; } = default!;
+        public UserViewModel UserViewModel { get; set; } = default!;
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
             if (id == null)
             {
-                return NotFound();
+                TempData["FailedMessage"] = "ID Không Được Trống!";
+                return RedirectToPage("./Index");
             }
 
-            // Tải thông tin người dùng để hiển thị trên trang
-            await _userService.GetUserByIdAsync(id.Value);
+            UserViewModel = await _userService.GetUserByIdAsync(id.Value);
 
             return Page();
         }
@@ -34,17 +38,19 @@ namespace MilkTeaAdminWeb.Pages.Users
         {
             if (id == null)
             {
+                TempData["FailedMessage"] = "ID Không Được Trống!";
                 return RedirectToPage("./Index");
             }
 
-            // Gọi phương thức xóa người dùng từ service
             var result = await _userService.DeleteUserAsync(id.Value);
 
-            if (result != "Xóa người dùng thành công")
+            if (result == "Xóa người dùng thành công")
             {
-                return Page();
+                TempData["SuccessMessage"] = result;
+                await _hubContext.Clients.All.SendAsync("LoadPage", "Toppings");
+                return RedirectToPage("./Index");
             }
-
+            TempData["FailedMessage"] = result;
             return RedirectToPage("./Index");
         }
     }

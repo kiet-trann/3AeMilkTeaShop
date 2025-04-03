@@ -6,102 +6,129 @@ using MilkTeaRepository.UnitOfWork;
 
 namespace MilkteaServices.CategoryServices
 {
-    public class CategoryService : ICategoryService
-    {
-        private IUnitOfWork _unitOfWork;
-        private IMapper _mapper;
+	public class CategoryService : ICategoryService
+	{
+		private readonly IUnitOfWork _unitOfWork;
+		private readonly IMapper _mapper;
 
-        public CategoryService(IUnitOfWork unitOfWork, IMapper mapper)
-        {
-            _unitOfWork = unitOfWork;
-            _mapper = mapper;
-        }
+		public CategoryService(IUnitOfWork unitOfWork, IMapper mapper)
+		{
+			_unitOfWork = unitOfWork;
+			_mapper = mapper;
+		}
 
-        public async Task<PaginatingResult<Category>> GetPaginatedCategoriesAsync(int pageIndex, int pageSize)
-        {
-            if (pageIndex < 1) pageIndex = 1;
-            if (pageSize < 1) pageSize = 10;
+		public async Task<PaginatingResult<Category>> GetPaginatedCategoriesAsync(int pageIndex, int pageSize)
+		{
+			_unitOfWork.BeginTransaction();
+			if (pageIndex < 1) pageIndex = 1;
+			if (pageSize < 1) pageSize = 10;
 
-            // Đếm record
-            var totalCount = await _unitOfWork.GetRepository<Category>().CountAsync();
+			var totalCount = _unitOfWork.GetRepository<Category>().Count();
+			var categories = await _unitOfWork.GetRepository<Category>().GetPaginateAsync(pageIndex, pageSize);
+			var pagedResult = new PaginatingResult<Category>(categories, pageIndex, totalCount, pageSize);
 
-            // Lấy danh sách phân trang
-            var categories = await _unitOfWork.GetRepository<Category>()
-                .GetPaginateAsync(pageIndex, pageSize);
+			_unitOfWork.CommitTransaction();
+			return pagedResult;
+		}
 
-            // Trả về kết quả phân trang
-            var pagedResult = new PaginatingResult<Category>(categories, pageIndex, totalCount, pageSize);
+		public IEnumerable<CategoryViewModel> GetAvailableCategories()
+		{
+			_unitOfWork.BeginTransaction();
 
-            return pagedResult;
-        }
+			var categories = _unitOfWork.GetRepository<Category>()
+				.GetAll(c => c.IsActive == true);
 
-        public async Task<IEnumerable<CategoryViewModel>> GetAvailableCategoriesAsync()
-        {
-            var categories = await _unitOfWork.GetRepository<Category>()
-                .GetAllAsync(c => c.IsActive == true); 
+			_unitOfWork.CommitTransaction();
+			return _mapper.Map<IEnumerable<CategoryViewModel>>(categories);
 
-            return _mapper.Map<IEnumerable<CategoryViewModel>>(categories);
-        }
+		}
 
-        public async Task<CategoryViewModel?> GetCategoryByIdAsync(int categoryId)
-        {
-            var category = await _unitOfWork.GetRepository<Category>().GetByIdAsync(categoryId);
-            return category == null ? null : _mapper.Map<CategoryViewModel>(category);
-        }
+		public async Task<CategoryViewModel?> GetCategoryByIdAsync(int categoryId)
+		{
+			_unitOfWork.BeginTransaction();
 
-        public async Task<string> AddCategoryAsync(CategoryViewModel categoryViewModel)
-        {
-            if (categoryViewModel == null)
-            {
-                return "Dữ liệu danh mục không hợp lệ";
-            }
+			var category = await _unitOfWork.GetRepository<Category>().GetByIdAsync(categoryId);
+			_unitOfWork.CommitTransaction();
+			return category == null ? null : _mapper.Map<CategoryViewModel>(category);
+		}
 
-            // Kiểm tra nếu danh mục đã tồn tại
-            var existingCategory = await _unitOfWork.GetRepository<Category>()
-                                                    .GetFirstOrDefaultAsync(c => c.CategoryName == categoryViewModel.CategoryName);
-            if (existingCategory != null)
-            {
-                return "Danh mục đã tồn tại";
-            }
+		public async Task<string> AddCategoryAsync(CategoryViewModel categoryViewModel)
+		{
+			_unitOfWork.BeginTransaction();
+			try
+			{
+				if (categoryViewModel == null)
+					return "Dữ liệu danh mục không hợp lệ";
 
-            var category = _mapper.Map<Category>(categoryViewModel);
+				var existingCategory = await _unitOfWork.GetRepository<Category>()
+					.GetFirstOrDefaultAsync(c => c.CategoryName == categoryViewModel.CategoryName);
 
-            await _unitOfWork.GetRepository<Category>().AddAsync(category);
-            await _unitOfWork.SaveChangesAsync();
-            return "Thêm danh mục thành công";
-        }
+				if (existingCategory != null)
+					return "Danh mục đã tồn tại";
 
-        public async Task<string> UpdateCategoryAsync(CategoryViewModel categoryViewModel)
-        {
-            if (categoryViewModel == null)
-            {
-                return "Dữ liệu danh mục không hợp lệ";
-            }
+				var category = _mapper.Map<Category>(categoryViewModel);
+				await _unitOfWork.GetRepository<Category>().AddAsync(category);
+				await _unitOfWork.SaveChangesAsync();
 
-            var existingCategory = await _unitOfWork.GetRepository<Category>().GetByIdAsync(categoryViewModel.CategoryId);
-            if (existingCategory == null)
-            {
-                return "Danh mục không tồn tại";
-            }
+				_unitOfWork.CommitTransaction();
+				return "Thêm danh mục thành công";
+			}
+			catch (Exception)
+			{
+				_unitOfWork.RollbackTransaction();
+				return "Đã xảy ra lỗi khi thêm danh mục";
+			}
+		}
 
-            _mapper.Map(categoryViewModel, existingCategory);
+		public async Task<string> UpdateCategoryAsync(CategoryViewModel categoryViewModel)
+		{
+			_unitOfWork.BeginTransaction();
+			try
+			{
+				if (categoryViewModel == null)
+					return "Dữ liệu danh mục không hợp lệ";
 
-            await _unitOfWork.GetRepository<Category>().UpdateAsync(existingCategory);
-            await _unitOfWork.SaveChangesAsync();
-            return "Cập nhật danh mục thành công";
-        }
+				var existingCategory = await _unitOfWork.GetRepository<Category>()
+					.GetByIdAsync(categoryViewModel.CategoryId);
 
-        public async Task<string> DeleteCategoryAsync(int categoryId)
-        {
-            var category = await _unitOfWork.GetRepository<Category>().GetByIdAsync(categoryId);
-            if (category == null)
-            {
-                return "Danh mục không tồn tại";
-            }
+				if (existingCategory == null)
+					return "Danh mục không tồn tại";
 
-            await _unitOfWork.GetRepository<Category>().RemoveAsync(category);
-            await _unitOfWork.SaveChangesAsync();
-            return "Xóa danh mục thành công";
-        }
-    }
+				_mapper.Map(categoryViewModel, existingCategory);
+				_unitOfWork.GetRepository<Category>().Update(existingCategory);
+				await _unitOfWork.SaveChangesAsync();
+
+				_unitOfWork.CommitTransaction();
+				return "Cập nhật danh mục thành công";
+			}
+			catch (Exception)
+			{
+				_unitOfWork.RollbackTransaction();
+				return "Đã xảy ra lỗi khi cập nhật danh mục";
+			}
+		}
+
+		public async Task<string> DeleteCategoryAsync(int categoryId)
+		{
+			_unitOfWork.BeginTransaction();
+			try
+			{
+				var category = await _unitOfWork.GetRepository<Category>().GetByIdAsync(categoryId);
+
+				if (category == null)
+					return "Danh mục không tồn tại";
+
+				_unitOfWork.GetRepository<Category>().Remove(category);
+				await _unitOfWork.SaveChangesAsync();
+
+				_unitOfWork.CommitTransaction();
+				return "Xóa danh mục thành công";
+			}
+			catch (Exception)
+			{
+				_unitOfWork.RollbackTransaction();
+				return "Đã xảy ra lỗi khi xóa danh mục";
+			}
+		}
+	}
 }

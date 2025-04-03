@@ -12,59 +12,75 @@
     <hr />
     <dl class="row">
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Product.ProductName)
+            Tên Sản Phẩm
         </dt>
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Product.ProductName)
         </dd>
 
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Product.CategoryId)
+            Danh Mục
         </dt>
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Product.CategoryId)
         </dd>
 
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Product.PriceS)
+            Giá Size S
         </dt>
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Product.PriceS)
         </dd>
 
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Product.PriceM)
+            Giá Size M
         </dt>
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Product.PriceM)
         </dd>
 
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Product.PriceL)
+            Giá Size L
         </dt>
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Product.PriceL)
         </dd>
 
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Product.IsAvailableS)
+            Sẵn Có Size S
         </dt>
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Product.IsAvailableS)
         </dd>
 
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Product.IsAvailableM)
+            Sẵn Có Size M
         </dt>
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Product.IsAvailableM)
         </dd>
 
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Product.IsAvailableL)
+            Sẵn Có Size L
         </dt>
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Product.IsAvailableL)
+        </dd>
+
+        <!-- Thêm thuộc tính mô tả -->
+        <dt class="col-sm-2">
+            Mô Tả
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Product.Description)
+        </dd>
+
+        <!-- Thêm thuộc tính hình ảnh -->
+        <dt class="col-sm-2">
+            Hình Ảnh
+        </dt>
+        <dd class="col-sm-10">
+            <img src="@Model.Product.ImageUrl" alt="Product Image" class="img-fluid" style="height:300px" />
         </dd>
     </dl>
 </div>

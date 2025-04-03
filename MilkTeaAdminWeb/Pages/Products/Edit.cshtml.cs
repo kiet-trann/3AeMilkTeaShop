@@ -1,9 +1,9 @@
-﻿using System;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.SignalR;
 using MilkTea.Core.ViewModels;
 using MilkTea.Services.ProductServices;
+using MilkTea.Services.SignalR;
 using MilkteaServices.CategoryServices;
 
 namespace MilkTeaAdminWeb.Pages.Products
@@ -12,11 +12,13 @@ namespace MilkTeaAdminWeb.Pages.Products
     {
         private readonly IProductService _productService;
         private readonly ICategoryService _categoryService;
+        private readonly IHubContext<SignalHub> _hubContext;
 
-        public EditModel(IProductService productService, ICategoryService categoryService)
+        public EditModel(IProductService productService, ICategoryService categoryService, IHubContext<SignalHub> hubContext)
         {
             _productService = productService;
             _categoryService = categoryService;
+            _hubContext = hubContext;
         }
 
         [BindProperty]
@@ -27,16 +29,18 @@ namespace MilkTeaAdminWeb.Pages.Products
         {
             if (id == null)
             {
+                TempData["FailedMessage"] = "ID Không Được Trống!";
                 return RedirectToPage("./Index");
             }
 
             var product = await _productService.GetProductByIdAsync((int)id);
             if (product == null)
             {
+                TempData["FailedMessage"] = "Sản Phẩm Không Tồn Tại!";
                 return RedirectToPage("./Index");
             }
 
-            Categories = await _categoryService.GetAvailableCategoriesAsync();
+            Categories = _categoryService.GetAvailableCategories();
             ProductViewModel = product;
             return Page();
         }
@@ -45,12 +49,14 @@ namespace MilkTeaAdminWeb.Pages.Products
         {
 			var result = await _productService.UpdateProductAsync(ProductViewModel);
 
-            if (result != "Cập nhật sản phẩm thành công")
+            if (result == "Cập nhật sản phẩm thành công!")
             {
-                ModelState.AddModelError(string.Empty, result);
+                TempData["SuccessMessage"] = result;
+                await _hubContext.Clients.All.SendAsync("LoadPage", "Products");
                 return RedirectToPage("./Index");
 			}
 
+            TempData["FailedMessage"] = result;
             return RedirectToPage("./Index");
         }
     }

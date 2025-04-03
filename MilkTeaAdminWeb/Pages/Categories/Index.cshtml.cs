@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc.RazorPages;
 using MilkTea.Core.Pagination;
-using MilkTea.Core.ViewModels;
 using MilkTea.Repository.Model;
 using MilkteaServices.CategoryServices;
 
@@ -15,13 +14,13 @@ namespace MilkTeaAdminWeb.Pages.Categories
 			_categoryService = categoryService;
 		}
 
-	
 		public PaginatingResult<Category> PaginatedCategories { get; set; } = default!;
-		 
+
 		public int PageSize { get; set; } = 5;
 
 		public async Task OnGetAsync(int pageIndex = 1)
 		{
+			var o = _categoryService.GetAvailableCategories();
 			PaginatedCategories = await _categoryService.GetPaginatedCategoriesAsync(pageIndex, PageSize); ;
 		}
 	}

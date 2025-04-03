@@ -15,20 +15,20 @@
 
             <!-- Topping Name Field (Read-Only) -->
             <div class="form-group">
-                <label asp-for="Topping.ToppingName" class="control-label"></label>
-                <input asp-for="Topping.ToppingName" class="form-control" readonly />
+                <label asp-for="ToppingViewModel.ToppingName" class="control-label"></label>
+                <input asp-for="ToppingViewModel.ToppingName" class="form-control" readonly />
             </div>
 
             <!-- Price Field (Read-Only) -->
             <div class="form-group">
-                <label asp-for="Topping.Price" class="control-label"></label>
-                <input asp-for="Topping.Price" class="form-control" readonly />
+                <label asp-for="ToppingViewModel.Price" class="control-label"></label>
+                <input asp-for="ToppingViewModel.Price" class="form-control" readonly />
             </div>
 
             <!-- Is Available Field (Read-Only) -->
             <div class="form-group form-check">
-                <input asp-for="Topping.IsAvailable" class="form-check-input" disabled />
-                <label asp-for="Topping.IsAvailable" class="form-check-label"></label>
+                <input asp-for="ToppingViewModel.IsAvailable" class="form-check-input" disabled />
+                <label asp-for="ToppingViewModel.IsAvailable" class="form-check-label"></label>
             </div>
 
             <!-- Submit Button -->

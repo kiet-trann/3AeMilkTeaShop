@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc.RazorPages;
 using MilkTea.Core.Pagination;
+using MilkTea.Core.ViewModels;
 using MilkTea.Repository.Model;
 using MilkTea.Services.ProductServices;
 
@@ -14,7 +15,7 @@ namespace MilkTeaAdminWeb.Pages.Products
 			_productService = productService;
 		}
 
-		public PaginatingResult<Product> PaginatedProducts { get; set; } = default!;
+		public PaginatingResult<ProductViewModel> PaginatedProducts { get; set; } = default!;
 
 		public int PageSize { get; set; } = 5;
 

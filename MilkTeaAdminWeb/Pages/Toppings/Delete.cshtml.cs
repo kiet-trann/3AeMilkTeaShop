@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.SignalR;
 using MilkTea.Core.ViewModels;
 using MilkTea.Repository.Model;
+using MilkTea.Services.SignalR;
 using MilkTea.Services.ToppingServices;
 
 namespace MilkTeaAdminWeb.Pages.Toppings
@@ -9,58 +11,44 @@ namespace MilkTeaAdminWeb.Pages.Toppings
     public class DeleteModel : PageModel
     {
         private readonly IToppingService _toppingService;
+        private readonly IHubContext<SignalHub> _hubContext;
 
-        public DeleteModel(IToppingService toppingService)
+        public DeleteModel(IToppingService toppingService, IHubContext<SignalHub> hubContext)
         {
             _toppingService = toppingService;
+            _hubContext = hubContext;
         }
 
         [BindProperty]
-        public Topping Topping { get; set; } = default!;
+        public ToppingViewModel ToppingViewModel { get; set; } = default!;
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
             if (id == null)
             {
-                return NotFound();
+                TempData["FailedMessage"] = "ID Không Được Trống!";
+                return RedirectToPage("./Index");
             }
 
-            // Lấy thông tin topping
             var topping = await _toppingService.GetToppingByIdAsync(id.Value);
 
             if (topping == null)
             {
-                return NotFound();
-            }
-            else
-            {
-                Topping = new Topping
-                {
-                    ToppingId = topping.ToppingId,
-                    ToppingName = topping.ToppingName,
-                    Price = topping.Price,
-                    IsAvailable = topping.IsAvailable
-                };
+                TempData["FailedMessage"] = "Topping Không Có Sẵn!";
+                return RedirectToPage("./Index");
             }
             return Page();
         }
 
         public async Task<IActionResult> OnPostAsync(int? id)
         {
-            if (id == null)
-            {
-                return RedirectToPage("./Index");
-            }
-
-            var result = await _toppingService.DeleteToppingAsync(id.Value);
+            var result = await _toppingService.DeleteToppingAsync((int)id);
 
             if (result == "Xóa topping thành công")
             {
-                ViewData["Message"] = result;
-            }
-            else
-            {
-                ViewData["Message"] = result;
+                TempData["SuccessMessage"] = result;
+                await _hubContext.Clients.All.SendAsync("LoadPage", "Toppings");
+                return RedirectToPage("./Index");
             }
 
             return RedirectToPage("./Index");

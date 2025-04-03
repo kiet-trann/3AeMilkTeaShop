@@ -6,7 +6,8 @@ namespace MilkTea.Services.ProductServices
 {
 	public interface IProductService
 	{
-		Task<PaginatingResult<Product>> GetPaginatedProductsAsync(int pageIndex, int pageSize);
+		Task<PaginatingResult<ProductViewModel>> GetPaginatedProductsAsync(int pageIndex, int pageSize);
+		Task<PaginatingResult<ProductViewModel>> GetProductByCategory(int categoryId, int pageNumber, int pageSize);
 		Task<ProductViewModel> GetProductByIdAsync(int productId);
 		Task<string> AddProductAsync(ProductViewModel productViewModel);
 		Task<string> UpdateProductAsync(ProductViewModel productViewModel);
