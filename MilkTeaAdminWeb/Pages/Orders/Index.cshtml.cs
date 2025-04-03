@@ -14,17 +14,21 @@ namespace MilkTeaAdminWeb.Pages.Orders
         {
             _orderService = orderService;
         }
-        public PaginatingResult<OrderViewModel> PaginatedOrders { get; set; }
 
-        [BindProperty(SupportsGet = true)]
-        public int PageIndex { get; set; } = 1;
+        public PaginatingResult<OrderViewModel> PaginatedOrders { get; set; } = default!;
 
-        [BindProperty(SupportsGet = true)]
         public int PageSize { get; set; } = 5;
-        public async Task OnGetAsync(int? orderId)
-        {
-            PaginatedOrders = await _orderService.GetPaginatedOrdersAsync(PageIndex, PageSize);
 
+        public OrderViewModel SelectedOrder { get; set; }
+
+        public List<OrderDetailViewModel> OrderDetails { get; set; } = new();
+
+        public async Task OnGetAsync(int pageIndex = 1, int? orderId = null)
+        {
+            // Lấy các đơn hàng theo phân trang
+            PaginatedOrders = await _orderService.GetPaginatedOrdersAsync(pageIndex, PageSize);
+
+            // Nếu có orderId, lấy chi tiết đơn hàng tương ứng
             if (orderId.HasValue)
             {
                 SelectedOrder = await _orderService.GetOrderByIdAsync(orderId.Value);
@@ -32,14 +36,13 @@ namespace MilkTeaAdminWeb.Pages.Orders
             }
         }
 
-        public List<OrderViewModel> OrderList { get; set; } 
-        public OrderViewModel SelectedOrder { get; set; }
-        public List<OrderDetailViewModel> OrderDetails { get; set; } = new();
-
-        public async Task<IActionResult> OnPostUpdateStatus(int orderId, string newStatus)
+        public async Task<IActionResult> OnPostUpdateStatus(int orderId, string newStatus, int pageIndex = 1)
         {
+            // Cập nhật trạng thái đơn hàng
             await _orderService.UpdateOrderStatusAsync(orderId, newStatus);
-            return RedirectToPage("./Orders", new { orderId, PageIndex, PageSize });
+
+            // Quay lại trang đơn hàng với trạng thái cập nhật
+            return RedirectToPage("./Index", new { pageIndex });
         }
     }
 }

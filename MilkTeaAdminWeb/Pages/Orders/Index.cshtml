@@ -14,7 +14,7 @@
 		</tr>
 	</thead>
 	<tbody>
-		@foreach (var order in Model.OrderList)
+		@foreach (var order in Model.PaginatedOrders.Items)
 		{
 			<tr>
 				<td>@order.OrderId</td>
@@ -30,19 +30,29 @@
 		}
 	</tbody>
 </table>
-<!-- Phân trang -->
 <div class="pagination">
-	@if (Model.PaginatedOrders.HasPreviousPage)
-	{
-		<a asp-page="Index" asp-route-PageIndex="@(Model.PageIndex - 1)" asp-route-PageSize="@Model.PageSize">Trước</a>
-	}
+	<ul class="pagination justify-content-center">
+		@if (Model.PaginatedOrders.CurrentPage > 1)
+		{
+			<li class="page-item">
+				<a class="page-link" asp-page="./Index" asp-route-pageIndex="@(Model.PaginatedOrders.CurrentPage - 1)">Trước</a>
+			</li>
+		}
 
-	<span>Trang @Model.PageIndex / @Model.PaginatedOrders.TotalPages</span>
+		@for (int i = 1; i <= Model.PaginatedOrders.TotalPages; i++)
+		{
+			<li class="page-item @(i == Model.PaginatedOrders.CurrentPage ? "active" : "")">
+				<a class="page-link" asp-page="./Index" asp-route-pageIndex="@i">@i</a>
+			</li>
+		}
 
-	@if (Model.PaginatedOrders.HasNextPage)
-	{
-		<a asp-page="Index" asp-route-PageIndex="@(Model.PageIndex + 1)" asp-route-PageSize="@Model.PageSize">Sau</a>
-	}
+		@if (Model.PaginatedOrders.CurrentPage < Model.PaginatedOrders.TotalPages)
+		{
+			<li class="page-item">
+				<a class="page-link" asp-page="./Index" asp-route-pageIndex="@(Model.PaginatedOrders.CurrentPage + 1)">Tiếp</a>
+			</li>
+		}
+	</ul>
 </div>
 
 @if (Model.SelectedOrder != null)
