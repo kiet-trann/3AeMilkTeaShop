@@ -1,11 +1,12 @@
-﻿using MilkTea.Core.ViewModels;
+﻿using MilkTea.Core.Pagination;
+using MilkTea.Core.ViewModels;
 using MilkTea.Repository.Model;
 
 namespace MilkTea.Services.OrderServices
 {
 	public interface IOrderService
 	{
-        Task<IEnumerable<OrderViewModel>> GetPaginatedOrdersAsync(int pageIndex, int pageSize);
+        Task<PaginatingResult<OrderViewModel>> GetPaginatedOrdersAsync(int pageNumber, int pageSize);
         Task<OrderViewModel> GetOrderByIdAsync(int orderId);
         Task<List<OrderDetailViewModel>> GetOrderDetailsForOrder(int orderId);
         Task<string> UpdateOrderStatusAsync(int orderId, string newStatus);

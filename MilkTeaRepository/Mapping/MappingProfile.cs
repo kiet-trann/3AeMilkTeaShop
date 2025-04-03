@@ -14,7 +14,7 @@ namespace MilkTea.Repository.Mapping
             CreateMap<UserViewModel, User>();
             CreateMap<User, UserViewModel>();
             CreateMap<LoginViewModel, User>();
-            CreateMap<User, UserBasicViewModel>();
+          //  CreateMap<User, UserBasicViewModel>();
 
             // Topping
             CreateMap<ToppingViewModel, Topping>();
@@ -27,6 +27,12 @@ namespace MilkTea.Repository.Mapping
             //Product
             CreateMap<ProductViewModel, Product>();
             CreateMap<Product, ProductViewModel>();
+            //orrder
+            CreateMap<Order, OrderViewModel>();
+            CreateMap<OrderDetail, OrderDetailViewModel>()
+            .ForMember(dest => dest.ProductName, opt => opt.MapFrom(src => src.Product.ProductName));
+
+        
 
 			//Product
 			CreateMap<OrderViewModel, Product>();
