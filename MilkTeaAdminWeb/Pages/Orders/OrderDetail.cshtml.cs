@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using MilkTea.Repository.Model;
 
-namespace MilkTeaAdminWeb.Pages
+namespace MilkTeaAdminWeb.Pages.Orders
 {
     public class OrderDetailModel : PageModel
     {
@@ -31,4 +31,4 @@ namespace MilkTeaAdminWeb.Pages
             Toppings = _context.Toppings.ToList();
         }
     }
-    }
+}
