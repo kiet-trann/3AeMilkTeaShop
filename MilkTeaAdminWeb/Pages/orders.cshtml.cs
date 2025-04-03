@@ -29,8 +29,8 @@ namespace MilkTeaAdminWeb
         }
 
         public List<OrderViewModel> OrderList { get; set; } 
-        public OrderViewModel SelectedOrder { get; set; } 
-        public List<OrderDetailViewModel> OrderDetails { get; set; }
+        public OrderViewModel SelectedOrder { get; set; }
+        public List<OrderDetailViewModel> OrderDetails { get; set; } = new();
 
         public async Task<IActionResult> OnPostUpdateStatus(int orderId, string newStatus)
         {

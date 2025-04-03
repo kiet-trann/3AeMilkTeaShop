@@ -16,7 +16,7 @@ namespace MilkTea.Core.ViewModels
         public string Status { get; set; } = string.Empty;
         public string? Note { get; set; }
         public List<OrderDetailViewModel> OrderDetails { get; set; } = new();
-        public UserBasicViewModel User { get; set; }
+        public UserViewModel User { get; set; }
 
     }
 }

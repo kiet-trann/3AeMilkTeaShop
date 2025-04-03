@@ -26,6 +26,11 @@ namespace MilkTea.Repository.Mapping
             //Product
             CreateMap<ProductViewModel, Product>();
             CreateMap<Product, ProductViewModel>();
+            //orrder
+            CreateMap<Order, OrderViewModel>();
+            CreateMap<OrderDetail, OrderDetailViewModel>()
+            .ForMember(dest => dest.ProductName, opt => opt.MapFrom(src => src.Product.ProductName));
+
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MilkTea.Repository.Mapping;
 using MilkTea.Repository.Model;
+using MilkTea.Services.OrderServices;
 using MilkTea.Services.ProductServices;
 using MilkTea.Services.ToppingServices;
 using MilkTea.Services.UserServices;
@@ -24,6 +25,7 @@ namespace MilkTeaAdminWeb
             builder.Services.AddScoped<ICategoryService, CategoryService>();
             builder.Services.AddScoped<IToppingService, ToppingService>();
             builder.Services.AddScoped<IProductService, ProductService>();
+            builder.Services.AddScoped<IOrderService, OrderService >();
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddAutoMapper(typeof(MappingProfile)); 
 

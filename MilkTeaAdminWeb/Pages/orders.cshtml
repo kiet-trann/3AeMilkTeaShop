@@ -12,7 +12,7 @@
             <th>FinalAmount</th>
             <th>PaymentMethod</th>
             <th>Status</th>
-          
+            <th>Action</th>
         </tr>
     </thead>
     <tbody>
@@ -21,10 +21,10 @@
             <tr>
                 <td>@order.OrderId</td>
                 <td>@order.OrderDate</td>
-                <td>@order.User.Username</td>
+                <td>@(order.User != null ? order.User.Username : "Không có thông tin")</td>
                 <td>@order.TotalAmount</td>
                 <td>@order.FinalAmount</td>
-                <td>@order.PaymentMethod</td>
+
                 <td>@order.Status</td>
                 <td>
                     <a asp-page="./Orders" asp-route-orderId="@order.OrderId">Chi tiết</a>
@@ -38,8 +38,8 @@
 {
     <h2>Chi tiết đơn hàng @Model.SelectedOrder.OrderId</h2>
     <p>Ngày đặt hàng: @Model.SelectedOrder.OrderDate</p>
-    <p>User: @Model.SelectedOrder.User.Username</p>
-    <p>Phương thức thanh toán: @Model.SelectedOrder.PaymentMethod</p>
+    <p>User: @(Model.SelectedOrder.User != null ? Model.SelectedOrder.User.Username : "Không có thông tin")</p>
+
     <p>Trạng thái: @Model.SelectedOrder.Status</p>
     <p>Ghi chú: @Model.SelectedOrder.Note</p>
 
@@ -71,8 +71,7 @@
             }
         </tbody>
     </table>
-}
-    </table>
+
     <form method="post" asp-page-handler="UpdateStatus">
         <input type="hidden" name="orderId" value="@Model.SelectedOrder.OrderId" />
         <select name="newStatus">
@@ -82,4 +81,8 @@
         </select>
         <button type="submit">Cập nhật trạng thái</button>
     </form>
+}
+else
+{
+    <p>Không có đơn hàng nào được chọn.</p>
 }
