@@ -1,15 +1,14 @@
-
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using MilkTea.Repository.Model;
 
-namespace MilkTeaAdminWeb
+namespace MilkTeaAdminWeb.Pages.Orders
 {
-    public class ordersModel : PageModel
+    public class OrdersModel : PageModel
     {
         private readonly ThreeBrothersMilkTeaShopContext _context;
-        public ordersModel(ThreeBrothersMilkTeaShopContext context)
+        public OrdersModel(ThreeBrothersMilkTeaShopContext context)
         {
             _context = context;
         }
@@ -37,7 +36,7 @@ namespace MilkTeaAdminWeb
             order.Status = newStatus;
             _context.SaveChanges();
 
-            return RedirectToPage("./Orders", new { orderId = orderId });
+            return RedirectToPage("./Orders", new { orderId });
         }
     }
 }

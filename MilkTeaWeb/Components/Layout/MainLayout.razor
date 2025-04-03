@@ -1,23 +1,105 @@
 ﻿@inherits LayoutComponentBase
 
-<div class="page">
-    <div class="sidebar">
-        <NavMenu />
-    </div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>3AnhEmMilkTea</title>
+	<meta content="width=device-width, initial-scale=1.0" name="viewport">
+	<meta content="3AnhEmMilkTea - Trà sữa ngon và chất lượng" name="description">
+	<meta content="trà sữa, 3AnhEmMilkTea, trà xanh, trà đen, trà organic" name="keywords">
 
-    <main>
-        <div class="top-row px-4">
-            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
-        </div>
+	<!-- Owl Carousel CSS -->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css" />
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css" />
 
-        <article class="content px-4">
-            @Body
-        </article>
-    </main>
-</div>
+	<!-- Favicon -->
+	<link href="/img/MilkTeaLogo.jpg" rel="icon">
 
-<div id="blazor-error-ui">
-    An unhandled error has occurred.
-    <a href="" class="reload">Reload</a>
-    <a class="dismiss">🗙</a>
-</div>
+	<!-- Custom CSS -->
+	<link href="/css/style.css" rel="stylesheet">
+
+	<!-- Font Awesome CDN -->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+</head>
+
+<body>
+	<!-- Navbar -->
+	<div class="navbar">
+		<div class="logo">
+			<a href="/"><img src="/img/MilkTeaLogo.jpg" alt="Logo"></a>
+		</div>
+
+		<div class="nav-links">
+			<a href="/">Trang Chủ</a>
+			<a href="/gioithieu">Giới Thiệu</a>
+			<a href="/sanpham">Sản Phẩm</a>
+
+			<!-- Dropdown cho chọn trà -->
+			<div class="dropdown">
+				<button class="dropdown-btn">Danh Mục</button>
+				<div class="dropdown-content">
+					<a href="/product/green-tea">Trà Xanh</a>
+					<a href="/product/black-tea">Trà Đen</a>
+					<a href="/product/spiced-tea">Trà Gia Vị</a>
+					<a href="/product/organic-tea">Trà Organic</a>
+				</div>
+			</div>
+
+			<!-- Search Box -->
+			<div class="search-box">
+				<input type="text" @bind="searchQuery" placeholder="Tìm kiếm sản phẩm..." class="search-input" />
+				<button @onclick="OnSearch" class="search-btn"><i class="fas fa-search"></i></button>
+			</div>
+
+			<!-- Cart Button -->
+				<i style="cursor:pointer" onclick="toggleCart()" class="fa-solid fa-cart-shopping"></i>
+		</div>
+	</div>
+
+	<!-- Body Content -->
+	<div class="container">
+		@Body
+	</div>
+
+	<!-- Footer -->
+	<div class="footer">
+		<p>© 2025 3AnhEmMilkTea. All Rights Reserved.</p>
+	</div>
+
+	<!-- Back to Top Button -->
+	<a href="#" class="back-to-top">
+		<i class="arrow-up">&#8593;</i>
+	</a>
+
+	<div id="cartModal" class="cart-modal">
+		<div class="cart-close" onclick="toggleCart()">×</div>
+		<div class="cart-header">Giỏ Hàng</div>
+		<ul class="cart-items" id="cartItems">
+			<!-- Cart items will be dynamically added here -->
+		</ul>
+	</div>
+
+	<!-- Scripts -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
+	<script src="~/js/main.js"></script>
+
+	<script>
+		function toggleCart() {
+			var cartModal = document.getElementById('cartModal');
+			cartModal.classList.toggle('open');
+		}
+	</script>
+</body>
+</html>
+
+@code {
+	private string searchQuery;
+
+	private async Task OnSearch()
+	{
+
+	}
+}

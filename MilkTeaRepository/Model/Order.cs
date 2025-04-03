@@ -15,8 +15,6 @@ public partial class Order
 
     public decimal FinalAmount { get; set; }
 
-    public string PaymentMethod { get; set; } = null!;
-
     public string Status { get; set; } = null!;
 
     public string? Note { get; set; }

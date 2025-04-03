@@ -8,8 +8,9 @@ namespace MilkTea.Core.ViewModels
         [Required(ErrorMessage = "Tên sản phẩm là bắt buộc.")]
 		[StringLength(100, ErrorMessage = "Tên sản phẩm không được vượt quá 100 ký tự.")]
 		public string ProductName { get; set; }
+        public string? Description { get; set; } = null!;
 
-		[Required(ErrorMessage = "Danh mục sản phẩm là bắt buộc.")]
+        [Required(ErrorMessage = "Danh mục sản phẩm là bắt buộc.")]
 		public int CategoryId { get; set; }
 
 		[Required(ErrorMessage = "Giá size S là bắt buộc.")]
@@ -32,5 +33,7 @@ namespace MilkTea.Core.ViewModels
 
 		[Required(ErrorMessage = "Trạng thái khả dụng của size L là bắt buộc.")]
 		public bool IsAvailableL { get; set; }
-	}
+		public string? ImageUrl { get; set; }
+        public CategoryViewModel Category { get; set; } = null!;
+    }
 }

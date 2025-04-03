@@ -17,17 +17,31 @@ namespace MilkTea.Services.ProductServices
             _mapper = mapper;
         }
 
-        public async Task<PaginatingResult<Product>> GetPaginatedProductsAsync(int pageIndex, int pageSize)
+        public async Task<PaginatingResult<ProductViewModel>> GetPaginatedProductsAsync(int pageIndex, int pageSize)
         {
             if (pageIndex < 1) pageIndex = 1;
             if (pageSize < 1) pageSize = 10;
 
             var totalCount = await _unitOfWork.GetRepository<Product>().CountAsync();
 
+            // Lấy danh sách sản phẩm kèm theo Category
             var products = await _unitOfWork.GetRepository<Product>()
-                .GetPaginateAsync(pageIndex, pageSize, null, null, "Category");
+                .GetPaginateAsync(pageIndex, pageSize, null, null, "Category"); 
 
-            var pagedResult = new PaginatingResult<Product>(products, pageIndex, totalCount, pageSize);
+            // Ánh xạ dữ liệu
+            var productViewModels = products.Select(product =>
+            {
+                var productVM = _mapper.Map<ProductViewModel>(product);
+                productVM.Category = _mapper.Map<CategoryViewModel>(product.Category);
+                return productVM;
+            }).ToList();
+
+            var pagedResult = new PaginatingResult<ProductViewModel>(
+                productViewModels,
+                pageIndex,
+                totalCount,
+                pageSize
+            );
 
             return pagedResult;
         }
