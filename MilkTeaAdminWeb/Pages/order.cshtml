@@ -58,7 +58,7 @@
             @foreach (var orderDetail in Model.OrderDetails)
             {
                 <tr>
-                    <td>@orderDetail.Product.ProductName</td>
+                    <td>@orderDetail.ProductName</td>
                     <td>@orderDetail.Size</td>
                     <td>@orderDetail.SugarLevel</td>
                     <td>@orderDetail.IceLevel</td>
@@ -68,6 +68,8 @@
                 </tr>
             }
         </tbody>
+    </table>
+}
     </table>
     <form method="post" asp-page-handler="UpdateStatus">
         <input type="hidden" name="orderId" value="@Model.SelectedOrder.OrderId" />

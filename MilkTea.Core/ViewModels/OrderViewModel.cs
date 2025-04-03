@@ -8,14 +8,15 @@ namespace MilkTea.Core.ViewModels
 {
     public class OrderViewModel
     {
-        public int ProductId { get; set; }
-        public string ProductName { get; set; }
-        public int CategoryId { get; set; }
-        public decimal PriceS { get; set; }
-        public decimal PriceM { get; set; }
-        public decimal PriceL { get; set; }
-        public bool IsAvailableS { get; set; }
-        public bool IsAvailableM { get; set; }
-        public bool IsAvailableL { get; set; }
+        public int OrderId { get; set; }
+        public DateTime OrderDate { get; set; }
+        public decimal TotalAmount { get; set; }
+        public decimal FinalAmount { get; set; }
+        public string PaymentMethod { get; set; } = string.Empty;
+        public string Status { get; set; } = string.Empty;
+        public string? Note { get; set; }
+        public List<OrderDetailViewModel> OrderDetails { get; set; } = new();
+        public UserBasicViewModel User { get; set; }
+
     }
 }
