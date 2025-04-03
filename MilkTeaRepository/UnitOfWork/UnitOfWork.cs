@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Storage;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using MilkTea.Repository.Model;
 using MilkTeaRepository.GenericRepository;
 
@@ -7,8 +8,7 @@ namespace MilkTeaRepository.UnitOfWork
 	public class UnitOfWork : IUnitOfWork
 	{
 		private readonly ThreeBrothersMilkTeaShopContext _context;
-		private IDbContextTransaction _transaction;
-		private bool _disposed = false;
+		private bool disposed = false;
 		private readonly Dictionary<Type, object> _repositories = new Dictionary<Type, object>();
 
 		public UnitOfWork(ThreeBrothersMilkTeaShopContext context)
@@ -35,34 +35,14 @@ namespace MilkTeaRepository.UnitOfWork
 			return await _context.SaveChangesAsync();
 		}
 
-		public async Task BeginTransactionAsync()
+		public void BeginTransaction()
 		{
-			_transaction = await _context.Database.BeginTransactionAsync();
+			_context.Database.BeginTransaction();
 		}
 
-		public async Task CommitTransactionAsync()
+		public void CommitTransaction()
 		{
-			try
-			{
-				await _transaction.CommitAsync();
-			}
-			catch
-			{
-				await _transaction.RollbackAsync();
-				throw;
-			}
-			finally
-			{
-				_transaction.Dispose();
-				_transaction = null;
-			}
-		}
-
-		public async Task RollbackTransactionAsync()
-		{
-			await _transaction.RollbackAsync();
-			_transaction.Dispose();
-			_transaction = null;
+			_context.Database.CommitTransaction();
 		}
 
 		public void Dispose()
@@ -73,19 +53,19 @@ namespace MilkTeaRepository.UnitOfWork
 
 		protected virtual void Dispose(bool disposing)
 		{
-			if (!_disposed)
+			if (!disposed)
 			{
 				if (disposing)
 				{
-					if (_transaction != null)
-					{
-						_transaction.Dispose();
-						_transaction = null;
-					}
 					_context.Dispose();
 				}
-				_disposed = true;
 			}
+			disposed = true;
+		}
+
+		public void RollbackTransaction()
+		{
+			_context.Database.RollbackTransaction();
 		}
 	}
 }

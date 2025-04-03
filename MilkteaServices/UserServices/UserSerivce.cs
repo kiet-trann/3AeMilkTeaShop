@@ -21,166 +21,283 @@ namespace MilkTea.Services.UserServices
 
 		public async Task<PaginatingResult<User>> GetPaginatedUsersAsync(int pageIndex, int pageSize, string? filter = null)
 		{
-			if (pageIndex < 1) pageIndex = 1;
-			if (pageSize < 1) pageSize = 10;
-
-			Expression<Func<User, bool>>? userFilter = null;
-			if (!string.IsNullOrWhiteSpace(filter))
+			_unitOfWork.BeginTransaction();
+			try
 			{
-				userFilter = u => u.FullName.Contains(filter);
+				if (pageIndex < 1) pageIndex = 1;
+				if (pageSize < 1) pageSize = 10;
+
+				Expression<Func<User, bool>>? userFilter = null;
+				if (!string.IsNullOrWhiteSpace(filter))
+				{
+					userFilter = u => u.FullName.Contains(filter);
+				}
+
+				var totalCount = _unitOfWork.GetRepository<User>().Count();
+				var users = await _unitOfWork.GetRepository<User>().GetPaginateAsync(pageIndex, pageSize, userFilter);
+
+				var pagedResult = new PaginatingResult<User>(users, pageIndex, totalCount, pageSize);
+				_unitOfWork.BeginTransaction();
+				return pagedResult;
 			}
-
-			var totalCount = await _unitOfWork.GetRepository<User>().CountAsync();
-
-			var users = await _unitOfWork.GetRepository<User>()
-				.GetPaginateAsync(pageIndex, pageSize, userFilter);
-
-			var pagedResult = new PaginatingResult<User>(users, pageIndex, totalCount, pageSize);
-			return pagedResult;
+			catch
+			{
+				_unitOfWork.BeginTransaction();
+				throw;
+			}
 		}
 
 		public async Task<UserViewModel?> GetUserByIdAsync(int id)
 		{
-			var user = await _unitOfWork.GetRepository<User>().GetByIdAsync(id);
-			return user == null ? null : _mapper.Map<UserViewModel>(user);
+			_unitOfWork.BeginTransaction();
+			try
+			{
+				var user = await _unitOfWork.GetRepository<User>().GetByIdAsync(id);
+				_unitOfWork.BeginTransaction();
+				return user == null ? null : _mapper.Map<UserViewModel>(user);
+			}
+			catch
+			{
+				_unitOfWork.BeginTransaction();
+				throw;
+			}
 		}
 
 		public async Task<User?> GetUserByUsernameAsync(string username)
 		{
-			if (string.IsNullOrWhiteSpace(username))
-				return null;
+			_unitOfWork.BeginTransaction();
+			try
+			{
+				if (string.IsNullOrWhiteSpace(username))
+					return null;
 
-			return await _unitOfWork.GetRepository<User>().GetFirstOrDefaultAsync(u => u.Username == username);
+				var user = await _unitOfWork.GetRepository<User>().GetFirstOrDefaultAsync(u => u.Username == username);
+				_unitOfWork.BeginTransaction();
+				return user;
+			}
+			catch
+			{
+				_unitOfWork.BeginTransaction();
+				throw;
+			}
 		}
 
 		public async Task<User?> AuthenticateAsync(string username, string password)
 		{
-			if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))
-				return null;
+			_unitOfWork.BeginTransaction();
+			try
+			{
+				if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))
+					return null;
 
-			// Tìm kiếm người dùng theo username hoặc email
-			var user = await _unitOfWork.GetRepository<User>().GetFirstOrDefaultAsync(u => u.Username == username);
+				var user = await _unitOfWork.GetRepository<User>().GetFirstOrDefaultAsync(u => u.Username == username);
 
-			if (user == null || !user.IsActive)
-				return null;
+				if (user == null || !user.IsActive)
+				{
+					_unitOfWork.BeginTransaction();
+					return null;
+				}
 
-			// Kiểm tra mật khẩu
-			return user.Password == password ? user : null;
+				_unitOfWork.BeginTransaction();
+				return user.Password == password ? user : null;
+			}
+			catch
+			{
+				_unitOfWork.BeginTransaction();
+				throw;
+			}
 		}
 
 		public async Task<string> AddUserAsync(UserViewModel userViewModel)
 		{
-			if (userViewModel == null)
+			_unitOfWork.BeginTransaction();
+			try
 			{
-				return "Thông tin người dùng không hợp lệ";
-			}
+				if (userViewModel == null)
+				{
+					_unitOfWork.BeginTransaction();
+					return "Thông tin người dùng không hợp lệ";
+				}
 
-			// Kiểm tra xem tên người dùng đã tồn tại chưa
-			var existingUser = await _unitOfWork.GetRepository<User>().GetFirstOrDefaultAsync(u => u.Username == userViewModel.Username);
-			if (existingUser != null)
+				var existingUser = await _unitOfWork.GetRepository<User>().GetFirstOrDefaultAsync(u => u.Username == userViewModel.Username);
+				if (existingUser != null)
+				{
+					_unitOfWork.BeginTransaction();
+					return "Tên người dùng đã tồn tại";
+				}
+
+				var user = _mapper.Map<User>(userViewModel);
+
+				await _unitOfWork.GetRepository<User>().AddAsync(user);
+				await _unitOfWork.SaveChangesAsync();
+				_unitOfWork.BeginTransaction();
+				return "Thêm người dùng thành công";
+			}
+			catch
 			{
-				return "Tên người dùng đã tồn tại";
+				_unitOfWork.BeginTransaction();
+				throw;
 			}
-
-			var user = _mapper.Map<User>(userViewModel);
-
-			await _unitOfWork.GetRepository<User>().AddAsync(user);
-			await _unitOfWork.SaveChangesAsync();
-
-			return "Thêm người dùng thành công";
 		}
 
 		public async Task<string> RegisterUserAsync(RegisterViewModel userViewModel)
 		{
-			if (userViewModel == null)
+			_unitOfWork.BeginTransaction();
+			try
 			{
-				return "Thông tin người dùng không hợp lệ";
-			}
+				if (userViewModel == null)
+				{
+					_unitOfWork.BeginTransaction();
+					return "Thông tin người dùng không hợp lệ";
+				}
 
-			var existingUser = await _unitOfWork.GetRepository<User>().GetFirstOrDefaultAsync(u => u.Username == userViewModel.Username);
-			if (existingUser != null)
+				var existingUser = await _unitOfWork.GetRepository<User>().GetFirstOrDefaultAsync(u => u.Username == userViewModel.Username);
+				if (existingUser != null)
+				{
+					_unitOfWork.BeginTransaction();
+					return "Tên người dùng đã tồn tại";
+				}
+
+				var user = _mapper.Map<User>(userViewModel);
+				user.Role = "Customer";
+				user.IsActive = true;
+
+				await _unitOfWork.GetRepository<User>().AddAsync(user);
+				await _unitOfWork.SaveChangesAsync();
+				_unitOfWork.BeginTransaction();
+				return "Đăng ký thành công";
+			}
+			catch
 			{
-				return "Tên người dùng đã tồn tại";
+				_unitOfWork.BeginTransaction();
+				throw;
 			}
-
-			User user = _mapper.Map<User>(userViewModel);
-
-			// Đặt Role mặc định là "customer"
-			user.Role = "Customer";
-			user.IsActive = true;
-
-			await _unitOfWork.GetRepository<User>().AddAsync(user);
-			await _unitOfWork.SaveChangesAsync();
-
-			return "Đăng ký thành công";
 		}
 
 		public async Task<string> ChangePasswordAsync(PasswordViewModel passwordViewModel)
 		{
-			if (passwordViewModel == null) return "Mật khẩu không được để trống";
+			_unitOfWork.BeginTransaction();
+			try
+			{
+				var user = await _unitOfWork.GetRepository<User>().GetByIdAsync(passwordViewModel.UserId);
+				if (user == null)
+				{
+					_unitOfWork.BeginTransaction();
+					return "Người dùng không tồn tại";
+				}
 
-			var user = await _unitOfWork.GetRepository<User>().GetByIdAsync(passwordViewModel.UserId);
-			if (user == null)
-				return "Người dùng không tồn tại";
+				user.Password = passwordViewModel.Password;
 
-			user.Password = passwordViewModel.Password;
-
-			await _unitOfWork.GetRepository<User>().UpdateAsync(user);
-			await _unitOfWork.SaveChangesAsync();
-			return "Đổi mật khẩu thành công";
+				_unitOfWork.GetRepository<User>().Update(user);
+				await _unitOfWork.SaveChangesAsync();
+				_unitOfWork.BeginTransaction();
+				return "Đổi mật khẩu thành công";
+			}
+			catch
+			{
+				_unitOfWork.BeginTransaction();
+				throw;
+			}
 		}
 
 		public async Task<string> ToggleUserStatusAsync(int id)
 		{
-			var user = await _unitOfWork.GetRepository<User>().GetByIdAsync(id);
-			if (user == null)
-				return "Người dùng không tồn tại";
+			_unitOfWork.BeginTransaction();
+			try
+			{
+				var user = await _unitOfWork.GetRepository<User>().GetByIdAsync(id);
+				if (user == null)
+				{
+					_unitOfWork.BeginTransaction();
+					return "Người dùng không tồn tại";
+				}
 
-			user.IsActive = !user.IsActive;
+				user.IsActive = !user.IsActive;
 
-			await _unitOfWork.GetRepository<User>().UpdateAsync(user);
-			await _unitOfWork.SaveChangesAsync();
-			return "Cập nhật trạng thái thành công";
+				_unitOfWork.GetRepository<User>().Update(user);
+				await _unitOfWork.SaveChangesAsync();
+				_unitOfWork.BeginTransaction();
+				return "Cập nhật trạng thái thành công";
+			}
+			catch
+			{
+				_unitOfWork.BeginTransaction();
+				throw;
+			}
 		}
-
 		public async Task<string> UpdateUserProfileAsync(UserViewModel userViewModel)
 		{
-			if (userViewModel == null)
-				return "Thông tin người dùng không hợp lệ";
+			_unitOfWork.BeginTransaction();
+			try
+			{
+				if (userViewModel == null)
+				{
+					_unitOfWork.BeginTransaction();
+					return "Thông tin người dùng không hợp lệ";
+				}
 
-			var user = await _unitOfWork.GetRepository<User>().GetByIdAsync(userViewModel.UserId);
-			if (user == null)
-				return "Người dùng không tồn tại";
+				var user = await _unitOfWork.GetRepository<User>().GetByIdAsync(userViewModel.UserId);
+				if (user == null)
+				{
+					_unitOfWork.BeginTransaction();
+					return "Người dùng không tồn tại";
+				}
 
-			string username = user.Username;
-			_mapper.Map(userViewModel, user);
-			user.Username = username;
+				string username = user.Username;
+				_mapper.Map(userViewModel, user);
+				user.Username = username;
 
-			await _unitOfWork.GetRepository<User>().UpdateAsync(user);
-			await _unitOfWork.SaveChangesAsync();
+				_unitOfWork.GetRepository<User>().Update(user);
+				await _unitOfWork.SaveChangesAsync();
+				_unitOfWork.BeginTransaction();
 
-			return "Cập nhật thông tin người dùng thành công";
+				return "Cập nhật thông tin người dùng thành công";
+			}
+			catch
+			{
+				_unitOfWork.BeginTransaction();
+				throw;
+			}
 		}
 
 		public async Task<string> DeleteUserAsync(int id)
 		{
-			var user = await _unitOfWork.GetRepository<User>().GetByIdAsync(id);
-			if (user == null)
-				return "Người dùng không tồn tại";
+			_unitOfWork.BeginTransaction();
+			try
+			{
+				var user = await _unitOfWork.GetRepository<User>().GetByIdAsync(id);
+				if (user == null)
+				{
+					_unitOfWork.BeginTransaction();
+					return "Người dùng không tồn tại";
+				}
 
-			await _unitOfWork.GetRepository<User>().RemoveAsync(user);
-			await _unitOfWork.SaveChangesAsync();
-			return "Xóa người dùng thành công";
+				_unitOfWork.GetRepository<User>().Remove(user);
+				await _unitOfWork.SaveChangesAsync();
+				_unitOfWork.BeginTransaction();
+				return "Xóa người dùng thành công";
+			}
+			catch
+			{
+				_unitOfWork.BeginTransaction();
+				throw;
+			}
 		}
 
 		public async Task<bool> IsUsernameUniqueAsync(string username)
 		{
-			if (string.IsNullOrWhiteSpace(username))
-				return false;
-
-			var user = await _unitOfWork.GetRepository<User>().GetFirstOrDefaultAsync(u => u.Username == username);
-			return user == null;
+			_unitOfWork.BeginTransaction();
+			try
+			{
+				var user = await _unitOfWork.GetRepository<User>().GetFirstOrDefaultAsync(u => u.Username == username);
+				_unitOfWork.BeginTransaction();
+				return user == null;
+			}
+			catch
+			{
+				_unitOfWork.BeginTransaction();
+				throw;
+			}
 		}
-
 	}
 }

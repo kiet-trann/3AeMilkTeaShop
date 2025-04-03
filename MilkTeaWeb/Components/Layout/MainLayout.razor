@@ -1,4 +1,7 @@
-﻿@inherits LayoutComponentBase
+﻿@using MilkTea.Core.ViewModels
+@using MilkteaServices.CategoryServices
+@inherits LayoutComponentBase
+@inject ICategoryService CategoryService
 
 <!DOCTYPE html>
 <html lang="en">
@@ -40,10 +43,14 @@
 			<div class="dropdown">
 				<button class="dropdown-btn">Danh Mục</button>
 				<div class="dropdown-content">
-					<a href="/product/green-tea">Trà Xanh</a>
-					<a href="/product/black-tea">Trà Đen</a>
-					<a href="/product/spiced-tea">Trà Gia Vị</a>
-					<a href="/product/organic-tea">Trà Organic</a>
+					<!-- Sử dụng danh sách categories để tạo dropdown -->
+					@if (categories != null && categories.Any())
+					{
+						@foreach (var category in categories)
+						{
+							<a href="/product/@category.CategoryName">@category.CategoryName</a>
+						}
+					}
 				</div>
 			</div>
 
@@ -97,9 +104,15 @@
 
 @code {
 	private string searchQuery;
+	private IEnumerable<CategoryViewModel> categories;
+
+	protected override void OnInitialized()
+	{
+		categories = CategoryService.GetAvailableCategories();
+	}
 
 	private async Task OnSearch()
 	{
-
+		// Implement search functionality here
 	}
 }

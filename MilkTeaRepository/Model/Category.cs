@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace MilkTea.Repository.Model;
+﻿namespace MilkTea.Repository.Model;
 
 public partial class Category
 {

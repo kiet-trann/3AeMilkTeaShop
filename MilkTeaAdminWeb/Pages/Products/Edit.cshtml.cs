@@ -40,7 +40,7 @@ namespace MilkTeaAdminWeb.Pages.Products
                 return RedirectToPage("./Index");
             }
 
-            Categories = await _categoryService.GetAvailableCategoriesAsync();
+            Categories = _categoryService.GetAvailableCategories();
             ProductViewModel = product;
             return Page();
         }

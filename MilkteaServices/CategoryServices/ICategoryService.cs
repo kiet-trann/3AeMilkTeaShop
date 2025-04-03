@@ -11,6 +11,7 @@ namespace MilkteaServices.CategoryServices
 		Task<string> DeleteCategoryAsync(int categoryId);
 		Task<PaginatingResult<Category>> GetPaginatedCategoriesAsync(int pageIndex, int pageSize);
         Task<CategoryViewModel?> GetCategoryByIdAsync(int categoryId);
-        Task<IEnumerable<CategoryViewModel>> GetAvailableCategoriesAsync();
-    }
+		IEnumerable<CategoryViewModel> GetAvailableCategories();
+
+	}
 }

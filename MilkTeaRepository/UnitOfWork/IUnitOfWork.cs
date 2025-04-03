@@ -6,8 +6,8 @@ namespace MilkTeaRepository.UnitOfWork
 	{
 		IGenericRepository<T> GetRepository<T>() where T : class;
 		Task<int> SaveChangesAsync();
-		Task BeginTransactionAsync();
-		Task CommitTransactionAsync();
-		Task RollbackTransactionAsync();
+		void BeginTransaction();
+		void CommitTransaction();
+		void RollbackTransaction();
 	}
 }
