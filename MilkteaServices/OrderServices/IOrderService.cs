@@ -1,6 +1,6 @@
-﻿using MilkTea.Core.Pagination;
+﻿using MilkTea.Core.Enum;
+using MilkTea.Core.Pagination;
 using MilkTea.Core.ViewModels;
-using MilkTea.Repository.Model;
 
 namespace MilkTea.Services.OrderServices
 {
@@ -8,8 +8,9 @@ namespace MilkTea.Services.OrderServices
 	{
         Task<PaginatingResult<OrderViewModel>> GetPaginatedOrdersAsync(int pageNumber, int pageSize);
         Task<OrderViewModel> GetOrderByIdAsync(int orderId);
-        Task<List<OrderDetailViewModel>> GetOrderDetailsForOrder(int orderId);
+		List<OrderViewModel> GetOrdersByUserIdAsync(int userId, OrderStatusEnum? orderStatus);
+		Task<List<OrderDetailViewModel>> GetOrderDetailsForOrder(int orderId);
         Task<string> UpdateOrderStatusAsync(int orderId, string newStatus);
-
+        Task<string> CreateOrderAsync(int userId, OrderDetailViewModel orderDetailViewModel);
     }
 }

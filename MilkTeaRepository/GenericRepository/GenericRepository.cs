@@ -14,8 +14,9 @@ namespace MilkTeaRepository.GenericRepository
             _context = context;
             _dbSet = context.Set<T>();
         }
+		public IQueryable<T> Entities => _dbSet;
 
-        public async Task<IEnumerable<T>> GetPaginateAsync(int pageNumber,
+		public async Task<IEnumerable<T>> GetPaginateAsync(int pageNumber,
                                                          int pageSize,
                                                          Expression<Func<T, bool>>? filter = null,
                                                          Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null,

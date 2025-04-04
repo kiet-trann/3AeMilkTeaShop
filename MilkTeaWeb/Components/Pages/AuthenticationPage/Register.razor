@@ -1,9 +1,9 @@
-﻿@page "/register"
+﻿@page "/dangky"
 @using MilkTea.Services.UserServices
 @using MilkTeaWeb.ViewModels
-
 @inject NavigationManager Navigation
 @inject IUserService UserService
+@rendermode InteractiveServer
 
 <h3>Đăng Ký</h3>
 
@@ -65,7 +65,7 @@
         var result = await UserService.RegisterUserAsync(registerModel);
         if (result == "Đăng ký thành công")
         {
-            Navigation.NavigateTo("/login");
+            Navigation.NavigateTo("/dangnhap");
         }
         else
         {

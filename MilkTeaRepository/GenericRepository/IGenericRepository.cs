@@ -4,6 +4,7 @@ namespace MilkTeaRepository.GenericRepository
 {
     public interface IGenericRepository<T> where T : class
     {
+        IQueryable<T> Entities { get; }
         Task<IEnumerable<T>> GetPaginateAsync(int pageNumber = 1,
                                                      int pageSize = 10,
                                                      Expression<Func<T, bool>>? filter = null,

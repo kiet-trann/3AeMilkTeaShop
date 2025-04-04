@@ -16,6 +16,7 @@ namespace MilkTeaWeb.ViewModels
 		[Required(ErrorMessage = "Xác nhận mật khẩu không được để trống")]
 		[Compare("Password", ErrorMessage = "Mật khẩu xác nhận không khớp")]
 		public string ConfirmPassword { get; set; } = null!;
+
 		[Required(ErrorMessage = "Họ và tên không được để trống")]
 		[MaxLength(100, ErrorMessage = "Họ và tên không được quá 100 ký tự")]
 		public string FullName { get; set; } = null!;

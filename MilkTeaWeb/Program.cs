@@ -1,5 +1,7 @@
+using MilkTea.Repository;
 using MilkTea.Repository.Mapping;
 using MilkTea.Repository.Model;
+using MilkTea.Services.OrderServices;
 using MilkTea.Services.ProductServices;
 using MilkTea.Services.ToppingServices;
 using MilkTea.Services.UserServices;
@@ -19,11 +21,13 @@ public class Program
         builder.Services.AddDbContext<ThreeBrothersMilkTeaShopContext>();
 		builder.Services.AddRazorComponents()
             .AddInteractiveServerComponents();
-		builder.Services.AddScoped<IUserService, UserService>();
+        builder.Services.AddHttpContextAccessor();
+        builder.Services.AddScoped<IUserService, UserService>();
 		builder.Services.AddScoped<IUnitOfWork, UnitOfWork> ();
 		builder.Services.AddScoped<IToppingService, ToppingService>();
 		builder.Services.AddScoped<IProductService, ProductService>();
 		builder.Services.AddScoped<ICategoryService, CategoryService>();
+		builder.Services.AddScoped<IOrderService, OrderService>();
 		builder.Services.AddAutoMapper(typeof(MappingProfile).Assembly);
 
 		var app = builder.Build();
