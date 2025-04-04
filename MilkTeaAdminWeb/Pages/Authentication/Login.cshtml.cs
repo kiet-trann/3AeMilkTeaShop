@@ -26,7 +26,7 @@ namespace MilkTeaAdminWeb.Pages.Authentication
 
 			if (currentUserData != null)
 			{
-				Response.Redirect("/Dashboard");
+				Response.Redirect("/Home");
 			}
 		}
 
