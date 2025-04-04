@@ -59,23 +59,38 @@ namespace MilkTea.Services.OrderServices
 			}
 		}
 
-		public async Task<IEnumerable<OrderViewModel>> GetPaginatedOrdersAsync(int pageIndex, int pageSize)
-		{
-			_unitOfWork.BeginTransaction();
-			try
-			{
-				var orders = await _unitOfWork.GetRepository<Order>().GetPaginateAsync(pageIndex, pageSize, includeProperties: "User");
-				_unitOfWork.CommitTransaction();
-				return _mapper.Map<IEnumerable<OrderViewModel>>(orders);
-			}
-			catch
-			{
-				_unitOfWork.RollbackTransaction();
-				throw;
-			}
-		}
+        public async Task<PaginatingResult<OrderViewModel>> GetPaginatedOrdersAsync(int pageNumber, int pageSize)
+        {
+            _unitOfWork.BeginTransaction();
+            try
+            {
+                if (pageNumber < 1) pageNumber = 1;
+                if (pageSize < 1) pageSize = 10;
 
-		public async Task<string> UpdateOrderStatusAsync(int orderId, string newStatus)
+                var totalCount = _unitOfWork.GetRepository<Order>().Count();
+
+                var orders = await _unitOfWork.GetRepository<Order>()
+                    .GetPaginateAsync(pageNumber, pageSize, null, o => o.OrderByDescending(o => o.OrderDate), "User");
+
+                var orderViewModels = orders.Select(order =>
+                {
+                    var orderVM = _mapper.Map<OrderViewModel>(order);
+                    orderVM.User = _mapper.Map<UserViewModel>(order.User);
+                    return orderVM;
+                }).ToList();
+
+                _unitOfWork.CommitTransaction();
+                return new PaginatingResult<OrderViewModel>(orderViewModels, pageNumber, totalCount, pageSize);
+            }
+            catch
+            {
+                _unitOfWork.RollbackTransaction();
+                throw;
+            }
+        }
+
+
+        public async Task<string> UpdateOrderStatusAsync(int orderId, string newStatus)
 		{
 			_unitOfWork.BeginTransaction();
 			try
