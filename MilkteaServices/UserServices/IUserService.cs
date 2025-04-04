@@ -10,7 +10,7 @@ namespace MilkTea.Services.UserServices
 		Task<PaginatingResult<User>> GetPaginatedUsersAsync(int pageIndex, int pageSize, string? filter = null);
 		Task<UserViewModel> GetUserByIdAsync(int id);
 		Task<User> GetUserByUsernameAsync(string username);
-		Task<User> AuthenticateAsync(string username, string password);
+		Task<User> AuthenticateAsync(LoginViewModel loginViewModel);
 		Task<string> RegisterUserAsync(RegisterViewModel userViewModel);
         Task<string> AddUserAsync(string password, UserViewModel userViewModel);
         Task<string> UpdateUserProfileAsync(UserViewModel userViewModel);

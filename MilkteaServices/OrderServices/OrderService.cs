@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using MilkTea.Core.Pagination;
 using MilkTea.Core.ViewModels;
 using MilkTea.Repository.Model;
 using MilkTeaRepository.UnitOfWork;

@@ -1,4 +1,5 @@
-﻿using MilkTea.Core.ViewModels;
+﻿using MilkTea.Core.Pagination;
+using MilkTea.Core.ViewModels;
 using MilkTea.Repository.Model;
 
 namespace MilkTea.Services.OrderServices

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using MilkTea.Core.ViewModels;
 using Microsoft.AspNetCore.SignalR;
 using MilkTea.Services.SignalR;
+using System.Text.Json;
 
 namespace MilkTeaAdminWeb.Pages.Users
 {
@@ -11,10 +12,10 @@ namespace MilkTeaAdminWeb.Pages.Users
 	{
 		private readonly IUserService _userService;
 		private readonly IConfiguration _configuration;
-        private readonly IHubContext<SignalHub> _hubContext;
+		private readonly IHubContext<SignalHub> _hubContext;
 
-        // Role lấy từ appsettings
-        public List<string> Roles { get; set; } = new List<string>();
+		// Role lấy từ appsettings
+		public List<string> Roles { get; set; } = new List<string>();
 
 		public EditModel(IUserService userService, IConfiguration configuration, IHubContext<SignalHub> hubContext)
 		{
@@ -28,18 +29,37 @@ namespace MilkTeaAdminWeb.Pages.Users
 
 		public async Task<IActionResult> OnGetAsync(int? id)
 		{
+			var currentUserData = Request.Cookies["UserInfo"];
+			if (!string.IsNullOrEmpty(currentUserData))
+			{
+				var userData = JsonSerializer.Deserialize<List<string>>(currentUserData);
+				string role = userData[2]; // Lấy Role
+
+				if (role != "Admin" && role != "Staff")
+				{
+					TempData["FailedMessage"] = "Bạn không có quyền truy cập vào trang này!";
+					return RedirectToPage("/Authentication/Login");
+				}
+			}
+			else
+			{
+				TempData["FailedMessage"] = "Vui lòng đăng nhập trước!";
+				return RedirectToPage("/Authentication/Login");
+			}
+
 			if (id == null)
 			{
-                TempData["FailedMessage"] = "ID Không Được Trống!";
-                return RedirectToPage("./Index");
+				TempData["FailedMessage"] = "ID Không Được Trống!";
+				return RedirectToPage("./Index");
 			}
 
 			var user = await _userService.GetUserByIdAsync((int)id);
 			if (user == null)
 			{
-                TempData["SuccessMessage"] = "Người Dùng Không Tồn Tại!";
-                return RedirectToPage("./Index");
+				TempData["SuccessMessage"] = "Người Dùng Không Tồn Tại!";
+				return RedirectToPage("./Index");
 			}
+
 			Roles = _configuration.GetSection("Roles").Get<List<string>>();
 			UserViewModel = user;
 
@@ -53,11 +73,12 @@ namespace MilkTeaAdminWeb.Pages.Users
 			if (result == "Cập nhật thông tin người dùng thành công")
 			{
 				TempData["SuccessMessage"] = result;
-                await _hubContext.Clients.All.SendAsync("LoadPage", "Toppings");
-                return RedirectToPage("./Index");
+				await _hubContext.Clients.All.SendAsync("LoadPage", "Toppings");
+				return RedirectToPage("./Index");
 			}
-            TempData["FailedMessage"] = result;
-            return RedirectToPage("./Index");
+
+			TempData["FailedMessage"] = result;
+			return RedirectToPage("./Index");
 		}
 	}
 }

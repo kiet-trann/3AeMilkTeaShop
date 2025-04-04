@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@using System.Text.Json
+<!DOCTYPE html>
 <html lang="en">
 <head>
 	<meta charset="utf-8" />
@@ -28,6 +29,19 @@
 	</style>
 </head>
 <body class="bg-gray-100">
+	@{
+		string userInfo = Context.Request.Cookies["UserInfo"];
+		string fullName = "";
+
+		// Kiểm tra role
+		bool isAdminOrStaff = false;
+		if (!string.IsNullOrEmpty(userInfo))
+		{
+			var userData = JsonSerializer.Deserialize<List<string>>(userInfo);
+			isAdminOrStaff = userData.Contains("Admin");
+			fullName = userData[1];
+		}
+	}
 	<div class="wrapper">
 		<!-- Sidebar và Nội dung chính -->
 		<div class="d-flex content">
@@ -36,14 +50,17 @@
 				<div class="text-center mb-6">
 					<img src="~/img/MilkTeaLogo.jpg" alt="Milk Tea Logo" class="w-20 h-20 mx-auto">
 				</div>
-				<ul class="list-unstyled">
-					<li><a href="@Url.Page("/Dashboard")" class="block py-2 px-4 hover:bg-blue-600">Dashboard</a></li>
-					<li><a href="@Url.Page("/Products/Index")" class="block py-2 px-4 hover:bg-blue-600">Quản lý sản phẩm</a></li>
-					<li><a href="@Url.Page("/Orders/Index")" class="block py-2 px-4 hover:bg-blue-600">Quản lý đơn hàng</a></li>
-					<li><a href="@Url.Page("/Users/Index")" class="block py-2 px-4 hover:bg-blue-600">Quản lý người dùng</a></li>
-					<li><a href="@Url.Page("/Categories/Index")" class="block py-2 px-4 hover:bg-blue-600">Quản lý danh mục</a></li>
-					<li><a href="@Url.Page("/Toppings/Index")" class="block py-2 px-4 hover:bg-blue-600">Quản lý topping</a></li>
-				</ul>
+				@if (isAdminOrStaff)
+				{
+					<ul class="list-unstyled">
+						<li><a href="@Url.Page("/Home")" class="block py-2 px-4 hover:bg-blue-600">Dashboard</a></li>
+						<li><a href="@Url.Page("/Products/Index")" class="block py-2 px-4 hover:bg-blue-600">Quản lý sản phẩm</a></li>
+						<li><a href="@Url.Page("/Orders/Index")" class="block py-2 px-4 hover:bg-blue-600">Quản lý đơn hàng</a></li>
+						<li><a href="@Url.Page("/Users/Index")" class="block py-2 px-4 hover:bg-blue-600">Quản lý người dùng</a></li>
+						<li><a href="@Url.Page("/Categories/Index")" class="block py-2 px-4 hover:bg-blue-600">Quản lý danh mục</a></li>
+						<li><a href="@Url.Page("/Toppings/Index")" class="block py-2 px-4 hover:bg-blue-600">Quản lý topping</a></li>
+					</ul>
+				}
 			</nav>
 
 			<!-- Main Content Area -->
@@ -51,10 +68,13 @@
 				<!-- Navbar -->
 				<header class="bg-white shadow-md p-4 flex justify-between items-center border-b">
 					<div class="text-lg font-semibold">MilkTeaAdminWeb</div>
-					<div class="flex items-center">
-						<span class="mr-4">Chào, Admin</span>
-						<button class="bg-red-500 text-white px-4 py-2 rounded" asp-page="/Authentication/Logout">Đăng xuất</button>
-					</div>
+					@if (!string.IsNullOrEmpty(userInfo))
+					{
+						<div class="flex items-center">
+							<span class="mr-4">Chào, @fullName</span>
+							<a href="@Url.Page("/Authentication/Logout")" class="bg-red-500 text-white px-4 py-2 rounded inline-block">Đăng xuất</a>
+						</div>
+					}
 				</header>
 
 				<!-- Main Content -->
@@ -63,7 +83,7 @@
 				</main>
 			</div>
 		</div>
-		
+
 		<!-- Footer luôn ở dưới cùng -->
 		<footer class="bg-gray-800 text-white text-center p-4">
 			<p>&copy; 2025 MilkTeaAdminWeb - All rights reserved.</p>

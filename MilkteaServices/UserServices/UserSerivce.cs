@@ -78,19 +78,20 @@ namespace MilkTea.Services.UserServices
 			catch
 			{
 				_unitOfWork.RollbackTransaction();
-				return null;	
+				return null;
 			}
 		}
 
-		public async Task<User?> AuthenticateAsync(string username, string password)
+		public async Task<User?> AuthenticateAsync(LoginViewModel loginViewModel)
 		{
 			_unitOfWork.BeginTransaction();
 			try
 			{
-				if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))
+				if (string.IsNullOrWhiteSpace(loginViewModel.Username) || string.IsNullOrWhiteSpace(loginViewModel.Password))
 					return null;
 
-				var user = await _unitOfWork.GetRepository<User>().GetFirstOrDefaultAsync(u => u.Username == username);
+				var user = await _unitOfWork.GetRepository<User>()
+											.GetFirstOrDefaultAsync(u => u.Username == loginViewModel.Username);
 
 				if (user == null || !user.IsActive)
 				{
@@ -99,7 +100,7 @@ namespace MilkTea.Services.UserServices
 				}
 
 				_unitOfWork.CommitTransaction();
-				return user.Password == password ? user : null;
+				return user.Password == loginViewModel.Password ? user : null;
 			}
 			catch
 			{

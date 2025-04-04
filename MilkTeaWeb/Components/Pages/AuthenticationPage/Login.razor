@@ -1,0 +1,54 @@
+﻿@page "/login"
+@inject IUserService UserService
+@using MilkTea.Core.ViewModels
+@using MilkTea.Services.UserServices
+@using MilkTeaWeb.ViewModels
+@inject NavigationManager NavigationManager
+
+<EditForm Model="@loginModel" OnValidSubmit="HandleLogin">
+    <ValidationSummary />
+
+    <div>
+        <label for="username">Username:</label>
+        <input id="username" @bind="loginModel.Username" />
+        <ValidationMessage For="@(() => loginModel.Username)" />
+    </div>
+
+    <div>
+        <label for="password">Password:</label>
+        <input id="password" type="password" @bind="loginModel.Password" />
+        <ValidationMessage For="@(() => loginModel.Password)" />
+    </div>
+
+    <button type="submit">Login</button>
+
+    @if (!string.IsNullOrEmpty(errorMessage))
+    {
+        <p style="color: red;">@errorMessage</p>
+    }
+</EditForm>
+
+@code {
+    private LoginViewModel loginModel = new LoginViewModel();
+    private string errorMessage;
+
+    private async Task HandleLogin()
+    {
+        try
+        {
+            var user = await UserService.AuthenticateAsync(loginModel);
+            if (user != null)
+            {
+                NavigationManager.NavigateTo("/sanpham");
+            }
+            else
+            {
+                errorMessage = "Invalid username or password.";
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"An error occurred: {ex.Message}";
+        }
+    }
+}

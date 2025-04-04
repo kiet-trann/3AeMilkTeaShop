@@ -1,0 +1,67 @@
+﻿@page "/hosonguoidung"
+@layout MainLayout
+@inject NavigationManager Navigation
+
+<div class="container mt-4">
+    <div class="card p-4">
+        <h4 class="mb-3">Thông Tin Cá Nhân</h4>
+        <form>
+            <div class="mb-3">
+                <label for="username" class="form-label">Tên Đăng Nhập</label>
+                <input type="text" id="username" class="form-control" @bind="user.Username" disabled />
+            </div>
+
+            <div class="mb-3">
+                <label for="fullname" class="form-label">Họ và Tên</label>
+                <input type="text" id="fullname" class="form-control" @bind="user.FullName" />
+            </div>
+
+            <div class="mb-3">
+                <label for="phone" class="form-label">Số Điện Thoại</label>
+                <input type="tel" id="phone" class="form-control" @bind="user.PhoneNumber" />
+            </div>
+
+            <div class="mb-3">
+                <label for="address" class="form-label">Địa Chỉ Giao Hàng</label>
+                <input type="text" id="address" class="form-control" @bind="user.ShippingAddress" />
+            </div>
+
+            <div class="mb-3 position-relative">
+                <label for="password" class="form-label">Mật Khẩu</label>
+                <input type="password" id="password" class="form-control" @bind="user.Password" />
+                <span id="togglePassword" style="position: absolute; right: 10px; top: 38px; cursor: pointer;">
+                    <i id="eyeIcon" class="bi bi-eye-slash"></i>
+                </span>
+            </div>
+
+            <button class="btn btn-primary" @onclick="UpdateProfile">Cập Nhật</button>
+        </form>
+    </div>
+</div>
+
+@if (!string.IsNullOrEmpty(message))
+{
+    <div class="alert alert-info mt-3">@message</div>
+}
+
+@code {
+    private UserViewModel user = new UserViewModel();
+    private string message;
+
+    protected override async Task OnInitializedAsync()
+    {
+    }
+
+    private async Task UpdateProfile()
+    {
+    }
+
+    public class UserViewModel
+    {
+        public string Username { get; set; }
+        public string FullName { get; set; }
+        public string PhoneNumber { get; set; }
+        public string ShippingAddress { get; set; }
+        public string Password { get; set; }
+    }
+}
