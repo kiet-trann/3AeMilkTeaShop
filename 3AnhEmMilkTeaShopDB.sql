@@ -90,8 +90,6 @@ CREATE TABLE [dbo].[OrderDetails](
     [Quantity] INT NOT NULL,
     [UnitPrice] DECIMAL(10, 2) NOT NULL,
     [Size] NVARCHAR(1) NOT NULL,
-    [SugarLevel] NVARCHAR(10) NOT NULL,
-    [IceLevel] NVARCHAR(10) NOT NULL,
     [SubTotal] DECIMAL(10, 2) NOT NULL,
     PRIMARY KEY CLUSTERED ([OrderDetailID] ASC),
     FOREIGN KEY ([OrderID]) REFERENCES [dbo].[Orders]([OrderID]),
@@ -157,8 +155,8 @@ INSERT [dbo].[Products] ([ProductID], [ProductName], [Description], [CategoryID]
 SET IDENTITY_INSERT [dbo].[Products] OFF
 GO
 
+INSERT INTO [dbo].[Users] ([Username], [Password], [FullName], [PhoneNumber], [Role], [ShippingAddress], [IsActive])
+VALUES (N'vuongtd', N'123456', N'Trần Đức Vương', N'0901234567', N'Admin', N'123 Đường ABC, Quận 1, TP.HCM', 1);
+
 INSERT INTO [dbo].[Orders] ([UserID], [TotalAmount], [FinalAmount], [Status], [Note])
 VALUES (1, 50000, 45000, N'Pending', N'Đơn hàng mẫu');
-
-INSERT INTO [dbo].[Users] ([Username], [Password], [FullName], [PhoneNumber], [Role], [ShippingAddress], [IsActive])
-VALUES (N'user1', N'P@ssw0rd', N'Nguyễn Thị An', N'0901234567', N'Customer', N'123 Đường ABC, Quận 1, TP.HCM', 1);

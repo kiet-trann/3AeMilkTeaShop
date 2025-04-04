@@ -17,10 +17,6 @@ public partial class OrderDetail
 
     public string Size { get; set; } = null!;
 
-    public string SugarLevel { get; set; } = null!;
-
-    public string IceLevel { get; set; } = null!;
-
     public decimal SubTotal { get; set; }
 
     public virtual Order Order { get; set; } = null!;

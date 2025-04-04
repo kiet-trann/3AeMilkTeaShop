@@ -319,3 +319,23 @@ body.scroll .back-to-top {
     font-size: 24px;
     cursor: pointer;
 }
+
+/* Product */
+.product-image {
+    max-height: 300px;
+    object-fit: cover;
+    border-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.card {
+    border: none;
+    border-radius: 15px;
+    background: #fff;
+}
+
+.topping-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
