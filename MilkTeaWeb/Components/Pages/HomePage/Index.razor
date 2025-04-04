@@ -1,59 +1,30 @@
-﻿@page "/"
+﻿@page ﻿"/"
 @using MilkTea.Core.Pagination
 @using MilkTea.Core.ViewModels
-@using MilkTea.Services.OrderServices
 @layout MainLayout
-@inject NavigationManager NavigationManager
 @inject MilkTea.Services.ProductServices.IProductService ProductService
-@inject MilkTea.Services.OrderServices.IOrderService OrderService
-@inject IJSRuntime JSRuntime
-@rendermode InteractiveServer
+@inject NavigationManager NavigationManager
 
 @code {
-	private PaginatingResult<ProductViewModel> products;
-	private int currentPage = 1;
-	private int pageSize = 4;
+    private PaginatingResult<ProductViewModel> products;
+    private int currentPage = 1;
+    private int pageSize = 4;
 
-	protected override async Task OnInitializedAsync()
-	{
-		var uri = NavigationManager.ToAbsoluteUri(NavigationManager.Uri);
-		var query = Microsoft.AspNetCore.WebUtilities.QueryHelpers.ParseQuery(uri.Query);
-		if (query.ContainsKey("pageIndex"))
-		{
-			currentPage = int.Parse(query["pageIndex"]);
-		}
-		await LoadProducts();
-	}
+    protected override async Task OnInitializedAsync()
+    {
+        var uri = NavigationManager.ToAbsoluteUri(NavigationManager.Uri);
+        var query = Microsoft.AspNetCore.WebUtilities.QueryHelpers.ParseQuery(uri.Query);
+        if (query.ContainsKey("pageIndex"))
+        {
+            currentPage = int.Parse(query["pageIndex"]);
+        }
+        await LoadProducts();
+    }
 
-	private async Task LoadProducts()
-	{
-		products = await ProductService.GetPaginatedProductsAsync(currentPage, pageSize);
-	}
-
-	private async Task AddToCart(ProductViewModel product)
-	{
-		var userInfoJson = await JSRuntime.InvokeAsync<string>("getCookie", "UserInfo");
-
-		if (!string.IsNullOrEmpty(userInfoJson))
-		{
-			var userInfoList = System.Text.Json.JsonSerializer.Deserialize<List<string>>(userInfoJson);
-
-			var userId = int.Parse(userInfoList[5]);
-
-			var orderDetailViewModel = new OrderDetailViewModel
-				{
-					ProductId = product.ProductId,
-					Quantity = 1,
-					UnitPrice = product.PriceS
-				};
-
-			var result = await OrderService.CreateOrderAsync(userId, orderDetailViewModel);
-		}
-		else
-		{
-			NavigationManager.NavigateTo("/dangnhap");
-		}
-	}
+    private async Task LoadProducts()
+    {
+        products = await ProductService.GetPaginatedProductsAsync(currentPage, pageSize);
+    }
 }
 
 <h1 class="text-center display-4 mt-5">Chào mừng đến với 3AnhEmMilkTea!</h1>
@@ -61,56 +32,58 @@
 
 <!-- Products Start -->
 <div class="container-fluid product py-5 my-5">
-	<div class="container">
-		<div class="section-title text-center mx-auto" style="max-width: 500px;">
-			<p class="fs-5 fw-medium fst-italic text-primary">Sản Phẩm</p>
-			<h1 class="display-6">Trà sữa của chúng tôi mang lại trải nghiệm tuyệt vời</h1>
-		</div>
+    <div class="container">
+        <div class="section-title text-center mx-auto" style="max-width: 500px;">
+            <p class="fs-5 fw-medium fst-italic text-primary">Sản Phẩm</p>
+            <h1 class="display-6">Trà sữa của chúng tôi mang lại trải nghiệm tuyệt vời</h1>
+        </div>
 
-		<div class="row">
-			@if (products?.Items != null && products.Items.Any())
-			{
-				@foreach (var product in products.Items)
-				{
-					<div class="col-md-3 mb-4">
-						<div class="product-item card">
-							<img src="@product.ImageUrl" alt="@product.ProductName" class="card-img-top" style="height: 200px; object-fit: cover;">
-							<div class="card-body text-center">
-								<h5 class="card-title">@product.ProductName</h5>
-								<p class="text-muted">@product.Description</p>
-								<div class="price">
-									<span>@product.PriceS.ToString("N0", System.Globalization.CultureInfo.GetCultureInfo("vi-VN")) VND</span>
+        <div class="row">
+            @if (products?.Items != null && products.Items.Any())
+            {
+                @foreach (var product in products.Items)
+                {
+                    <div class="col-md-3 mb-4">
+                        <div class="product-item card">
+                            <NavLink href="@($"/chitietsanpham/{product.ProductId}")">
+								<img src="@product.ImageUrl" alt="@product.ProductName" class="card-img-top" style="height: 200px; object-fit: cover;">
+								<div class="card-body text-center">
+									<h5 class="card-title">@product.ProductName</h5>
+									<p class="text-muted">@product.Description</p>
+									<div class="price">
+										<span>@product.PriceS.ToString("N0", System.Globalization.CultureInfo.GetCultureInfo("vi-VN")) VND</span>
+									</div>
+									<button class="btn btn-primary mt-3">
+										<i class="fas fa-cart-plus"></i> Thêm vào giỏ
+									</button>
 								</div>
-								<button class="btn btn-primary mt-3" @onclick="() => AddToCart(product)">
-									<i class="fas fa-cart-plus"></i> Thêm vào giỏ
-								</button>
-							</div>
-						</div>
-					</div>
-				}
-			}
-			else
-			{
-				<p class="text-center">Không có sản phẩm nào.</p>
-			}
-		</div>
+							</NavLink>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <p class="text-center">Không có sản phẩm nào.</p>
+            }
+        </div>
 
-		<!-- Pagination -->
-		@if (products != null && products.TotalPages > 1)
-		{
-			<nav aria-label="Page navigation">
-				<ul class="pagination justify-content-center">
-					@for (int i = 1; i <= products.TotalPages; i++)
-					{
-						<li class="page-item @(currentPage == i ? "active" : "")">
-							<a class="page-link" href="/?pageIndex=@i">
-								@i
-							</a>
-						</li>
-					}
-				</ul>
-			</nav>
-		}
-	</div>
+        <!-- Pagination -->
+        @if (products != null && products.TotalPages > 1)
+        {
+            <nav aria-label="Page navigation">
+                <ul class="pagination justify-content-center">
+                    @for (int i = 1; i <= products.TotalPages; i++)
+                    {
+                        <li class="page-item @(currentPage == i ? "active" : "")">
+                            <a class="page-link" href="/?pageIndex=@i">
+                                @i
+                            </a>
+                        </li>
+                    }
+                </ul>
+            </nav>
+        }
+    </div>
 </div>
 <!-- Products End -->

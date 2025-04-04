@@ -51,6 +51,7 @@ namespace MilkTea.Services.ProductServices
 			if (pageNumber < 1) pageNumber = 1;
 			if (pageSize < 1) pageSize = 10;
 
+			_unitOfWork.BeginTransaction();
 			var totalCount = _unitOfWork.GetRepository<Product>().Count();
 
 			var products = await _unitOfWork.GetRepository<Product>()
@@ -63,11 +64,13 @@ namespace MilkTea.Services.ProductServices
 				return productVM;
 			}).ToList();
 
+			_unitOfWork.CommitTransaction();
 			return new PaginatingResult<ProductViewModel>(productViewModels, pageNumber, totalCount, pageSize);
 		}
 
 		public async Task<ProductViewModel> GetProductByIdAsync(int productId)
 		{
+			_unitOfWork.BeginTransaction();
 			if (productId <= 0)
 				return null;
 
@@ -75,6 +78,7 @@ namespace MilkTea.Services.ProductServices
 			if (product == null)
 				return null;
 
+			_unitOfWork.CommitTransaction();
 			return _mapper.Map<ProductViewModel>(product);
 		}
 

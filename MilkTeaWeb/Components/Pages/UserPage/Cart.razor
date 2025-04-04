@@ -1,0 +1,76 @@
+﻿@page "/donhang"
+@using MilkTea.Core.Enum
+@using MilkTea.Core.ViewModels
+@using MilkTea.Services.OrderServices
+@inject IOrderService OrderService
+@inject IJSRuntime JSRuntime
+@inject NavigationManager NavigationManager
+@layout MainLayout
+@rendermode InteractiveServer
+
+<h3>Đơn Hàng Của Bạn</h3>
+
+@if (orders != null && orders.Any())
+{
+	<table class="table">
+		<thead>
+			<tr>
+				<th>ID Đơn Hàng</th>
+				<th>Ngày Đặt</th>
+				<th>Trạng Thái</th>
+				<th>Tổng Tiền</th>
+			</tr>
+		</thead>
+		<tbody>
+			@foreach (var order in orders)
+			{
+				<tr>
+					<td>@order.OrderId</td>
+					<td>@order.OrderDate.ToString("dd/MM/yyyy")</td>
+					<td>@order.Status</td>
+					<td>@order.TotalAmount.ToString("N0", System.Globalization.CultureInfo.GetCultureInfo("vi-VN")) VND</td>
+				</tr>
+			}
+		</tbody>
+	</table>
+}
+else
+{
+	<p>Không có đơn hàng nào.</p>
+}
+
+@code {
+	private List<OrderViewModel> orders;
+	private int userId;
+
+	protected override async Task OnAfterRenderAsync(bool firstRender)
+	{
+		if (firstRender)
+		{
+			var userInfoJson = await JSRuntime.InvokeAsync<string>("getCookie", "UserInfo");
+
+			if (!string.IsNullOrEmpty(userInfoJson))
+			{
+				var userInfoList = System.Text.Json.JsonSerializer.Deserialize<List<string>>(userInfoJson);
+				if (userInfoList != null && userInfoList.Count > 5)
+				{
+					userId = int.Parse(userInfoList[5]);
+					LoadOrders();
+				}
+				else
+				{
+					NavigationManager.NavigateTo("/dangnhap");
+				}
+			}
+			else
+			{
+				NavigationManager.NavigateTo("/dangnhap");
+			}
+		}
+	}
+
+	private void LoadOrders()
+	{
+		orders = OrderService.GetOrdersByUserId(userId, OrderStatusEnum.InProgress);
+	}
+}

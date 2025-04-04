@@ -33,17 +33,19 @@
 		@foreach (var product in products.Items)
 		{
 			<div class="product-item card">
-				<img src="@product.ImageUrl" alt="@product.ProductName" class="card-img-top" style="height: 200px; object-fit: cover;">
-				<div class="card-body text-center">
-					<h4 class="card-title">@product.ProductName</h4>
-					<p class="text-muted">@product.Description</p>
-					<div class="price">
-						@product.PriceS.ToString("N0", System.Globalization.CultureInfo.GetCultureInfo("vi-VN")) VND
+				<NavLink href="@($"/chitietsanpham/{product.ProductId}")">
+					<img src="@product.ImageUrl" alt="@product.ProductName" class="card-img-top" style="height: 200px; object-fit: cover;">
+					<div class="card-body text-center">
+						<h4 class="card-title">@product.ProductName</h4>
+						<p class="text-muted">@product.Description</p>
+						<div class="price">
+							@product.PriceS.ToString("N0", System.Globalization.CultureInfo.GetCultureInfo("vi-VN")) VND
+						</div>
+						<button class="btn btn-primary mt-3">
+							<i class="fas fa-cart-plus"></i> Thêm vào giỏ
+						</button>
 					</div>
-					<button class="btn btn-primary mt-3">
-						<i class="fas fa-cart-plus"></i> Thêm vào giỏ
-					</button>
-				</div>
+				</NavLink>>
 			</div>
 		}
 	}

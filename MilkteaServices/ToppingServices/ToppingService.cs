@@ -48,7 +48,7 @@ namespace MilkTea.Services.ToppingServices
 			}
 		}
 
-		public IEnumerable<ToppingViewModel> GetAllToppings()
+		public List<ToppingViewModel> GetAllToppings()
 		{
 			_unitOfWork.BeginTransaction();
 			try
@@ -56,7 +56,7 @@ namespace MilkTea.Services.ToppingServices
 				var toppings = _unitOfWork.GetRepository<Topping>().GetAll();
 				var mappedToppings = _mapper.Map<IEnumerable<ToppingViewModel>>(toppings);
 				_unitOfWork.CommitTransaction();
-				return mappedToppings;
+				return mappedToppings.ToList();
 			}
 			catch
 			{

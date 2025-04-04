@@ -117,7 +117,7 @@ namespace MilkTea.Services.OrderServices
 		}
 
 		// Lấy theo status hoặc lấy hết
-		public List<OrderViewModel> GetOrdersByUserIdAsync(int userId, OrderStatusEnum? orderStatus)
+		public List<OrderViewModel> GetOrdersByUserId(int userId, OrderStatusEnum? orderStatus = null)
 		{
 			_unitOfWork.BeginTransaction();
 			try
@@ -125,6 +125,7 @@ namespace MilkTea.Services.OrderServices
 				var orders = _unitOfWork.GetRepository<Order>();
 				if (orderStatus.HasValue)
 				{
+					// Lấy theo Status 
 					orders.GetAll(o => o.UserId == userId && o.Status == orderStatus.ToString());
 				}
 				else
@@ -133,7 +134,7 @@ namespace MilkTea.Services.OrderServices
 				}
 
 				var orderViewModels = _mapper.Map<List<OrderViewModel>>(orders);
-
+				
 				_unitOfWork.CommitTransaction();
 				return orderViewModels;
 			}
@@ -144,54 +145,94 @@ namespace MilkTea.Services.OrderServices
 			}
 		}
 
-        public async Task<string> CreateOrderAsync(int userId, OrderDetailViewModel orderDetailViewModel)
-        {
-            _unitOfWork.BeginTransaction();
-            try
-            {
-                var orderRepository = _unitOfWork.GetRepository<Order>();
-                var orderDetailRepository = _unitOfWork.GetRepository<OrderDetail>();
+		public async Task<string> CreateOrderAsync(int userId, OrderDetailViewModel orderDetailViewModel)
+		{
+			_unitOfWork.BeginTransaction();
+			try
+			{
+				var orderRepository = _unitOfWork.GetRepository<Order>();
+				var orderDetailRepository = _unitOfWork.GetRepository<OrderDetail>();
 
-                // Kiểm tra xem user đã có đơn hàng "InProgress" hay chưa
-                var existingOrder = await orderRepository
-                    .GetFirstOrDefaultAsync(o => o.UserId == userId && o.Status == OrderStatusEnum.InProgress.ToString());
+				// Kiểm tra xem user đã có đơn hàng "InProgress" hay chưa
+				var existingOrder = await orderRepository
+					.GetFirstOrDefaultAsync(o => o.UserId == userId && o.Status == OrderStatusEnum.InProgress.ToString());
 
-                if (existingOrder == null)
-                {
-                    // Nếu chưa có, tạo đơn hàng mới
-                    existingOrder = new Order
-                    {
-                        UserId = userId,
-                        OrderDate = DateTime.UtcNow,
-                        Status = OrderStatusEnum.InProgress.ToString(),
-                        TotalAmount = 0,
-                        FinalAmount = 0
-                    };
+				if (existingOrder == null)
+				{
+					// Nếu chưa có tạo đơn hàng mới
+					existingOrder = new Order
+					{
+						UserId = userId,
+						OrderDate = DateTime.UtcNow,
+						Status = OrderStatusEnum.InProgress.ToString(),
+						TotalAmount = 0,
+						FinalAmount = 0
+					};
 
-                    await orderRepository.AddAsync(existingOrder);
-                    await _unitOfWork.SaveChangesAsync(); 
-                }
+					await orderRepository.AddAsync(existingOrder);
+					await _unitOfWork.SaveChangesAsync();
+				}
 
 				// Thêm sản phẩm vào đơn hàng hiện có hoặc mới tạo
 				var orderDetail = _mapper.Map<OrderDetail>(orderDetailViewModel);
 
-                await orderDetailRepository.AddAsync(orderDetail);
+				await orderDetailRepository.AddAsync(orderDetail);
 
-                // Cập nhật tổng tiền đơn hàng
-                existingOrder.TotalAmount += orderDetail.Quantity * orderDetail.UnitPrice;
-                existingOrder.FinalAmount = existingOrder.TotalAmount; 
+				// Cập nhật tổng tiền đơn hàng
+				existingOrder.TotalAmount += orderDetail.Quantity * orderDetail.UnitPrice;
+				existingOrder.FinalAmount = existingOrder.TotalAmount;
 
-                orderRepository.Update(existingOrder);
-                await _unitOfWork.SaveChangesAsync();
+				orderRepository.Update(existingOrder);
+				await _unitOfWork.SaveChangesAsync();
 
-                _unitOfWork.CommitTransaction();
-                return "Thêm sản phẩm vào đơn hàng thành công.";
-            }
-            catch (Exception ex)
-            {
-                _unitOfWork.RollbackTransaction();
-                return $"Lỗi khi thêm sản phẩm vào đơn hàng: {ex.Message}";
-            }
-        }
-    }
+				_unitOfWork.CommitTransaction();
+				return "Thêm sản phẩm vào đơn hàng thành công.";
+			}
+			catch (Exception ex)
+			{
+				_unitOfWork.RollbackTransaction();
+				return $"Lỗi khi thêm sản phẩm vào đơn hàng: {ex.Message}";
+			}
+		}
+
+		public async Task<string> CompleteOrderAsync(int orderId)
+		{
+			_unitOfWork.BeginTransaction();
+			try
+			{
+				var order = await _unitOfWork.GetRepository<Order>().GetByIdAsync(orderId);
+
+				if (order == null)
+				{
+					_unitOfWork.CommitTransaction();
+					return "Đơn hàng không tồn tại.";
+				}
+
+				if (order.Status != OrderStatusEnum.InProgress.ToString())
+				{
+					_unitOfWork.CommitTransaction();
+					return "Đơn hàng không thể hoàn thành vì không phải trạng thái 'InProgress'.";
+				}
+
+				order.Status = OrderStatusEnum.Completed.ToString();
+
+				if (order.FinalAmount == 0)
+				{
+					order.FinalAmount = order.TotalAmount;
+				}
+
+				_unitOfWork.GetRepository<Order>().Update(order);
+				await _unitOfWork.SaveChangesAsync();
+
+				_unitOfWork.CommitTransaction();
+
+				return "Đơn hàng đã được hoàn thành và thanh toán thành công.";
+			}
+			catch (Exception ex)
+			{
+				_unitOfWork.RollbackTransaction();
+				return $"Lỗi khi hoàn thành đơn hàng: {ex.Message}";
+			}
+		}
+	}
 }

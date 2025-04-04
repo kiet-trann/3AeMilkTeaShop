@@ -8,9 +8,11 @@ namespace MilkTea.Services.OrderServices
 	{
         Task<PaginatingResult<OrderViewModel>> GetPaginatedOrdersAsync(int pageNumber, int pageSize);
         Task<OrderViewModel> GetOrderByIdAsync(int orderId);
-		List<OrderViewModel> GetOrdersByUserIdAsync(int userId, OrderStatusEnum? orderStatus);
+		List<OrderViewModel> GetOrdersByUserId(int userId, OrderStatusEnum? orderStatus);
 		Task<List<OrderDetailViewModel>> GetOrderDetailsForOrder(int orderId);
         Task<string> UpdateOrderStatusAsync(int orderId, string newStatus);
         Task<string> CreateOrderAsync(int userId, OrderDetailViewModel orderDetailViewModel);
-    }
+		Task<string> CompleteOrderAsync(int orderId);
+
+	}
 }
