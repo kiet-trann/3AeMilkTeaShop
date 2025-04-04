@@ -21,8 +21,34 @@ window.getCookie = (name) => {
     return null;
 };
 
+// Xóa cookie
+window.deleteCookie = (name) => {
+    document.cookie = name + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+};
+
+// Kiểm tra và xóa cookie nếu hết hạn
+window.checkCookieExpiration = () => {
+    var userInfoJson = window.getCookie("UserInfo");
+    if (userInfoJson) {
+        var userInfo = JSON.parse(userInfoJson);
+        var expireTime = new Date(userInfo.ExpireTime);
+
+        // Kiểm tra xem cookie đã hết hạn chưa
+        if (expireTime < new Date()) {
+            console.log("Cookie expired, deleting...");
+            window.deleteCookie("UserInfo"); // Xóa cookie
+            window.location.href = "/dangnhap"; // Chuyển hướng đến trang đăng nhập
+        }
+    }
+};
+
 // Mở Giỏ Hàng
 function toggleCart() {
     var cartModal = document.getElementById('cartModal');
     cartModal.classList.toggle('open');
 }
+
+// Gọi hàm kiểm tra cookie khi trang được tải
+document.addEventListener("DOMContentLoaded", function () {
+    window.checkCookieExpiration();
+});
