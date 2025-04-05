@@ -3,6 +3,7 @@
 @inherits LayoutComponentBase
 @inject ICategoryService CategoryService
 @inject NavigationManager NavigationManager
+@inject IJSRuntime JSRuntime
 
 <!DOCTYPE html>
 <html lang="en">
@@ -59,8 +60,8 @@
 
 			<!-- Search Box -->
 			<div class="search-box">
-				<input type="text" @bind="searchQuery" placeholder="Tìm kiếm sản phẩm..." class="search-input" />
-				<button @onclick="OnSearch" class="search-btn"><i class="fas fa-search"></i></button>
+				<input type="text" id="searchInput" placeholder="Tìm kiếm sản phẩm..." class="search-input" />
+				<button id="searchBtn" class="search-btn"><i class="fas fa-search"></i></button>
 			</div>
 
 			<!-- Biểu tượng giỏ hàng với sự kiện JavaScript -->
@@ -96,6 +97,22 @@
 			window.location.href = "/donhang";
 		});
 	</script>
+	<script>
+		document.getElementById("searchBtn").addEventListener("click", function () {
+			var searchQuery = document.getElementById("searchInput").value.trim();
+			if (searchQuery) {
+				var searchUrl = "/sanpham?search=" + encodeURIComponent(searchQuery);
+				window.location.href = searchUrl;  // Redirect to the search results page
+			}
+		});
+
+		// Optional: Handle Enter key press for search
+		document.getElementById("searchInput").addEventListener("keypress", function (event) {
+			if (event.key === "Enter") {
+				document.getElementById("searchBtn").click();
+			}
+		});
+	</script>
 </body>
 </html>
 
@@ -111,6 +128,9 @@
 	// OnSearch method if needed for search functionality
 	private async Task OnSearch()
 	{
-		// Implement search functionality here
+		if (!string.IsNullOrWhiteSpace(searchQuery))
+		{
+			NavigationManager.NavigateTo($"/sanpham?search={Uri.EscapeDataString(searchQuery)}");
+		}
 	}
 }

@@ -18,5 +18,6 @@ namespace MilkTeaRepository.GenericRepository
         void Update(T entity);
         void Remove(object id);
         int Count();
-    }
+		int Count(Expression<Func<T, bool>>? filter = null);
+	}
 }

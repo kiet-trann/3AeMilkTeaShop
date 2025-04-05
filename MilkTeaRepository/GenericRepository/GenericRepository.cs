@@ -112,5 +112,12 @@ namespace MilkTeaRepository.GenericRepository
         {
             return _dbSet.Count();
         }
-    }
+		public int Count(Expression<Func<T, bool>>? filter = null)
+		{
+			if (filter != null)
+				return _dbSet.Count(filter);
+			return _dbSet.Count();
+		}
+
+	}
 }

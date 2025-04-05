@@ -3,6 +3,7 @@ using MilkTea.Core.Pagination;
 using MilkTea.Core.ViewModels;
 using MilkTea.Repository.Model;
 using MilkTeaRepository.UnitOfWork;
+using System.Linq.Expressions;
 
 namespace MilkTea.Services.ProductServices
 {
@@ -17,7 +18,7 @@ namespace MilkTea.Services.ProductServices
 			_mapper = mapper;
 		}
 
-		public async Task<PaginatingResult<ProductViewModel>> GetPaginatedProductsAsync(int pageIndex, int pageSize)
+		public async Task<PaginatingResult<ProductViewModel>> GetPaginatedProductsAsync(int pageIndex, int pageSize, string? searchTerm = null)
 		{
 			_unitOfWork.BeginTransaction();
 			try
@@ -25,9 +26,14 @@ namespace MilkTea.Services.ProductServices
 				if (pageIndex < 1) pageIndex = 1;
 				if (pageSize < 1) pageSize = 10;
 
-				var totalCount = _unitOfWork.GetRepository<Product>().Count();
+				Expression<Func<Product, bool>> filter = null;
+				if (!string.IsNullOrWhiteSpace(searchTerm))
+				{
+					filter = p => p.ProductName.Contains(searchTerm);
+				}
+				var totalCount = _unitOfWork.GetRepository<Product>().Count(filter);
 				var products = await _unitOfWork.GetRepository<Product>()
-					.GetPaginateAsync(pageIndex, pageSize, null, null, "Category");
+					.GetPaginateAsync(pageIndex, pageSize, filter, null, "Category");
 
 				var productViewModels = products.Select(product =>
 				{
