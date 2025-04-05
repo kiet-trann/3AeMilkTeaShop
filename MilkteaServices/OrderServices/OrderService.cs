@@ -241,7 +241,8 @@ namespace MilkTea.Services.OrderServices
                     return "Đơn hàng không thể hoàn thành vì không phải trạng thái 'InProgress'.";
                 }
 
-                order.Status = OrderStatusEnum.Completed.ToString();
+                // Mua thành công chuyển status thành Shipping
+                order.Status = OrderStatusEnum.Shipping.ToString();
 
                 _unitOfWork.GetRepository<Order>().Update(order);
                 await _unitOfWork.SaveChangesAsync();

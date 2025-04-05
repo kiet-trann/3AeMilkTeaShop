@@ -5,6 +5,30 @@
 @inject IUserService UserService
 @rendermode InteractiveServer
 
+@code {
+    private RegisterViewModel registerModel = new RegisterViewModel();
+    private string? registerMessage;
+
+    private async Task HandleRegister()
+    {
+
+        var result = await UserService.RegisterUserAsync(registerModel);
+        if (result == "Đăng ký thành công")
+        {
+            Navigation.NavigateTo("/dangnhap");
+        }
+        else
+        {
+            registerMessage = result;
+        }
+    }
+
+    private void NavigateToLogin()
+    {
+        Navigation.NavigateTo("/login");
+    }
+}
+
 <h3>Đăng Ký</h3>
 
 <EditForm Model="registerModel" OnValidSubmit="HandleRegister" FormName="RegisterForm">
@@ -54,27 +78,3 @@
         <p class="text-danger">@registerMessage</p>
     }
 </EditForm>
-
-@code {
-    private RegisterViewModel registerModel = new RegisterViewModel();
-    private string? registerMessage;
-
-    private async Task HandleRegister()
-    {
-
-        var result = await UserService.RegisterUserAsync(registerModel);
-        if (result == "Đăng ký thành công")
-        {
-            Navigation.NavigateTo("/dangnhap");
-        }
-        else
-        {
-            registerMessage = result;
-        }
-    }
-
-    private void NavigateToLogin()
-    {
-        Navigation.NavigateTo("/login");
-    }
-}
