@@ -5,6 +5,39 @@
 @inject IJSRuntime JSRuntime
 @rendermode InteractiveServer
 
+@code {
+    private UserViewModel user = new UserViewModel();
+    private string message;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            var userInfoJson = await JSRuntime.InvokeAsync<string>("getCookie", "UserInfo");
+
+            if (string.IsNullOrEmpty(userInfoJson))
+            {
+                Navigation.NavigateTo("/dangnhap");
+            }
+            else
+            {
+                var userInfoList = System.Text.Json.JsonSerializer.Deserialize<List<string>>(userInfoJson);
+                user.Username = userInfoList[0];
+                user.FullName = userInfoList[1];
+                user.PhoneNumber = userInfoList[4];
+                user.ShippingAddress = userInfoList[3];
+            }
+            StateHasChanged();
+        }
+
+    }
+
+    private async Task UpdateProfile()
+    {
+      //.  
+    }
+}
+
 <div class="container mt-4">
     <div class="card p-4">
         <h4 class="mb-3">Thông Tin Cá Nhân</h4>
@@ -37,37 +70,4 @@
 @if (!string.IsNullOrEmpty(message))
 {
     <div class="alert alert-info mt-3">@message</div>
-}
-
-@code {
-    private UserViewModel user = new UserViewModel();
-    private string message;
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
-        {
-            var userInfoJson = await JSRuntime.InvokeAsync<string>("getCookie", "UserInfo");
-
-            if (string.IsNullOrEmpty(userInfoJson))
-            {
-                Navigation.NavigateTo("/dangnhap");
-            }
-            else
-            {
-                var userInfoList = System.Text.Json.JsonSerializer.Deserialize<List<string>>(userInfoJson);
-                user.Username = userInfoList[0];
-                user.FullName = userInfoList[1];
-                user.PhoneNumber = userInfoList[4];
-                user.ShippingAddress = userInfoList[3];
-            }
-            StateHasChanged();
-        }
-
-    }
-
-    private async Task UpdateProfile()
-    {
-        // Logic to update the profile
-    }
 }

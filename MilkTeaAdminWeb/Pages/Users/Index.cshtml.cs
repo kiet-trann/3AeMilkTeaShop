@@ -31,7 +31,7 @@ namespace MilkTeaAdminWeb.Pages.Users
 				var userData = JsonSerializer.Deserialize<List<string>>(currentUserData);
 				string role = userData[2];
 
-				if (role != "Admin" && role != "Staff")
+				if (role != "Admin")
 				{
 					ErrorMessage = "You do not have permission to access this page.";
 					return RedirectToPage("/Authentication/Login");

@@ -33,7 +33,10 @@ namespace MilkTea.Repository.Mapping
 			CreateMap<OrderViewModel, Product>();
 			CreateMap<OrderDetail, OrderDetailViewModel>()
 			.ForMember(dest => dest.ProductName, opt => opt.MapFrom(src => src.Product.ProductName));
-			CreateMap<OrderViewModel, OrderDetail>();
+            CreateMap<OrderDetailViewModel, OrderDetail>(); 
+            CreateMap<OrderViewModel, OrderDetail>();
+            CreateMap<OrderDetailToppingViewModel, OrderDetailTopping>();
+			CreateMap<OrderDetailTopping, OrderDetailToppingViewModel>();
 		}
 	}
 }

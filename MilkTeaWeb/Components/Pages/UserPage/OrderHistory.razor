@@ -1,4 +1,4 @@
-﻿@page "/donhang"
+﻿@page "/lichsudonhang"
 @using MilkTea.Core.Enum
 @using MilkTea.Core.ViewModels
 @using MilkTea.Services.OrderServices
@@ -12,7 +12,6 @@
 	private List<OrderViewModel> orders;
 	private int userId;
 
-	// Gọi hàm LoadOrders sau khi trang được render lần đầu tiên
 	protected override async Task OnAfterRenderAsync(bool firstRender)
 	{
 		if (firstRender)
@@ -22,10 +21,10 @@
 			if (!string.IsNullOrEmpty(userInfoJson))
 			{
 				var userInfoList = System.Text.Json.JsonSerializer.Deserialize<List<string>>(userInfoJson);
-				if (userInfoList != null)
+				if (userInfoList != null && userInfoList.Count > 5)
 				{
 					userId = int.Parse(userInfoList[5]);
-					LoadOrdersAsync();
+					 LoadOrdersAsync();
 				}
 				else
 				{
@@ -41,23 +40,12 @@
 
 	private void LoadOrdersAsync()
 	{
-		orders = OrderService.GetOrdersByUserId(userId, OrderStatusEnum.InProgress);
-		StateHasChanged();
-	}
-
-	private async Task CompleteOrder(int orderId)
-	{
-		var result = await OrderService.PurchaseOrderAsync(orderId);
-
-		// Thông báo cho người dùng kết quả
-		await JSRuntime.InvokeVoidAsync("alert", result);
-
-		// Sau khi thanh toán thành công, reload lại đơn hàng
-		LoadOrdersAsync();
+		orders = OrderService.GetOrdersByUserId(userId, OrderStatusEnum.Completed);
+		StateHasChanged();  // Cập nhật lại giao diện sau khi dữ liệu được tải
 	}
 }
 
-<h3>Đơn Hàng Của Bạn</h3>
+<h3>Lịch Sử Đơn Hàng</h3>
 
 @if (orders != null && orders.Any())
 {
@@ -68,7 +56,6 @@
 				<th>Ngày Đặt</th>
 				<th>Trạng Thái</th>
 				<th>Tổng Tiền</th>
-				<th>Thanh Toán</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -79,12 +66,6 @@
 					<td>@order.OrderDate.ToString("dd/MM/yyyy")</td>
 					<td>@order.Status</td>
 					<td>@order.TotalAmount.ToString("N0", System.Globalization.CultureInfo.GetCultureInfo("vi-VN")) VND</td>
-					<td>
-						@if (order.Status == OrderStatusEnum.InProgress.ToString())
-						{
-							<button class="btn btn-primary" @onclick="() => CompleteOrder(order.OrderId)">Thanh toán</button>
-						}
-					</td>
 				</tr>
 			}
 		</tbody>

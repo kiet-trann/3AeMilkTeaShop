@@ -11,8 +11,10 @@ namespace MilkTea.Services.OrderServices
 		List<OrderViewModel> GetOrdersByUserId(int userId, OrderStatusEnum? orderStatus);
 		Task<List<OrderDetailViewModel>> GetOrderDetailsForOrder(int orderId);
         Task<string> UpdateOrderStatusAsync(int orderId, string newStatus);
-        Task<string> CreateOrderAsync(int userId, OrderDetailViewModel orderDetailViewModel);
-		Task<string> CompleteOrderAsync(int orderId);
+        Task<string> AddProductToOrderAsync(int userId, OrderDetailViewModel orderDetailViewModel,
+                                           OrderDetailToppingViewModel? toppingViewModel);
+
+        Task<string> PurchaseOrderAsync(int orderId);
 
 	}
 }

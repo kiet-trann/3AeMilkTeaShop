@@ -11,7 +11,6 @@ namespace MilkTea.Core.ViewModels
         public int OrderId { get; set; }
         public DateTime OrderDate { get; set; }
         public decimal TotalAmount { get; set; }
-        public decimal FinalAmount { get; set; }
         public string Status { get; set; } = string.Empty;
         public string? Note { get; set; }
         public List<OrderDetailViewModel> OrderDetails { get; set; } = new();
@@ -20,11 +19,6 @@ namespace MilkTea.Core.ViewModels
 		public void CalculateTotalAmount()
 		{
 			TotalAmount = OrderDetails.Sum(od => od.UnitPrice * od.Quantity);
-		}
-
-		public void CalculateFinalAmount(decimal discount = 0)
-		{
-			FinalAmount = TotalAmount - discount;
 		}
 	}
 }

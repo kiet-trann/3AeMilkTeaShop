@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 namespace MilkTea.Repository.Model;
 
@@ -29,15 +30,23 @@ public partial class ThreeBrothersMilkTeaShopContext : DbContext
 
     public virtual DbSet<User> Users { get; set; }
 
+    private string GetConnectionString()
+    {
+        IConfiguration configuration = new ConfigurationBuilder()
+        .SetBasePath(Directory.GetCurrentDirectory())
+        .AddJsonFile("appsettings.json", true, true).Build();
+        return configuration["ConnectionStrings:DefaultConnectionString"];
+    }
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Server=(local);Database=ThreeBrothersMilkTeaShop;Uid=sa;Pwd=12345;Trusted_Connection=True;TrustServerCertificate=True;");
+    {
+        optionsBuilder.UseSqlServer(GetConnectionString());
+    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Category>(entity =>
         {
-            entity.HasKey(e => e.CategoryId).HasName("PK__Categori__19093A2B93DCB7BB");
+            entity.HasKey(e => e.CategoryId).HasName("PK__Categori__19093A2BE335249A");
 
             entity.Property(e => e.CategoryId).HasColumnName("CategoryID");
             entity.Property(e => e.CategoryName).HasMaxLength(100);
@@ -46,10 +55,9 @@ public partial class ThreeBrothersMilkTeaShopContext : DbContext
 
         modelBuilder.Entity<Order>(entity =>
         {
-            entity.HasKey(e => e.OrderId).HasName("PK__Orders__C3905BAFB053A38F");
+            entity.HasKey(e => e.OrderId).HasName("PK__Orders__C3905BAF2BDF95A2");
 
             entity.Property(e => e.OrderId).HasColumnName("OrderID");
-            entity.Property(e => e.FinalAmount).HasColumnType("decimal(10, 2)");
             entity.Property(e => e.Note).HasMaxLength(255);
             entity.Property(e => e.OrderDate)
                 .HasDefaultValueSql("(getdate())")
@@ -66,13 +74,12 @@ public partial class ThreeBrothersMilkTeaShopContext : DbContext
 
         modelBuilder.Entity<OrderDetail>(entity =>
         {
-            entity.HasKey(e => e.OrderDetailId).HasName("PK__OrderDet__D3B9D30C8B3008EA");
+            entity.HasKey(e => e.OrderDetailId).HasName("PK__OrderDet__D3B9D30CACB5C209");
 
             entity.Property(e => e.OrderDetailId).HasColumnName("OrderDetailID");
             entity.Property(e => e.OrderId).HasColumnName("OrderID");
             entity.Property(e => e.ProductId).HasColumnName("ProductID");
             entity.Property(e => e.Size).HasMaxLength(1);
-            entity.Property(e => e.SubTotal).HasColumnType("decimal(10, 2)");
             entity.Property(e => e.UnitPrice).HasColumnType("decimal(10, 2)");
 
             entity.HasOne(d => d.Order).WithMany(p => p.OrderDetails)
@@ -88,7 +95,7 @@ public partial class ThreeBrothersMilkTeaShopContext : DbContext
 
         modelBuilder.Entity<OrderDetailTopping>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__OrderDet__3214EC274325DAA7");
+            entity.HasKey(e => e.Id).HasName("PK__OrderDet__3214EC27972FE695");
 
             entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.OrderDetailId).HasColumnName("OrderDetailID");
@@ -108,7 +115,7 @@ public partial class ThreeBrothersMilkTeaShopContext : DbContext
 
         modelBuilder.Entity<Product>(entity =>
         {
-            entity.HasKey(e => e.ProductId).HasName("PK__Products__B40CC6EDE163E03D");
+            entity.HasKey(e => e.ProductId).HasName("PK__Products__B40CC6EDE20F3F59");
 
             entity.Property(e => e.ProductId).HasColumnName("ProductID");
             entity.Property(e => e.CategoryId).HasColumnName("CategoryID");
@@ -135,7 +142,7 @@ public partial class ThreeBrothersMilkTeaShopContext : DbContext
 
         modelBuilder.Entity<Topping>(entity =>
         {
-            entity.HasKey(e => e.ToppingId).HasName("PK__Toppings__EE02CCE5EE940B54");
+            entity.HasKey(e => e.ToppingId).HasName("PK__Toppings__EE02CCE502643B28");
 
             entity.Property(e => e.ToppingId).HasColumnName("ToppingID");
             entity.Property(e => e.Price).HasColumnType("decimal(10, 2)");
@@ -144,9 +151,9 @@ public partial class ThreeBrothersMilkTeaShopContext : DbContext
 
         modelBuilder.Entity<User>(entity =>
         {
-            entity.HasKey(e => e.UserId).HasName("PK__Users__1788CCAC6232ED75");
+            entity.HasKey(e => e.UserId).HasName("PK__Users__1788CCAC3E035839");
 
-            entity.HasIndex(e => e.Username, "UQ__Users__536C85E46CEA6A1B").IsUnique();
+            entity.HasIndex(e => e.Username, "UQ__Users__536C85E49B96513B").IsUnique();
 
             entity.Property(e => e.UserId).HasColumnName("UserID");
             entity.Property(e => e.FullName).HasMaxLength(100);

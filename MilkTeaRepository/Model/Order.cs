@@ -13,8 +13,6 @@ public partial class Order
 
     public decimal TotalAmount { get; set; }
 
-    public decimal FinalAmount { get; set; }
-
     public string Status { get; set; } = null!;
 
     public string? Note { get; set; }

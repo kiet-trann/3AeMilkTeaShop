@@ -21,7 +21,6 @@
 				<td>@order.OrderDate</td>
 				<td>@order.User.Username</td>
 				<td>@order.TotalAmount</td>
-				<td>@order.FinalAmount</td>
 				<td>@order.Status</td>
 				<td>
 					<a asp-page="/Orders/OrderDetail" asp-route-orderId="@order.OrderId">Chi tiết</a>
@@ -82,11 +81,8 @@
 				<tr>
 					<td>@orderDetail.ProductName</td>
 					<td>@orderDetail.Size</td>
-					<td>@orderDetail.SugarLevel</td>
-					<td>@orderDetail.IceLevel</td>
 					<td>@orderDetail.Quantity</td>
 					<td>@orderDetail.UnitPrice</td>
-					<td>@orderDetail.SubTotal</td>
 				</tr>
 			}
 		</tbody>

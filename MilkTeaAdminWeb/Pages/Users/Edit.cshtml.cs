@@ -35,7 +35,7 @@ namespace MilkTeaAdminWeb.Pages.Users
 				var userData = JsonSerializer.Deserialize<List<string>>(currentUserData);
 				string role = userData[2]; // Lấy Role
 
-				if (role != "Admin" && role != "Staff")
+				if (role != "Admin")
 				{
 					TempData["FailedMessage"] = "Bạn không có quyền truy cập vào trang này!";
 					return RedirectToPage("/Authentication/Login");

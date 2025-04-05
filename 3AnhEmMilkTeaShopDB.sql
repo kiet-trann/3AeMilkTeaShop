@@ -72,7 +72,6 @@ CREATE TABLE [dbo].[Orders](
     [UserID] INT NOT NULL,
     [OrderDate] DATETIME NOT NULL DEFAULT (GETDATE()),
     [TotalAmount] DECIMAL(10, 2) NOT NULL,
-    [FinalAmount] DECIMAL(10, 2) NOT NULL,
     [Status] NVARCHAR(20) NOT NULL,
     [Note] NVARCHAR(255) NULL,
     PRIMARY KEY CLUSTERED ([OrderID] ASC),
@@ -90,7 +89,6 @@ CREATE TABLE [dbo].[OrderDetails](
     [Quantity] INT NOT NULL,
     [UnitPrice] DECIMAL(10, 2) NOT NULL,
     [Size] NVARCHAR(1) NOT NULL,
-    [SubTotal] DECIMAL(10, 2) NOT NULL,
     PRIMARY KEY CLUSTERED ([OrderDetailID] ASC),
     FOREIGN KEY ([OrderID]) REFERENCES [dbo].[Orders]([OrderID]),
     FOREIGN KEY ([ProductID]) REFERENCES [dbo].[Products]([ProductID])
@@ -158,5 +156,5 @@ GO
 INSERT INTO [dbo].[Users] ([Username], [Password], [FullName], [PhoneNumber], [Role], [ShippingAddress], [IsActive])
 VALUES (N'vuongtd', N'123456', N'Trần Đức Vương', N'0901234567', N'Admin', N'123 Đường ABC, Quận 1, TP.HCM', 1);
 
-INSERT INTO [dbo].[Orders] ([UserID], [TotalAmount], [FinalAmount], [Status], [Note])
-VALUES (1, 50000, 45000, N'Pending', N'Đơn hàng mẫu');
+INSERT INTO [dbo].[Orders] ([UserID], [TotalAmount], [Status], [Note])
+VALUES (1, 50000, N'Pending', N'Đơn hàng mẫu');
