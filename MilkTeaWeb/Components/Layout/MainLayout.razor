@@ -5,6 +5,18 @@
 @inject NavigationManager NavigationManager
 @inject IJSRuntime JSRuntime
 
+@code {
+	private string searchQuery;
+	private IEnumerable<CategoryViewModel> categories;
+
+	protected override async Task OnInitializedAsync()
+	{
+		// Lấy Category để hiển thị trong dropbox
+		categories = CategoryService.GetAvailableCategories();
+	}
+
+}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -12,7 +24,6 @@
 	<title>3AnhEmMilkTea</title>
 	<meta content="width=device-width, initial-scale=1.0" name="viewport">
 	<meta content="3AnhEmMilkTea - Trà sữa ngon và chất lượng" name="description">
-	<meta content="trà sữa, 3AnhEmMilkTea, trà xanh, trà đen, trà organic" name="keywords">
 
 	<!-- Owl Carousel CSS -->
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css" />
@@ -36,7 +47,8 @@
 			<a href="/">Trang Chủ</a>
 			<a href="/gioithieu">Giới Thiệu</a>
 			<a href="/sanpham">Sản Phẩm</a>
-			<!-- Icon Hồ Sơ Người Dùng -->
+
+			<!-- Hồ Sơ Người Dùng -->
 			<a href="/hosonguoidung" title="Hồ Sơ Người Dùng" class="user-profile-icon">
 				<i class="fas fa-user-circle"></i>
 			</a>
@@ -58,20 +70,20 @@
 				</div>
 			</div>
 
-			<!-- Search Box -->
+			<!-- Ô tìm kiếm -->
 			<div class="search-box">
-				<input type="text" id="searchInput" placeholder="Tìm kiếm sản phẩm..." class="search-input" />
-				<button id="searchBtn" class="search-btn"><i class="fas fa-search"></i></button>
+				<input type="text" @bind="searchQuery" placeholder="Tìm kiếm sản phẩm..." class="search-input" />
+				<button class="search-btn"><i class="fas fa-search"></i></button>
 			</div>
 
-			<!-- Biểu tượng giỏ hàng với sự kiện JavaScript -->
+			<!-- Nút chuyển trang đơn hàng -->
 			<a href="/donhang">
 				<i style="cursor:pointer" id="cartIcon" class="fa-solid fa-cart-shopping"></i>
 			</a>
 		</div>
 	</div>
 
-	<!-- Body Content -->
+	<!-- Body -->
 	<div class="container">
 		@Body
 	</div>
@@ -81,17 +93,12 @@
 		<p>© 2025 3AnhEmMilkTea. All Rights Reserved.</p>
 	</div>
 
-	<!-- Back to Top Button -->
-	<a href="#" class="back-to-top">
-		<i class="arrow-up">&#8593;</i>
-	</a>
-
 	<!-- Scripts -->
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
 	<script src="/js/main.js"></script>
 
-	<!-- JavaScript for redirecting to the cart page -->
+	<!-- JavaScript để tới trang donhang -->
 	<script>
 		document.getElementById("cartIcon").addEventListener("click", function () {
 			window.location.href = "/donhang";
@@ -115,22 +122,3 @@
 	</script>
 </body>
 </html>
-
-@code {
-	private string searchQuery;
-	private IEnumerable<CategoryViewModel> categories;
-
-	protected override void OnInitialized()
-	{
-		categories = CategoryService.GetAvailableCategories();
-	}
-
-	// OnSearch method if needed for search functionality
-	private async Task OnSearch()
-	{
-		if (!string.IsNullOrWhiteSpace(searchQuery))
-		{
-			NavigationManager.NavigateTo($"/sanpham?search={Uri.EscapeDataString(searchQuery)}");
-		}
-	}
-}
